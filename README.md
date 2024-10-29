@@ -16,7 +16,22 @@ Kratko opisati cilj Vašeg projekta. Vaša motivacija?  (Napomena: odgovor nije 
 > Dobro izrađen opis omogućuje vam da pokažete svoj rad drugim programerima, kao i potencijalnim poslodavcima. Ne samo da prvi dojam na stranici opisa često razlikuje dobar projekt od lošeg projekta već i predstavlja dobru praksu koju morate savladati.
 
 # Funkcijski zahtjevi
-> Navedite ključne zahtjeve Vašeg projekta.
+1.	Projekti:
+  •	Organizacije mogu objavljivati volonterske projekte s detaljima (naziv, opis, datum početka i završetka, lokacija, potrebni broj volontera, status).
+  •	Volonteri mogu pretraživati projekte prema interesima, datumu i vrsti aktivnosti te se prijaviti za sudjelovanje.
+2.	Organizacije:
+  •	Organizacije mogu kreirati profile i ažurirati svoje informacije, objavljivati nove projekte i upravljati prijavama volontera.
+  •	Organizacije mogu označiti projekte kao hitne za bržu prijavu volontera.
+3.	Registracija volontera:
+  •	Volonteri se registriraju putem obrasca koji sadrži osnovne podatke (korisničko ime, lozinka, e-mail, ime, prezime, telefon).
+  •	Nakon registracije mogu pratiti svoje prijave na projekte, primati obavijesti o novim projektima i promjenama statusa već objavljenih projekata.
+4.	Praćenje aktivnosti:
+  •	Volonteri mogu pratiti povijest svojih volonterskih aktivnosti, ocjene i povratne informacije od organizacija.
+  •	Volonteri mogu bilježiti iskustva i ciljeve te dijeliti postignuća na društvenim mrežama.
+5.	Ocjene i recenzije:
+  •	Volonteri mogu ocijeniti i ostaviti recenzije za projekte i organizacije.
+  •	Organizacije mogu odgovarati na recenzije i pružiti dodatne informacije.
+
 
 
 # Tehnologije
