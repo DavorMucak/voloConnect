@@ -1,0 +1,10 @@
+/*stilovi koji se javljaju konzistentno u cijeloj aplikaciji*/
+
+.error {
+  color: red;
+  font-size: 14px;
+}
+
+body {
+    background-color: rgb(244, 233, 219);
+}
