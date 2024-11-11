@@ -1,30 +1,30 @@
 <template>
   <div id="app">
     <div class="mini-container">
-      <button @click="isLogin = true">Prijava</button>
-      <button @click="isLogin = false">Registracija</button>
+      <router-link to="/"> <button>Home</button> </router-link>
+      <router-link to="/login"> <button>Prijava</button> </router-link>
+      <router-link to="/register"> <button>Registracija</button> </router-link>
     </div>
-    <div v-if="isLogin">
-      <Login />
-    </div>
-    <div v-else>
-      <Register />
-    </div>
+
+    <router-view />
+
   </div>
 </template>
 
 <script>
+import Home from './components/Home.vue';
 import Login from './components/Login.vue';
 import Register from './components/Register.vue';
 
+
 export default {
   components: {
+    Home,
     Login,
     Register,
   },
   data() {
     return {
-      isLogin: false, // register forma je default
     };
   },
 };

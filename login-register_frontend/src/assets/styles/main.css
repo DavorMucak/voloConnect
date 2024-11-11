@@ -3,6 +3,7 @@
 .container {
   width: 300px;
   margin: 0 auto; 
+  margin-bottom: 20px;
   padding: 20px;
   background-color: #e5e2a2;
   border-radius: 8px;
