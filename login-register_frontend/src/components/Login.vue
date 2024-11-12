@@ -26,19 +26,20 @@
 
     </div>
 
-    <div id="login-screen" ref="loginScreen" v-if="!isLoggedIn" class="container">
-        <button id="login-btn" @click="googleLogin">Prijavi se Google profilom</button>
+    <div v-if="!isLoggedIn" class="container">
+        <button @click="googleLogin">Prijavi se Google profilom</button>
     </div>
 
-    <div id="profile-screen" ref="profileScreen" v-if="isLoggedIn" class="hidden">
+    <div v-if="isLoggedIn" class="hidden">
         <p>Bok, <span id="user-name">{{ userName }}</span>!</p>
-        <button id="logout-btn" @click="googleLogout">logout</button>
+        <button @click="googleLogout">logout</button>
     </div>
 
 </template>
 
 
 <script>
+import axios from 'axios';
 import { account } from '../appwrite';      //importanje appwrite account objekta
 
 export default {
@@ -55,43 +56,64 @@ export default {
         };
     },
     methods: {
-        login() {       //login preko unosa podataka
+        async login() {       //login preko unosa podataka
             this.error = '';  //resetira error poruke na default(blank)
-
+           
             if (!this.username || !this.password || !this.selected) {
                 this.error = 'Molimo unesite ime i lozinku.';
                 return;
             }
 
-            if (this.username === 'user' && this.password === 'sifra') {
+            try {   // saljem post request za login backendu
+                const response = await axios.post('http://localhost:5173/api/auth/login', {
+                    username: this.username,
+                    password: this.password
+                });
+
+                // spremanje tokena kojeg dobijemo u localStorage
+                localStorage.setItem('token', response.data.token);
                 alert('Uspješna prijava');
-            } else {
-                this.error = 'Pogrešno korisničko ime ili lozinka.';
+                this.isLoggedIn = true;
+
+            } catch (error) {
+                console.error('greška u prijavi', error);
             }
         },
 
         async googleLogin() {       //login preko googlea
             try {
-                await this.account.createOAuth2Session(
+                await this.account.createOAuth2Session(     //stvaranje google oauth sessiona
                     'google',       //oauth provider
                     'http://localhost:5173/login',        //link na koji se redirecta nakon autorizacije
                     'http://localhost:5173/fail'    //ne postoji trenutno
                 );
 
-                await this.getUser();   // uzimanje informacija o korisniku
+                const user = await this.getUser();      //dobavi podatke o korisniku nakon google logina
+
+                const response = await axios.post('http://localhost:5173/api/auth/google-login', {  
+                    name: user.name,    // podatci koje uzimamo od google prijave
+                    email: user.email
+                });
+
+                // spremanje tokena kojeg dobijemo u localStorage
+                localStorage.setItem('token', response.data.token);
+                alert('Uspješna prijava');
+                this.isLoggedIn = true;
+
             } catch (error) {
-                console.error('gtrešla u prijavi', error);
+                console.error('greška u prijavi', error);
             }
         },
+
         async getUser() {
             try {
                 const user = await this.account.get();      //dobavi podatke prijavljenog korisnika
                 this.userName = user.name; // updateaj podataka o korisniku i otvori prozor prijave
                 this.isLoggedIn = true;     //postavi login state (korisnik prijavljen)
+                return user;
             } catch (error) {
                 console.error('greška pri dohvaćanju korisnika', error);
                 this.isLoggedIn = false;
-                this.renderLoginScreen();
             }
         },
         googleLogout() {
@@ -99,13 +121,7 @@ export default {
             this.userName = ''; // isprazni informacije o korisniku (spremno za novog)
             this.account.deleteSession('current');      //brisane sessiona
         },
-        renderLoginScreen() {
-            this.isLoggedIn = false;
-        },
-        renderProfileScreen(user) {
-            this.userName = user.name;
-            this.isLoggedIn = true;
-        },
+
         mounted() {                 // appwrite sam stvara session, mounted interacta s third-party bibliotekama
             this.getUser();         // pmoramo samo provjeriti je li korisnik vec ulogiran,
         },                          // to se radi tako da funkcija getUser pokusa dobaviti podatke o korisniku s appwritea
