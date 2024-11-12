@@ -45,10 +45,10 @@ import { account } from '../appwrite';      //importanje appwrite account objekt
 export default {
     data() {
         return {
-            username: '',
+            username: '',       //username za obicni login
             password: '',
             error: '',
-            selected: '',
+            selected: '',       //odabir uloge
             options: ["volonter", "organizacija", "admin"],
             isLoggedIn: false,
             userName: '',       //username za google login
@@ -58,14 +58,14 @@ export default {
     methods: {
         async login() {       //login preko unosa podataka
             this.error = '';  //resetira error poruke na default(blank)
-           
+
             if (!this.username || !this.password || !this.selected) {
                 this.error = 'Molimo unesite ime i lozinku.';
                 return;
             }
 
             try {   // saljem post request za login backendu
-                const response = await axios.post('http://localhost:5173/api/auth/login', {
+                const response = await axios.post('http://localhost:8080/api/auth/login', {
                     username: this.username,
                     password: this.password
                 });
@@ -90,7 +90,7 @@ export default {
 
                 const user = await this.getUser();      //dobavi podatke o korisniku nakon google logina
 
-                const response = await axios.post('http://localhost:5173/api/auth/google-login', {  
+                const response = await axios.post('http://localhost:8080/api/auth/google-login', {      //backend server za handlanje autha
                     name: user.name,    // podatci koje uzimamo od google prijave
                     email: user.email
                 });
@@ -99,6 +99,9 @@ export default {
                 localStorage.setItem('token', response.data.token);
                 alert('Uspješna prijava');
                 this.isLoggedIn = true;
+
+                //redirectanje na /login ali s podatcima o korisniku u queryju
+                this.$router.push({ path: '/login', query: { name: user.name, email: user.email } });
 
             } catch (error) {
                 console.error('greška u prijavi', error);
@@ -122,9 +125,13 @@ export default {
             this.account.deleteSession('current');      //brisane sessiona
         },
 
-        mounted() {                 // appwrite sam stvara session, mounted interacta s third-party bibliotekama
-            this.getUser();         // pmoramo samo provjeriti je li korisnik vec ulogiran,
-        },                          // to se radi tako da funkcija getUser pokusa dobaviti podatke o korisniku s appwritea
+        mounted() {         // appwrite sam stvara session, mounted interacta s third-party bibliotekama
+            if (this.$route.query.name && this.$route.query.email) {
+                this.userName = this.$route.query.name;
+                this.username = this.$route.query.email;
+                this.isLoggedIn = true;
+            }    //zelimo da se u formi automatski napune podatci ispunjeni u google prijavi                     
+        },
     },
 };
 </script>
