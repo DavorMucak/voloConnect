@@ -5,6 +5,7 @@ import vue from '@vitejs/plugin-vue'
 
 // https://vite.dev/config/
 export default defineConfig({
+	base: '', // Postavlja relativnu putanju za sve resurse
   plugins: [
     vue(),
   ],
