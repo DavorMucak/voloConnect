@@ -1,13 +1,12 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.UserLoginDto;
 import com.example.demo.dto.UserRegistrationDto;
-import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @RestController
 @CrossOrigin
@@ -35,23 +34,17 @@ public class AuthController {
         }
     }
 
-    // Testna metoda za spremanje korisnika u bazu
-    @PostMapping("/testRegister")
-    public ResponseEntity<String> testRegister() {
-        // Testni podaci za korisnika
-        User user = new User();
-        user.setUsername("testUser");
-        user.setPassword("password");
-        user.setEmail("test@test.com");
-        user.setName("Test");
-        user.setSurname("User");
-        user.setPhonenum("123456789");
-        user.setRole("volonter");
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody UserLoginDto loginDto) {
+        boolean authenticated = userService.authenticate(loginDto.getUsername(), loginDto.getPassword());
 
-        // Spremi korisnika u bazu
-        userRepository.save(user);
-
-        // Vraćanje odgovora nakon uspješnog spremanja
-        return ResponseEntity.ok("User saved successfully!");
+        if (authenticated) {
+            // Optionally, generate a JWT token here and return it
+            return ResponseEntity.ok("Uspješna prijava!");
+        } else {
+            return ResponseEntity.status(401).body("Neispravno korisničko ime ili lozinka.");
+        }
     }
+
+
 }
