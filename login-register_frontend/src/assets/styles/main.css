@@ -50,3 +50,11 @@
   border-radius: 4px;
   background-color: #f6f4d2;
 }
+
+.image-preview{
+  width: 50%;
+}
+
+textarea{
+  width: 95%;
+}
