@@ -2,6 +2,7 @@
   <div class="container">
     <h2>Registracija</h2>
     <form @submit.prevent="register">
+      <!-- forma za unos podataka -->
       <select v-model="selected" class="selection">
         <option disabled value="" class="placeholder">uloga</option>
         <option v-for="option in options" :key="option" :value="option">{{ option }}</option>
@@ -49,11 +50,11 @@ export default {
   },
   methods: {
     async register() {
-      // Reset error and success messages
+      // resetiranje error i success poruke
       this.error = '';
       this.success = '';
 
-      // Basic validation
+      // provjera jesu li svi podaci uneseni
       if (this.selected === 'organizacija' && (!this.username || !this.email || !this.password)) {
         this.error = 'Molimo unesite sve informacije.';
         return;
@@ -65,7 +66,7 @@ export default {
       }
 
       try {
-        // Sending POST request to the backend to register a new user
+        // slanje POST requesta backendu
         const response = await axios.post('http://localhost:8080/api/auth/register', {
           username: this.username,
           password: this.password,
@@ -76,16 +77,17 @@ export default {
           role: this.selected,
         });
 
-        // Handling success response
+        // ako je uspjesno
         this.success = response.data;
         this.clearForm();
+        this.$router.push('/');
       } catch (error) {
-        // Handling error response
+        // ako nije uspjesno
         this.error = error.response ? error.response.data : 'Došlo je do greške.';
       }
     },
     clearForm() {
-      // Clear all form fields and selections
+      // resetiranje forme nakon što su poslani podaci
       this.username = '';
       this.password = '';
       this.email = '';
