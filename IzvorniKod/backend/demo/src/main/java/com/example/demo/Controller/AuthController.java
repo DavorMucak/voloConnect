@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.model.MyUser;
 import com.example.demo.dto.UserLoginDto;
 import com.example.demo.dto.UserRegistrationDto;
 import com.example.demo.repository.UserRepository;
@@ -7,6 +8,8 @@ import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @CrossOrigin
@@ -43,6 +46,20 @@ public class AuthController {
             return ResponseEntity.ok("Uspješna prijava!");
         } else {
             return ResponseEntity.status(401).body("Neispravno korisničko ime ili lozinka.");
+        }
+    }
+
+    @PostMapping("/google-login")
+    public ResponseEntity<String> googleLogin(@RequestBody Map<String, String> userData) {
+        String email = userData.get("email");
+        //String name = userData.get("name");
+
+        Optional<MyUser> userOpt = userRepository.findByEmail(email);
+
+        if (userOpt.isPresent()) {
+            return ResponseEntity.ok("Uspješna prijava!");
+        } else {
+            return ResponseEntity.status(401).body("Korisnik nije registriran. Molimo registrirajte se.");
         }
     }
 
