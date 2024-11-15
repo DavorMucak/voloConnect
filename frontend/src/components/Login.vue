@@ -66,7 +66,7 @@ export default {
             }
 
             try {   // saljem post request za login backendu
-                const response = await axios.post('http://localhost:8080/api/auth/login', {
+                const response = await axios.post('https://voloconnect.onrender.com/api/auth/login', {
                     username: this.username,
                     password: this.password
                 });
@@ -86,13 +86,13 @@ export default {
             try {
                 await this.account.createOAuth2Session(     //stvaranje google oauth sessiona
                     'google',       //oauth provider
-                    'http://localhost:5173/login',        //link na koji se redirecta nakon autorizacije
-                    'http://localhost:5173/fail'    //ne postoji trenutno
+                    'https:///voloconnectview.onrender.com',        //link na koji se redirecta nakon autorizacije
+                    'http://voloconnectview.onrender.com/fail'    //ne postoji trenutno
                 );
 
                 const user = await this.getUser();      //dobavi podatke o korisniku nakon google logina
 
-                const response = await axios.post('http://localhost:8080/api/auth/google-login', {      //backend server za handlanje autha
+                const response = await axios.post('voloconnectview.onrender.com//api/auth/login', {      //backend server za handlanje autha
                     name: user.name,    // podatci koje uzimamo od google prijave
                     email: user.email
                 });

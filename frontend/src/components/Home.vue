@@ -31,7 +31,7 @@
     },
     async created() {
       try {
-        const response = await axios.get('http://localhost:8080/api/projects');
+        const response = await axios.get('https://voloconnect.onrender.com/api/projects');
         this.projects = response.data;
       } catch (error) {
         this.error = error.response ? error.response.data : 'Could not fetch projects';
