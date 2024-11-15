@@ -3,6 +3,7 @@
         <h2>Login</h2>
 
         <form @submit.prevent="login">
+            <!-- forma za unos podataka -->
             <select v-model="selected" class="selection">
                 <option disabled value="">uloga</option>
                 <option v-for="option in options" :key="option" :value="option">
@@ -11,7 +12,7 @@
             </select>
 
             <p v-if="selected == 'admin' || selected == 'volonter'">
-                <input type="text" v-model="username" placeholder="korisničko ime" />
+                <input type="text" v-model="username" placeholder="korisničko ime"/>
                 <input type="password" v-model="password" placeholder="lozinka" />
             </p>
 
@@ -68,17 +69,13 @@ export default {
                 const response = await axios.post('http://localhost:8080/api/auth/login', {
                     username: this.username,
                     password: this.password
-                }, {
-                withCredentials: true, // Allow cookies/auth headers
-                headers: {
-                    'Content-Type': 'application/json'
-                }
                 });
 
                 // spremanje tokena kojeg dobijemo u localStorage
                 localStorage.setItem('token', response.data.token);
                 alert('Uspješna prijava');
                 this.isLoggedIn = true;
+                this.$router.push('/');
 
             } catch (error) {
                 console.error('greška u prijavi', error);
