@@ -1,3 +1,3 @@
 <template>
-    <p>home lol</p>
+    <p>ovdje ide home page</p>
 </template>
