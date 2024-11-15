@@ -73,8 +73,8 @@ export default {
         return;
       }
       try {
-        const response = await axios.post('http://localhost:8080/api/projects', {
-          imeProjekta: this.imeProjekta.replace(/\s+/g, '-').toLowerCase(),
+        const response = await axios.post('https://voloconnect.onrender.com/api/projects', {
+          imeProjekta: this.imeProjekta,
           opisProjekta: this.opisProjekta,
           brojLjudi: this.brojLjudi,
           datumPoc: this.datumPoc,
