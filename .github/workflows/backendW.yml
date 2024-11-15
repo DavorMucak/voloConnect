@@ -5,7 +5,7 @@ on:
     branches:
       - dev                 # Promijenjeno s 'master' na 'dev'
     paths:
-      - 'backend/**'        # Pokreće se samo na promjene u /backend direktoriju
+      - 'IzvorniKod/backend/**'        # Pokreće se samo na promjene u /backend direktoriju
   workflow_dispatch:
 
 jobs:
@@ -26,7 +26,7 @@ jobs:
           distribution: 'temurin'
           architecture: x64
           cache: 'gradle'
-          cache-dependency-path: 'backend/gradle.properties'  # Zamijenjeno s cache-om za Gradle
+          cache-dependency-path: 'IzvorniKod/backend/gradle.properties'  # Zamijenjeno s cache-om za Gradle
 
       - name: Gradle build                     # Zamijenjeno za Gradle
         run: ./gradlew build
