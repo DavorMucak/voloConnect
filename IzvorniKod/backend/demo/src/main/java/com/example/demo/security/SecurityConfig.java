@@ -27,10 +27,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/register").permitAll()
                         .requestMatchers("/api/auth/login").permitAll()
                         .requestMatchers("/api/projects").permitAll()
+                        .anyRequest().authenticated()
 
-
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()// Dopušta pristup registraciji bez autentifikacije
-                                                 // Zahtijevaj autentifikaciju za ostale rute
                 )
                 .formLogin(login -> login
                         .loginPage("/login").permitAll()

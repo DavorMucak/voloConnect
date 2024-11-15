@@ -1,10 +1,12 @@
-package com.example.demo.controller;
+package com.example.demo.Controller;
 
 import com.example.demo.model.Project;
 import com.example.demo.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @CrossOrigin
@@ -22,5 +24,11 @@ public class ProjectController {
     public ResponseEntity<Project> kreirajProjekt(@RequestBody Project project) {
         Project savedProject = projectService.kreirajProjekt(project);
         return ResponseEntity.ok(savedProject);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Project>> getAllProjects() {
+        List<Project> projects = projectService.getAllProjects();
+        return ResponseEntity.ok(projects);
     }
 }
