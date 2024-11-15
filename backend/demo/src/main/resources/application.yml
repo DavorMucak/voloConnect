@@ -11,7 +11,7 @@ spring:
         cache: false
   datasource:
     password: mIsKTtyPBx0ulquVCCDo82s0biYovaA1
-    url: jdbc:postgresql://volobaza_user:mIsKTtyPBx0ulquVCCDo82s0biYovaA1@dpg-csrkph9u0jms7392dpd0-a/volobaza
+    url: jdbc:postgresql://volobaza_user:mIsKTtyPBx0ulquVCCDo82s0biYovaA1@dpg-csrkph9u0jms7392dpd0-a:5432/volobaza
     username: volobaza_user
   jpa:
     hibernate:
