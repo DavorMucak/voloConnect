@@ -1,10 +1,14 @@
 package com.example.demo.service;
 
 
+import com.example.demo.dto.UserLoginDto;
 import com.example.demo.dto.UserRegistrationDto;
 import com.example.demo.model.MyUser;
 import com.example.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -17,6 +21,12 @@ import java.util.Optional;
 @Service
 public class UserService {
 
+    @Autowired
+    private JWTService jwtService;
+
+    @Autowired
+    AuthenticationManager authM;
+
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -26,13 +36,17 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public boolean authenticate(String username, String password) {
-        Optional<MyUser> userOpt = userRepository.findByUsername(username);
+    public String authenticate(UserLoginDto userLoginDto) {
+        Authentication authentication = authM.authenticate(new UsernamePasswordAuthenticationToken(userLoginDto.getUsername(), userLoginDto.getPassword()));
+        Optional<MyUser> userOpt = userRepository.findByUsername(userLoginDto.getUsername());
         if (userOpt.isPresent()) {
-            MyUser user = userOpt.get();
-            return passwordEncoder.matches(password, user.getPassword());
+            if (authentication.isAuthenticated()){
+                return jwtService.generateToken(userOpt.get().getUsername());
+            } else {
+                return "fail";
+            }
         }
-        return false;
+        return "fail";
     }
 
 

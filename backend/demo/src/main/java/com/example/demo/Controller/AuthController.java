@@ -1,4 +1,4 @@
-package com.example.demo.controller;
+package com.example.demo.Controller;
 
 import com.example.demo.dto.UserLoginDto;
 import com.example.demo.dto.UserRegistrationDto;
@@ -23,6 +23,8 @@ public class AuthController {
 
     }
 
+
+
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody UserRegistrationDto userDto) {
         String result = userService.register(userDto);
@@ -35,15 +37,8 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody UserLoginDto loginDto) {
-        boolean authenticated = userService.authenticate(loginDto.getUsername(), loginDto.getPassword());
-
-        if (authenticated) {
-            // Ovdje cemo kasnije vracati JWT Token
-            return ResponseEntity.ok("Uspješna prijava!");
-        } else {
-            return ResponseEntity.status(401).body("Neispravno korisničko ime ili lozinka.");
-        }
+    public String login(@RequestBody UserLoginDto loginDto) {
+        return userService.authenticate(loginDto);
     }
 
 
