@@ -62,11 +62,15 @@ public class UserService {
 
         MyUser user = new MyUser();
         user.setUsername(userDto.getUsername());
-        user.setPassword(passwordEncoder.encode(userDto.getPassword())); // šifriranje lozinke
+        if(userDto.getPassword() != null)
+            user.setPassword(passwordEncoder.encode(userDto.getPassword())); // šifriranje lozinke
         user.setEmail(userDto.getEmail());
-        user.setName(userDto.getName());
-        user.setSurname(userDto.getSurname());
-        user.setPhonenum(userDto.getPhonenum());
+        if(userDto.getPassword() != null)
+            user.setName(userDto.getName());
+        if(userDto.getPassword() != null)
+            user.setSurname(userDto.getSurname());
+        if(userDto.getPassword() != null)
+            user.setPhonenum(userDto.getPhonenum());
         user.setRole(userDto.getRole());
 
         System.out.println("Saving user to database...");
