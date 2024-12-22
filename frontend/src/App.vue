@@ -17,6 +17,7 @@ import Home from './components/Home.vue';
 import Login from './components/Login.vue';
 import Register from './components/Register.vue';
 import NoviProjekt from './components/NoviProjekt.vue';
+import Projekt from './components/Projekt.vue';
 
 
 export default {
@@ -25,6 +26,7 @@ export default {
     Login,
     Register,
     NoviProjekt,
+    Projekt,
   },
   data() {
     return {
