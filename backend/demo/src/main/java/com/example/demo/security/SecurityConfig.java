@@ -42,7 +42,11 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/register").permitAll()
                         .requestMatchers("/api/auth/login").permitAll()
                         .requestMatchers("/api/projects").permitAll()
+                        .requestMatchers("/api/auth/verify").permitAll()
+                        .requestMatchers("/api/auth/resend").permitAll()
+                        .requestMatchers("/api/projects").permitAll()
                         .anyRequest().authenticated()
+
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .httpBasic(Customizer.withDefaults())

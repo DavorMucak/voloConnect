@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "users")
 public class MyUser {
@@ -29,6 +31,14 @@ public class MyUser {
     private String phonenum;
     @Getter @Setter
     private String role;
+
+    @Getter @Setter
+    private String verificationCode;
+    @Getter @Setter
+    private LocalDateTime verificationCodeExpiresAt;
+    @Getter @Setter
+    private boolean enabled = false;
+
 
 
 }
