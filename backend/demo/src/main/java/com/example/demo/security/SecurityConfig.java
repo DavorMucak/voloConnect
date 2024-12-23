@@ -47,7 +47,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .httpBasic(Customizer.withDefaults())
                 .oauth2Login(oAuth2 -> oAuth2
-                        .loginPage("api/auth/login")
+                        .loginPage("/api/auth/login")
                         .defaultSuccessUrl("/api/projects")
                         .userInfoEndpoint(userInfo -> userInfo.userService(new DefaultOAuth2UserService()))
                 )
@@ -81,11 +81,6 @@ public class SecurityConfig {
     @Bean
     public JwtFilter JwtAuthFilter(){
         return new JwtFilter();
-    }
-
-    @Bean
-    public ClientRegistrationRepository clientRegistrationRepository() {
-
     }
 
 }
