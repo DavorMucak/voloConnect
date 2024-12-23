@@ -3,7 +3,6 @@
     <h2>Novi projekt</h2>
 
     <form @submit.prevent="kreirajProjekt">
-      <!-- input podataka -->
       <input type="text" v-model="imeProjekta" placeholder="ime projekta" />
       <textarea v-model="opisProjekta" placeholder="opis projekta" rows="5"></textarea>
       <input type="number" v-model="brojLjudi" min="1" placeholder="broj potrebnih ljudi" />
@@ -21,7 +20,7 @@
         <option value="Informatičke usluge">Informatičke usluge</option>
         <option value="Ostalo">Ostalo</option>
       </select>
-      <!-- provjera jel datum ispravno unesen -->
+
       <p v-if="datumGreska" class="error">{{ datumGreska }}</p>
 
       <br>
@@ -53,7 +52,6 @@ export default {
     };
   },
   computed: {
-    //metoda koja provjerava je li ispravno unesen datum (ogranicenje)
     datumError() {
       this.datumGreska = '';
       if (this.datumPoc) {
@@ -79,18 +77,15 @@ export default {
   methods: {
     async kreirajProjekt() {
       if (this.datumGreska) {
-        //ne da prijavu ako je krivo unesen datum
         this.error = 'Molimo unesite ispravan datum.';
         return;
       }
-      //provjera jesu li svi podaci uneseni
       if (!this.imeProjekta || !this.opisProjekta || !this.brojLjudi || !this.datumPoc || !this.datumKraj) {
         this.error = 'Molimo unesite sve informacije.';
         return;
       }
       try {
-        //ako je sve okej, salji podatke backendu
-        const response = await axios.post('http://localhost:8080/api/projects', {
+        const response = await axios.post('https://voloconnect.onrender.com/api/projects', {
           imeProjekta: this.imeProjekta.replace(/\s+/g, '-').toLowerCase(),
           opisProjekta: this.opisProjekta,
           brojLjudi: this.brojLjudi,
@@ -102,14 +97,12 @@ export default {
 
         this.success = 'Projekt uspješno kreiran!';
         this.clearForm();
-        //!!!treba stavit da se vrati nazad na profil
         this.$router.push('/');
       } catch (error) {
         this.error = error.response ? error.response.data : 'Došlo je do greške.';
       }
     },
     clearForm() {
-      //ispraznjava formu
       this.imeProjekta = '';
       this.opisProjekta = '';
       this.brojLjudi = '';
