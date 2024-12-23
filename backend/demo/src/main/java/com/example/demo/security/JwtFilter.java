@@ -51,11 +51,14 @@ public class JwtFilter extends OncePerRequestFilter {
                     handleOAuth2Token(token, request);
                 }
             } catch (GeneralSecurityException e) {
+                /*
                 if (isJwtToken(token)) {
                     handleJwtToken(token, request);
                 } else {
                     throw new RuntimeException(e);
                 }
+                 */
+                e.printStackTrace();
             }
             filterChain.doFilter(request, response);
         }

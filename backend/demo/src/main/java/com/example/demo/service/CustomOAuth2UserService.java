@@ -28,7 +28,6 @@ import java.util.*;
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private final UserRepository userRepository;
-    private final UserService userService;
 
     public OAuth2User verifyOAuth2Token(String token) throws IOException, GeneralSecurityException {
         //Inicijaliziram GoogleIDToken verifikator
