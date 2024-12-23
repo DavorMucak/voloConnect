@@ -7,6 +7,7 @@
       <p><strong>Broj ljudi:</strong> {{ projekt.brojLjudi }}</p>
       <p><strong>Datum početka:</strong> {{ projekt.datumPoc }}</p>
       <p><strong>Datum kraja:</strong> {{ projekt.datumKraj }}</p>
+      <p><strong>Vrsta aktivnosti:</strong> {{ projekt.vrstaAktivnosti }}</p>
       <button @click="prijavaProjekt">Prijavi se!</button>
     </div>
     <div v-else>
@@ -22,7 +23,7 @@
   export default {
     props: {
       imeProjekta: {
-        type: String,
+        type: String,               
         required: true,
       },
     },
@@ -35,6 +36,7 @@
             brojLjudi: 5,
             datumPoc: "2024-01-15",
             datumKraj: "2024-03-15",
+            vrstaAktivnosti: "Fizički poslovi"
           },
           {
             imeProjekta: "analiza-podataka",
@@ -42,6 +44,7 @@
             brojLjudi: 3,
             datumPoc: "2024-02-01",
             datumKraj: "2024-04-01",
+            vrstaAktivnosti: "Administrativni poslovi"
           },
           {
             imeProjekta: "mobilna-aplikacija",
@@ -49,6 +52,7 @@
             brojLjudi: 6,
             datumPoc: "2024-03-10",
             datumKraj: "2024-06-10",
+            vrstaAktivnosti: "Podučavanje"
           },
         ],
         projekt: null,
@@ -64,10 +68,11 @@
       },
     async created() {
       try {
-        /* const response = await axios.get('https://voloconnect.onrender.com/api/projects');
-        this.projekti = response.data; */
+        const response = await axios.get('https://voloconnect.onrender.com/api/projects');
+        this.projekti = response.data; 
         this.projekt = this.projekti.find(
         (projekt) => projekt.imeProjekta === this.imeProjekta.replace(/\s+/g, '-').toLowerCase()
+        //(projekt) => projekt.imeProjekta === this.imeProjekta.replace(/%20/g, '-').toLowerCase()
         );
         if (!this.projekt) {
           throw new Error("Project not found");
