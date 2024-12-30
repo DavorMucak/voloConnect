@@ -3,7 +3,7 @@
         <h2>Login</h2>
 
         <form @submit.prevent="login">
-            <!-- forma za unos podataka -->
+            <!-- Form for entering user credentials -->
             <select v-model="selected" class="selection">
                 <option disabled value="">uloga</option>
                 <option v-for="option in options" :key="option" :value="option">
@@ -28,112 +28,95 @@
     </div>
 
     <div v-if="!isLoggedIn" class="container">
-        <button @click="googleLogin">Prijavi se Google profilom</button>
+        <div id="g_id_onload"
+             data-client_id="368455952414-n0qaeppdv3gu4qpofn5f6jkc0gu4l19u.apps.googleusercontent.com"
+             data-callback="handleCredentialResponse">
+        </div>
+        <div class="g_id_signin" data-type="standard"></div>
     </div>
 
     <div v-if="isLoggedIn" class="hidden">
         <p>Bok, <span id="user-name">{{ userName }}</span>!</p>
         <button @click="googleLogout">logout</button>
     </div>
-
 </template>
-
 
 <script>
 import axios from 'axios';
-import { account } from '../appwrite';      //importanje appwrite account objekta
 
 export default {
     data() {
         return {
-            username: '',       //username za obicni login
+            username: '',       // Username for manual login
             password: '',
             error: '',
-            selected: '',       //odabir uloge
+            selected: '',       // Selected role
             options: ["volonter", "organizacija", "admin"],
             isLoggedIn: false,
-            userName: '',       //username za google login
-            account: account,       //instanca appwrite objekta
+            userName: '',       // Username for Google login
         };
     },
     methods: {
-        async login() {       //login preko unosa podataka
-            this.error = '';  //resetira error poruke na default(blank)
+        async login() {
+            this.error = '';
 
             if (!this.username || !this.password || !this.selected) {
                 this.error = 'Molimo unesite ime i lozinku.';
                 return;
             }
 
-            try {   // saljem post request za login backendu
-                const response = await axios.post('http://localhost:8080/api/auth/login', {
+            try {
+                const response = await axios.post('http://localhost:8080/api/auth/google-login', {
                     username: this.username,
                     password: this.password
                 });
 
-                // spremanje tokena kojeg dobijemo u localStorage
                 localStorage.setItem('token', response.data.token);
                 alert('Uspješna prijava');
                 this.isLoggedIn = true;
                 this.$router.push('/');
-
             } catch (error) {
                 console.error('greška u prijavi', error);
+                this.error = 'Neuspješna prijava. Pokušajte ponovno.';
             }
         },
 
-        async googleLogin() {       //login preko googlea
-            try {
-                await this.account.createOAuth2Session(     //stvaranje google oauth sessiona
-                    'google',       //oauth provider
-                    'http://localhost:8080',        //link na koji se redirecta nakon autorizacije
-                    'http://localhost:8080/fail'    //ne postoji trenutno
-                );
-
-                const user = await this.getUser();      //dobavi podatke o korisniku nakon google logina
-
-                const response = await axios.post('http://localhost:8080//api/auth/login', {      //backend server za handlanje autha
-                    name: user.name,    // podatci koje uzimamo od google prijave
-                    email: user.email
-                });
-
-                // spremanje tokena kojeg dobijemo u localStorage
-                localStorage.setItem('token', response.data.token);
+        handleCredentialResponse(response) {
+            const idToken = response.credential;
+            //console.log(idToken); //test - token je stvoren i primljen je
+            console.log("Šaljem token na backend")
+            axios.post('http://localhost:8080/api/auth/google-login', {
+                idToken
+            })
+            .then((res) => {
+                console.log("Spremam token u localStorage");
+                localStorage.setItem('token', res.data.token);
                 alert('Uspješna prijava');
                 this.isLoggedIn = true;
-
-                //redirectanje na /login ali s podatcima o korisniku u queryju
-                this.$router.push({ path: '/login', query: { name: user.name, email: user.email } });
-
-            } catch (error) {
-                console.error('greška u prijavi', error);
-            }
+                this.userName = res.data.name;
+                this.$router.push('/');
+            })
+            .catch((error) => {
+                console.error('Greška u prijavi s Googleom', error);
+                alert('Dogodila se pogreška pri prijavi s Googleom. Molimo pokušajte ponovo.');
+            });
         },
 
-        async getUser() {
-            try {
-                const user = await this.account.get();      //dobavi podatke prijavljenog korisnika
-                this.userName = user.name; // updateaj podataka o korisniku i otvori prozor prijave
-                this.isLoggedIn = true;     //postavi login state (korisnik prijavljen)
-                return user;
-            } catch (error) {
-                console.error('greška pri dohvaćanju korisnika', error);
-                this.isLoggedIn = false;
-            }
-        },
         googleLogout() {
+            localStorage.removeItem('token');
             this.isLoggedIn = false;
-            this.userName = ''; // isprazni informacije o korisniku (spremno za novog)
-            this.account.deleteSession('current');      //brisane sessiona
-        },
+            this.userName = '';
+        }
+    },
+    mounted() {
+        const script = document.createElement('script');
+        script.src = 'https://accounts.google.com/gsi/client';
+        script.async = true;
+        script.defer = true;
+        document.head.appendChild(script);
 
-        mounted() {         // appwrite sam stvara session, mounted interacta s third-party bibliotekama
-            if (this.$route.query.name && this.$route.query.email) {
-                this.userName = this.$route.query.name;
-                this.username = this.$route.query.email;
-                this.isLoggedIn = true;
-            }    //zelimo da se u formi automatski napune podatci ispunjeni u google prijavi                     
-        },
+        window.handleCredentialResponse = this.handleCredentialResponse;
     },
 };
 </script>
+

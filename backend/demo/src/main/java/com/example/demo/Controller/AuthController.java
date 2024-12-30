@@ -4,10 +4,20 @@ import com.example.demo.dto.UserLoginDto;
 import com.example.demo.dto.UserRegistrationDto;
 import com.example.demo.dto.VerifyUserDto;
 import com.example.demo.repository.UserRepository;
+import com.example.demo.service.CustomOAuth2UserService;
+import com.example.demo.service.JwtService;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.http.*;
+import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.Map;
 
 @RestController
 @CrossOrigin
@@ -15,16 +25,26 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final UserService userService;
+    private final CustomOAuth2UserService customOAuth2UserService;
     private final UserRepository userRepository;
+    private final JwtService jwtService;
+
+    @Value("${spring.security.oauth2.client.registration.google.client-id}")
+    private String clientId;
+
+    @Value("${spring.security.oauth2.client.registration.google.client-secret}")
+    private String clientSecret;
+
+    @Value("${spring.security.oauth2.client.provider.google.issuer-uri}")
+    private String issuer;
 
     @Autowired
-    public AuthController(UserService userService, UserRepository userRepository) {
+    public AuthController(UserService userService, CustomOAuth2UserService customOAuth2UserService, UserRepository userRepository, JwtService jwtService) {
         this.userService = userService;
+        this.customOAuth2UserService = customOAuth2UserService;
         this.userRepository = userRepository;
-
+        this.jwtService = jwtService;
     }
-
-
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody UserRegistrationDto userDto) {
@@ -62,5 +82,51 @@ public class AuthController {
         }
     }
 
+    @PostMapping("/google-login")
+    public ResponseEntity<?> googleLogin(@RequestBody Map<String, String> payload) {
+        String code = payload.get("code");
+        if (code == null || code.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Missing authorization code");
+        }
 
+        try {
+            // Exchange code for access token
+            RestTemplate restTemplate = new RestTemplate();
+            String tokenUrl = "https://oauth2.googleapis.com/token";
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+            MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+            params.add("code", code);
+            params.add("client_id", clientId);
+            params.add("client_secret", clientSecret);
+            params.add("redirect_uri", "http://localhost:5173");
+            params.add("grant_type", "authorization_code");
+
+            HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
+            ResponseEntity<Map> response = restTemplate.postForEntity(tokenUrl, request, Map.class);
+
+            // Extract and validate ID token
+            String idToken = (String) response.getBody().get("id_token");
+            if (idToken == null || idToken.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid ID token");
+            }
+
+            // Validate the ID token (e.g., using Google's library or manually checking claims)
+            OAuth2User oAuth2User = customOAuth2UserService.verifyOAuth2Token(idToken);
+            if (oAuth2User == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Google ID token");
+            }
+
+            // Generate JWT for your app
+            String jwt = jwtService.generateToken(idToken);
+
+            return ResponseEntity.ok(Map.of("token", jwt));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Google authentication");
+        }
+    }
 }

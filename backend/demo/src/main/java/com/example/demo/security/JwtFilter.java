@@ -1,5 +1,6 @@
 package com.example.demo.security;
 
+import org.springframework.context.ApplicationContext;
 import com.example.demo.service.CustomOAuth2UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,7 +21,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 
-import com.example.demo.service.JWTService;
+import com.example.demo.service.JwtService;
 import com.example.demo.service.MyUserDetailsService;
 import com.example.demo.service.CustomOAuth2UserService;
 
@@ -29,11 +30,13 @@ import com.example.demo.service.CustomOAuth2UserService;
 public class JwtFilter extends OncePerRequestFilter {
 
     @Autowired
-    private JWTService jwtService;
+    private JwtService jwtService;
     @Autowired
     private MyUserDetailsService userDetailService;
     @Autowired
     private CustomOAuth2UserService customOAuth2UserService;
+    @Autowired
+    ApplicationContext context;
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
@@ -60,8 +63,8 @@ public class JwtFilter extends OncePerRequestFilter {
                  */
                 e.printStackTrace();
             }
-            filterChain.doFilter(request, response);
         }
+        filterChain.doFilter(request, response);
     }
 
     //Google ID token pocinje znakovima eyJ i mora sadržavati točku
@@ -93,7 +96,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
     private void handleJwtToken(String token, HttpServletRequest request) {
         String username = jwtService.extractUserName(token);
-        if(username != null){
+        if(username != null && SecurityContextHolder.getContext().getAuthentication() == null){
             UserDetails userDetails = userDetailService.loadUserByUsername(username);
             if (jwtService.validateToken(token, userDetails)){
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());

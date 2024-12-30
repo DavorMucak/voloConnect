@@ -25,7 +25,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig {
+public class SecurityConfig{
 
     @Autowired
     private UserDetailsService userDetailsService;
@@ -45,13 +45,15 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/verify").permitAll()
                         .requestMatchers("/api/auth/resend").permitAll()
                         .requestMatchers("/api/projects").permitAll()
+                        .requestMatchers("/api/auth/google-login").permitAll()
                         .anyRequest().authenticated()
 
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .httpBasic(Customizer.withDefaults())
+                .oauth2Login(Customizer.withDefaults())
                 .oauth2Login(oAuth2 -> oAuth2
-                        .loginPage("/api/auth/login")
+                        .loginPage("/api/auth/google-login")
                         .defaultSuccessUrl("/api/projects")
                         .userInfoEndpoint(userInfo -> userInfo.userService(new DefaultOAuth2UserService()))
                 )
