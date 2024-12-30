@@ -15,12 +15,12 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Service
-public class JWTService {
+public class JwtService {
 
     private final String secretkey;
     private static final long EXPIRATION_TIME = 30 * 60 * 60 * 1000; // 30 hours
 
-    public JWTService() {
+    public JwtService() {
         this.secretkey = Base64.getEncoder().encodeToString(Keys.secretKeyFor(SignatureAlgorithm.HS256).getEncoded());
     }
 

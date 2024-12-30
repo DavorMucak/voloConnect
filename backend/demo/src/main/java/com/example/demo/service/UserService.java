@@ -26,7 +26,7 @@ import java.util.Random;
 public class UserService {
 
     @Autowired
-    private JWTService jwtService;
+    private JwtService jwtService;
 
     @Autowired
     AuthenticationManager authM;
