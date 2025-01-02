@@ -43,6 +43,7 @@
 
 <script>
 import axios from 'axios';
+import { useRouter } from 'vue-router';
 
 export default {
     data() {
@@ -55,6 +56,10 @@ export default {
             isLoggedIn: false,
             userName: '',       // Username for Google login
         };
+    },
+    setup() {
+      const router = useRouter();
+      return { router }; // Vraćamo router kako bi bio dostupan u metodama
     },
     methods: {
         async login() {
@@ -74,7 +79,7 @@ export default {
                 localStorage.setItem('token', response.data.token);
                 alert('Uspješna prijava');
                 this.isLoggedIn = true;
-                this.$router.push('/');
+                this.router.push('/');
             } catch (error) {
                 console.error('greška u prijavi', error);
                 this.error = 'Neuspješna prijava. Pokušajte ponovno.';
@@ -83,7 +88,12 @@ export default {
 
         handleCredentialResponse(response) {
             const idToken = response.credential;
-            //console.log(idToken); //test - token je stvoren i primljen je
+            if (idToken) {
+              console.log("Primljen idToken: ", idToken);
+              // Slanje na backend...
+            } else {
+              console.error("Nije primljen idToken!");
+            }
             console.log("Šaljem token na backend")
             axios.post('http://localhost:8080/api/auth/google-login', {
                 idToken
@@ -94,7 +104,7 @@ export default {
                 alert('Uspješna prijava');
                 this.isLoggedIn = true;
                 this.userName = res.data.name;
-                this.$router.push('/');
+                this.router.push('/');
             })
             .catch((error) => {
                 console.error('Greška u prijavi s Googleom', error);
@@ -109,13 +119,15 @@ export default {
         }
     },
     mounted() {
-        const script = document.createElement('script');
-        script.src = 'https://accounts.google.com/gsi/client';
-        script.async = true;
-        script.defer = true;
-        document.head.appendChild(script);
+      console.log("Učitavam Google Client library...");
+      const script = document.createElement('script');
+      script.src = 'https://accounts.google.com/gsi/client';
+      script.async = true;
+      script.defer = true;
+      document.head.appendChild(script);
 
-        window.handleCredentialResponse = this.handleCredentialResponse;
+      window.handleCredentialResponse = this.handleCredentialResponse;
+      console.log("Postavljen handleCredentialResponse callback.");
     },
 };
 </script>
