@@ -68,7 +68,7 @@
       },
     async created() {
       try {
-        const response = await axios.get('https://localhost:8080/api/projects');
+        const response = await axios.get('http://localhost:8080/api/projects');
         this.projekti = response.data; 
         this.projekt = this.projekti.find(
         (projekt) => projekt.imeProjekta === this.imeProjekta.replace(/\s+/g, '-').toLowerCase()
@@ -84,7 +84,7 @@
     methods: {
       async prijavaProjekt() {
         try {
-          const response = await axios.post('https://voloconnect.onrender.com/api/signup',
+          const response = await axios.post('http://localhost:8080/api/signup',
             { id: this.projekt.id }
           );
           alert("Uspješna prijava!");

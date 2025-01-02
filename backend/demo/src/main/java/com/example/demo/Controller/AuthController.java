@@ -1,7 +1,8 @@
-package com.example.demo.controller;
+package com.example.demo.Controller;
 
 import com.example.demo.dto.UserLoginDto;
 import com.example.demo.dto.UserRegistrationDto;
+import com.example.demo.dto.VerifyUserDto;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,26 +24,41 @@ public class AuthController {
 
     }
 
+
+
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody UserRegistrationDto userDto) {
         String result = userService.register(userDto);
 
-        if (result.equals("Uspješna registracija!")) {
-            return ResponseEntity.ok(result);
-        } else {
+        if (result.equals("Korisničko ime je već zauzeto.") || result.equals("Email je već registriran.")) {
             return ResponseEntity.badRequest().body(result);
+        } else {
+            return ResponseEntity.ok(result);
         }
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody UserLoginDto loginDto) {
-        boolean authenticated = userService.authenticate(loginDto.getUsername(), loginDto.getPassword());
+    public String login(@RequestBody UserLoginDto loginDto) {
+        return userService.authenticate(loginDto);
+    }
 
-        if (authenticated) {
-            // Ovdje cemo kasnije vracati JWT Token
-            return ResponseEntity.ok("Uspješna prijava!");
-        } else {
-            return ResponseEntity.status(401).body("Neispravno korisničko ime ili lozinka.");
+    @PostMapping("/verify")
+    public ResponseEntity<?> verifyUser(@RequestBody VerifyUserDto verifyUserDto) {
+        try {
+            userService.verifyUser(verifyUserDto);
+            return ResponseEntity.ok("Account verified successfully");
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/resend")
+    public ResponseEntity<?> resendVerificationCode(@RequestParam String email) {
+        try {
+            userService.resendVerificationCode(email);
+            return ResponseEntity.ok("Verification code sent");
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 

@@ -11,8 +11,19 @@
       <label>Datum kraja</label>
       <input type="date" v-model="datumKraj" />
 
+      <label>Vrsta aktivnosti</label>
+      <select id="vrstaAktivnosti" v-model="vrstaAktivnosti">
+        <option value="Administrativni poslovi">Administrativni poslovi</option>
+        <option value="Fizički poslovi">Fizički poslovi</option>
+        <option value="Podučavanje">Podučavanje</option>
+        <option value="Kreativni poslovi">Kreativni poslovi</option>
+        <option value="Informatičke usluge">Informatičke usluge</option>
+        <option value="Ostalo">Ostalo</option>
+      </select>
+
       <p v-if="datumGreska" class="error">{{ datumGreska }}</p>
 
+      <br>
       <label>Hitno</label>
       <input type="checkbox" v-model="jeLiHitno" />
 
@@ -34,6 +45,7 @@ export default {
       datumPoc: '',
       datumKraj: '',
       jeLiHitno: false,
+      vrstaAktivnosti: 'Administrativni poslovi',
       error: '',
       success: '',
       datumGreska: '',
@@ -79,6 +91,7 @@ export default {
           brojLjudi: this.brojLjudi,
           datumPoc: this.datumPoc,
           datumKraj: this.datumKraj,
+          vrstaAktivnosti:this.vrstaAktivnosti,
           jeLiHitno: this.jeLiHitno,
         });
 
@@ -95,6 +108,7 @@ export default {
       this.brojLjudi = '';
       this.datumPoc = '';
       this.datumKraj = '';
+      this.vrstaAktivnosti = 'Administrativni poslovi',
       this.jeLiHitno = false;
       this.error = '';
       this.success = '';

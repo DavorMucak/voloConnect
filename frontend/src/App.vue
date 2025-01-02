@@ -17,7 +17,7 @@
 import Home from './components/Home.vue';
 import Login from './components/Login.vue';
 import Register from './components/Register.vue';
-import NoviProjekt from './components/NoviProjekt.vue';
+import NoviProjekt from './components/za_profile/NoviProjekt.vue';
 import Profil from './components/Profil.vue';
 
 

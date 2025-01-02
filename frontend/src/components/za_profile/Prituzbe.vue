@@ -5,9 +5,9 @@
       <div v-if="prituzbe.length">
         <div v-for="prituzba in prituzbe" :key="prituzba.id" class="prituzba">
           <p>
-            <router-link :to="`/profil/${prituzba.senderUsername}`">{{ getUserName(prituzba.senderUsername) }}</router-link>
+            <router-link :to="getProfileLink(prituzba.senderUsername)">{{ getUserName(prituzba.senderUsername) }}</router-link>
             podnio/la pritužbu protiv
-            <router-link :to="`/profil/${prituzba.receiverUsername}`">{{ getUserName(prituzba.receiverUsername) }}</router-link>
+            <router-link :to="getProfileLink(prituzba.receiverUsername)">{{ getUserName(prituzba.receiverUsername) }}</router-link>
           </p>
           <p>{{ prituzba.description }}</p>
           <button @click="resolvePrituzba(prituzba.id)">Razriješeno</button>
@@ -35,59 +35,62 @@ export default {
       users: {} // Objekt za pohranu korisničkih podataka
     };
   },
-  async created() {
-    await this.checkAdmin(); // Provjera je li korisnik administrator
-    if (this.isAdmin) {
-      await this.fetchPrituzbe(); // Dohvati pritužbe ako je korisnik administrator
-      await this.fetchUsers(); // Dohvati korisničke podatke
-    }
+  created() {
+    this.checkAdmin();
+    this.fetchPrituzbe();
   },
   methods: {
-    async checkAdmin() {
-      try {
-        const token = localStorage.getItem('token'); // Dohvati token iz localStorage
-        if (!token) {
-          throw new Error('Nema tokena');
-        }
-        const response = await axios.get('http://localhost:8080/api/user', {
-          headers: { Authorization: `Bearer ${token}` }
-        }); // Dohvati podatke o trenutnom korisniku s API-ja
-        this.isAdmin = response.data.role === 'admin'; // Provjeri je li korisnik administrator
-      } catch (error) {
-        console.error('Error checking admin status:', error); // Ispis pogreške ako provjera ne uspije
+    checkAdmin() {
+      const token = localStorage.getItem('token');
+      if (token) {
+        const user = JSON.parse(atob(token.split('.')[1]));
+        this.isAdmin = user.role === 'admin';
       }
     },
-    async fetchPrituzbe() {
-      try {
-        const response = await axios.get('http://localhost:8080/api/prituzbe'); // Dohvati pritužbe s API-ja
-        this.prituzbe = response.data; // Postavi dohvaćene pritužbe
-      } catch (error) {
-        console.error('Error fetching prituzbe:', error); // Ispis pogreške ako dohvaćanje pritužbi ne uspije
-      }
+    fetchPrituzbe() {
+      axios.get('/api/prituzbe')
+        .then(response => {
+          this.prituzbe = response.data;
+          this.fetchUsers();
+        })
+        .catch(error => {
+          console.error('Error fetching pritužbe:', error);
+        });
     },
-    async fetchUsers() {
-      try {
-        const response = await axios.get('http://localhost:8080/api/users'); // Dohvati korisničke podatke s API-ja
-        this.users = response.data.reduce((acc, user) => {
-          acc[user.username] = user; // Pohrani korisničke podatke prema korisničkom imenu
-          return acc;
-        }, {});
-      } catch (error) {
-        console.error('Error fetching users:', error); // Ispis pogreške ako dohvaćanje korisničkih podataka ne uspije
-      }
+    fetchUsers() {
+      const usernames = new Set();
+      this.prituzbe.forEach(prituzba => {
+        usernames.add(prituzba.senderUsername);
+        usernames.add(prituzba.receiverUsername);
+      });
+      usernames.forEach(username => {
+        axios.get(`/api/users/${username}`)
+          .then(response => {
+            this.$set(this.users, username, response.data);
+          })
+          .catch(error => {
+            console.error('Error fetching user:', error);
+          });
+      });
     },
     getUserName(username) {
-      const user = this.users[username];
-      if (!user) return 'Unknown';
-      return user.role === 'volonter' ? `${user.name} ${user.surname}` : user.name; // Vrati puno ime za volontera ili ime za organizaciju
+      return this.users[username] ? this.users[username].name : username;
     },
-    async resolvePrituzba(id) {
-      try {
-        await axios.delete(`http://localhost:8080/api/prituzbe/${id}`); // Pošalji zahtjev za brisanje pritužbe
-        this.prituzbe = this.prituzbe.filter(prituzba => prituzba.id !== id); // Ažuriraj lokalno stanje pritužbi
-      } catch (error) {
-        console.error('Error resolving prituzba:', error); // Ispis pogreške ako brisanje pritužbe ne uspije
+    getProfileLink(username) {
+      if (this.users[username]) {
+        const role = this.users[username].role;
+        return role === 'volunteer' ? `/volonteri/${username}` : `/organizacije/${username}`;
       }
+      return `/profil/${username}`;
+    },
+    resolvePrituzba(id) {
+      axios.delete(`/api/prituzbe/${id}`)
+        .then(() => {
+          this.prituzbe = this.prituzbe.filter(prituzba => prituzba.id !== id);
+        })
+        .catch(error => {
+          console.error('Error resolving pritužba:', error);
+        });
     }
   }
 };
@@ -95,24 +98,8 @@ export default {
 
 <style scoped>
 .prituzba {
-  margin-bottom: 1em;
-  padding: 1em;
   border: 1px solid #ccc;
-  border-radius: 5px;
-  background-color: #f6f4d2;
-}
-
-button {
-  margin-top: 10px;
   padding: 10px;
-  background-color: #4c8139;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: #3a6b2d;
+  margin: 10px;
 }
 </style>
