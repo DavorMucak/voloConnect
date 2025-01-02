@@ -25,11 +25,15 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.*;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Service
 @RequiredArgsConstructor
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private final UserRepository userRepository;
+    private static final Logger logger = LoggerFactory.getLogger(CustomOAuth2UserService.class);
 
     @Value("${spring.security.oauth2.client.registration.google.client-id}")
     private String clientId;
@@ -38,6 +42,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private String issuer;
 
     public OAuth2User verifyOAuth2Token(String token) throws IOException, GeneralSecurityException {
+        logger.info("Pokrenuta funkcija verifyOAuth2Token");
         // Inicijaliziraj verifyer za Google ID token
         GsonFactory jsonFactory = GsonFactory.getDefaultInstance();
         GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(
@@ -47,33 +52,42 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 .build();
 
         GoogleIdToken idToken = verifier.verify(token);
-
+        logger.info("Generiran verifier, verificiram Google ID token");
         if (idToken != null) {
             GoogleIdToken.Payload payload = idToken.getPayload();
 
-            // Extract email and username
+            // Izvuci podatke o useru iz tokena
             String email = payload.getEmail();
-            String username = (String) payload.getSubject();
+            if(!payload.getEmailVerified()){
+                logger.info("Email nije verificiran od strane Googlea.");
+                throw new IllegalArgumentException("Invalid email.");
+            }
+            logger.info("Email verificiran od strane Googlea.");
+            Object nameObject = "name";
+            String name = (String) payload.get(nameObject);
+            logger.info("ucitan email: " + email + ", ucitano ime: " + name + ".");
 
             // Map selected attributes
             Map<String, Object> attributes = Map.of(
                     "email", email,
-                    "username", username,
-                    "name", payload.get("name")
+                    "name", name
             );
 
             Optional<MyUser> user = userRepository.findByEmail(email);
 
-            // user nije pronaden -> baci gresku (ili automatski registriraj korisnika
+            // user nije pronaden -> baci gresku (ili automatski registriraj korisnika)
             if (user.isEmpty()) {
+                logger.info("User not found error");
                 throw new IllegalStateException("User not found. Registration required.");
             }
 
             UserPrincipal userPrincipal = new UserPrincipal(user);
+            logger.info("Token uspjesno verificiran, stvaram novi CustomOAuth2User.");
 
             return new CustomOAuth2User(userPrincipal, attributes);
 
         } else {
+            logger.info("Google ID Token nije prosao verifikaciju (idToken == null).");
             throw new IllegalArgumentException("Invalid or expired Google ID token.");
         }
     }

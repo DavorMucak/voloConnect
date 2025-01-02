@@ -84,45 +84,22 @@ public class AuthController {
 
     @PostMapping("/google-login")
     public ResponseEntity<?> googleLogin(@RequestBody Map<String, String> payload) {
-        String code = payload.get("code");
-        if (code == null || code.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Missing authorization code");
-        }
-
-        try {
-            // Exchange code for access token
-            RestTemplate restTemplate = new RestTemplate();
-            String tokenUrl = "https://oauth2.googleapis.com/token";
-
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-
-            MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-            params.add("code", code);
-            params.add("client_id", clientId);
-            params.add("client_secret", clientSecret);
-            params.add("redirect_uri", "http://localhost:5173");
-            params.add("grant_type", "authorization_code");
-
-            HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
-            ResponseEntity<Map> response = restTemplate.postForEntity(tokenUrl, request, Map.class);
-
-            // Extract and validate ID token
-            String idToken = (String) response.getBody().get("id_token");
+            String idToken = payload.get("idToken");
             if (idToken == null || idToken.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid ID token");
             }
-
-            // Validate the ID token (e.g., using Google's library or manually checking claims)
+        try {
             OAuth2User oAuth2User = customOAuth2UserService.verifyOAuth2Token(idToken);
             if (oAuth2User == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Google ID token");
             }
 
-            // Generate JWT for your app
             String jwt = jwtService.generateToken(idToken);
 
-            return ResponseEntity.ok(Map.of("token", jwt));
+            return ResponseEntity.ok(Map.of(
+                    "token", jwt,
+                    "name", oAuth2User.getAttribute("name")
+                    ));
 
         } catch (Exception e) {
             e.printStackTrace();

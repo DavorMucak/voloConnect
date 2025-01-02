@@ -1,5 +1,6 @@
 package com.example.demo.security;
 
+import com.example.demo.service.CustomOAuth2UserService;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -31,6 +32,9 @@ public class SecurityConfig{
     private UserDetailsService userDetailsService;
 
     @Autowired
+    private CustomOAuth2UserService customOAuth2UserService;
+
+    @Autowired
     private JwtFilter jwtFilter;
 
 
@@ -55,7 +59,7 @@ public class SecurityConfig{
                 .oauth2Login(oAuth2 -> oAuth2
                         .loginPage("/api/auth/google-login")
                         .defaultSuccessUrl("/api/projects")
-                        .userInfoEndpoint(userInfo -> userInfo.userService(new DefaultOAuth2UserService()))
+                        .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
                 )
                 .csrf(AbstractHttpConfigurer::disable)
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
