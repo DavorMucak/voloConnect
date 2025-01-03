@@ -67,22 +67,40 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             String name = (String) payload.get(nameObject);
             logger.info("ucitan email: " + email + ", ucitano ime: " + name + ".");
 
-            // Map selected attributes
-            Map<String, Object> attributes = Map.of(
-                    "email", email,
-                    "name", name
-            );
-
             Optional<MyUser> user = userRepository.findByEmail(email);
 
             // user nije pronaden -> baci gresku (ili automatski registriraj korisnika)
             if (user.isEmpty()) {
+                /* //BACAM GRESKU AKO USER NIJE PRONADEN
                 logger.info("User not found error");
                 throw new IllegalStateException("User not found. Registration required.");
+                 */
+
+                //AKO USER NIJE PRONADEN REGISTRIRAJ GA
+                MyUser newUser = new MyUser();
+                newUser.setEmail(email);
+                Object givenName = "given_name";
+                newUser.setName((String) payload.get(givenName));
+                Object familyName = "family_name";
+                newUser.setSurname((String) payload.get(familyName));
+                //SKUZI KAKO DA ODREDIS ROLE NOVOG USERA
+                newUser.setRole("neodređen");
+                //kod prijave googleom nije potrebno slati verifikacijski mail?
+                newUser.setEnabled(true);
+                System.out.println("Saving user to database...");
+                userRepository.save(newUser);
+                logger.info("Novi korisnik registriran u bazu podataka.");
+                user = userRepository.findByEmail(email);
             }
 
             UserPrincipal userPrincipal = new UserPrincipal(user);
             logger.info("Token uspjesno verificiran, stvaram novi CustomOAuth2User.");
+
+            Map<String, Object> attributes = Map.of(
+                    "email", email,
+                    "name", name,
+                    "role", user.get().getRole()
+            );
 
             return new CustomOAuth2User(userPrincipal, attributes);
 

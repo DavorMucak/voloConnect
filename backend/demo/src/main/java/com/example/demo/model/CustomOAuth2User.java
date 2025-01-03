@@ -12,6 +12,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public record CustomOAuth2User(UserPrincipal user, Map<String, Object> attributes) implements OAuth2User {
+
     @Override
     public Map<String, Object> getAttributes() {
         return attributes;

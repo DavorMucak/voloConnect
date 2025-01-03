@@ -96,9 +96,11 @@ public class AuthController {
 
             String jwt = jwtService.generateToken(idToken);
 
+            //Saznaj ima li user odreden role, ako ima proslijedi ga na frontend
             return ResponseEntity.ok(Map.of(
                     "token", jwt,
-                    "name", oAuth2User.getAttribute("name")
+                    "name", oAuth2User.getAttribute("name"),
+                    "role", oAuth2User.getAttribute("role")
                     ));
 
         } catch (Exception e) {
