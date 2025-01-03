@@ -1,6 +1,9 @@
 # Volontiraj s nama
 
 ## Opis projekta
+
+Ovaj projekt rezultat je timskog rada razvijenog u sklopu projektnog zadatka kolegija [Programsko inženjerstvo](https://www.fer.unizg.hr/predmet/proinz) na Fakultetu elektrotehnike i računarstva Sveučilišta u Zagrebu.
+
 Cilj ovog projekta je izgradnja platforme za povezivanje volontera s organizacijama koje organiziraju volonterske aktivnosti. Platforma bi trebala olakšati korisnicima pronalazak i prijavu za volonterske projekte te omogućiti organizacijama efikasno upravljanje prijavama i promoviranje svojih aktivnosti. Pomoću ove aplikacije, volonteri će imati priliku pratiti svoj doprinos zajednici, dok će organizacije moći lakše privući ljude da se uključe u volonterske projekte.
 
 ## Funkcijski zahtjevi
