@@ -29,7 +29,7 @@
 
     <div v-if="!isLoggedIn" class="container">
         <div id="g_id_onload"
-             data-client_id="368455952414-n0qaeppdv3gu4qpofn5f6jkc0gu4l19u.apps.googleusercontent.com"
+             data-client_id=""
              data-callback="handleCredentialResponse">
         </div>
         <div class="g_id_signin" data-type="standard"></div>
