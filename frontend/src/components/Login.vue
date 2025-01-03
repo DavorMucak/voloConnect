@@ -98,13 +98,14 @@ export default {
             axios.post('http://localhost:8080/api/auth/google-login', {
                 idToken: response.credential, //saljem ID token tako da ne ovisi o autorizacijskom kodu
             })
-            .then((res) => {
+            .then((res) => { //u responeseu poslan token ("token"), ime korisnika ("name") i njegova uloga ("role")
                 console.log("Spremam token u localStorage");
                 localStorage.setItem('token', res.data.token);
                 alert('Uspješna Google prijava!');
                 this.isLoggedIn = true;
                 this.userName = res.data.name;
-                console.log("name: " + this.userName);
+                this.selected = res.data.role;
+                console.log("name: " + this.userName + " , role: " + res.data.role);
                 this.router.push('/');
             })
             .catch((error) => {
