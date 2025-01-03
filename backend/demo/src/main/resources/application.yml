@@ -21,7 +21,7 @@ spring:
       chain:
         cache: false
   datasource:
-    password: bazepodataka
+    password:
     url: jdbc:postgresql://localhost:5433/demo
     username: postgres
   jpa:
