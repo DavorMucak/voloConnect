@@ -41,13 +41,13 @@ Cilj ovog projekta je izgradnja platforme za povezivanje volontera s organizacij
 
 ## Članovi tima 
 
-* Džapo, Danijela - voditeljica tima, front-end
-* Dodig, Ena - front-end
-* Dadić, Martina - front-end
-* Špoler, Dora - baza podataka
-* Mucak, Davor - back-end
-* Mahečić, Lovre - dizajn
-* Oreški, Noa - dokumentacija
+* Džapo, Danijela (danijela.dzapo@fer.unizg.hr) - voditeljica tima, front-end
+* Dodig, Ena (ena.dodig@fer.unizg.hr) - front-end
+* Dadić, Martina (martina.dadic@fer.unizg.hr) - front-end
+* Špoler, Dora (dora.spoler@fer.unizg.hr) - baza podataka
+* Mucak, Davor (davor.mucak@fer.unizg.hr) - back-end
+* Mahečić, Lovre (lovre.mahecic@fer.unizg.hr) - dizajn
+* Oreški, Noa (noa.oreski@fer.unizg.hr) - dokumentacija
 
 ## Kontribucije
 >Pravila ovise o organizaciji tima i su često izdvojena u CONTRIBUTING.md
