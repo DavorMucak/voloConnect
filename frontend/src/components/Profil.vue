@@ -104,7 +104,7 @@ export default {
         return false;
       }
     },
-    async obrisiProfil() {    //provjeri jel triba jos nesto dodat za komunikaciju s backon
+    async obrisiProfil() {   
       const confirmation = window.confirm("Jeste li sigurni da želite obrisati svoj profil? Bit će trajno izbrisan.");
       if (confirmation) {
         try {
@@ -114,7 +114,6 @@ export default {
           });
 
           alert(response.data.message);  // poruka (uspjeh)
-
 
           localStorage.removeItem('token');
           this.isLoggedIn = false;  // vise nije ulogiran

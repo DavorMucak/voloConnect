@@ -3,6 +3,7 @@
     <h2>Projekti</h2>
     <div class="filteri">
       <!-- filtracija projekata na tememlju datuma i vrsti aktivnosti-->
+      <h3>Filtriranje projekata</h3>
       <label for="datumPocetka">Datum početka:</label>
       <input type="date" id="datumPocetka" v-model="filterDatumPocetka" />
       <label for="datumKraja">Datum kraja:</label>
@@ -21,6 +22,7 @@
     </div>
     <div v-if="error" class="error">{{ error }}</div>
     <div v-if="filtriraniProjekti.length">
+      <h3 style="text-align: center;">Popis projekata</h3>
       <ul>
         <li v-for="project in filtriraniProjekti" :key="project.id">
           <!-- prikaz projekata, kad se stisne ode na stranicu projekta -->
