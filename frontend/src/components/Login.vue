@@ -76,12 +76,15 @@ export default {
                     password: this.password
                 });
 
-                localStorage.setItem('token', response.data.token);
+                localStorage.setItem('token', response.data.token);     //spremanje tokena (korisnik prijavljen)
+                
+                this.$root.fetchKorisnik();     // automatski updatea podatke o korisniku u root komponenti (Vue.js)
+
                 alert('Uspješna prijava');
                 this.isLoggedIn = true;
                 this.router.push('/');
             } catch (error) {
-                console.error('greška u prijavi', error);
+                console.error('Greška u prijavi', error);
                 this.error = 'Neuspješna prijava. Pokušajte ponovno.';
             }
         },
