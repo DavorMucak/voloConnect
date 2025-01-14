@@ -67,7 +67,7 @@ export default {
 
       try {
         // slanje POST requesta backendu
-        const response = await axios.post('https://voloconnect.onrender.com/api/auth/register', {
+        const response = await axios.post('http://localhost:8080/api/auth/register', {
           username: this.username,
           password: this.password,
           email: this.email,
