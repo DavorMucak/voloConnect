@@ -10,9 +10,9 @@ spring:
       chain:
         cache: false
   datasource:
-    password: mIsKTtyPBx0ulquVCCDo82s0biYovaA1
-    url: jdbc:postgresql://volobaza_user:mIsKTtyPBx0ulquVCCDo82s0biYovaA1@dpg-csrkph9u0jms7392dpd0-a:5432/volobaza
-    username: volobaza_user
+    password: pass123
+    url: jdbc:postgresql://localhost:5433/demo
+    username: postgres
   jpa:
     hibernate:
       ddl-auto: update

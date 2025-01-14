@@ -2,6 +2,8 @@
   <div class="home-container">
     <h2>Projekti</h2>
     <div class="filteri">
+      <!-- filtracija projekata na tememlju datuma i vrsti aktivnosti-->
+      <h3>Filtriranje projekata</h3>
       <label for="datumPocetka">Datum početka:</label>
       <input type="date" id="datumPocetka" v-model="filterDatumPocetka" />
       <label for="datumKraja">Datum kraja:</label>
@@ -20,8 +22,10 @@
     </div>
     <div v-if="error" class="error">{{ error }}</div>
     <div v-if="filtriraniProjekti.length">
+      <h3 style="text-align: center;">Popis projekata</h3>
       <ul>
         <li v-for="project in filtriraniProjekti" :key="project.id">
+          <!-- prikaz projekata, kad se stisne ode na stranicu projekta -->
           <router-link :to="{ name: 'Projekt', params: { imeProjekta: project.imeProjekta } }">
             <h3> {{formatiranoIme(project.imeProjekta)}}</h3>
             <p><strong>Broj ljudi:</strong> {{ project.brojLjudi }}</p>
@@ -43,6 +47,7 @@
   export default {
     data() {
       return {
+        // ovo su privremeni projekti samo za probu dok ne spojimo s backendon
         projects: [
           {
             id:1,
@@ -79,6 +84,7 @@
       };
     },
     methods: {
+      // metoda za filtraciju projekata
       filtrirano(){
         this.filtriraniProjekti = [];
         const filterDatumPocetka = this.filterDatumPocetka ? new Date(this.filterDatumPocetka) : null;
@@ -95,6 +101,7 @@
       },
     },
     computed: {
+      //ime projekta se formatirano slalo backendu, sad ga vracamo
       formatiranoIme() {
         return (name) => {
           return name
@@ -105,8 +112,10 @@
     },
     async created() {
       try {
+        //na pocetku se ne primjenjuje filter nego su svi projekti prikazani
         this.filtriraniProjekti = this.projects;
-        const response = await axios.get('https://voloconnect.onrender.com/api/projects');
+        //dohvat liste projekata s backenda
+        const response = await axios.get('http://localhost:8080/api/projects');
         this.projects = response.data;
       } catch (error) {
         this.error = error.response ? error.response.data : 'Ne mogu se dohvatiti projekti.';
@@ -114,6 +123,3 @@
     },
   };
 </script>
-  
-
-  
