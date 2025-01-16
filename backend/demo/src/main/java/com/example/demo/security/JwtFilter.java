@@ -48,12 +48,14 @@ public class JwtFilter extends OncePerRequestFilter {
         }
         if (token != null && !token.isEmpty()) {
             try {
-                if(isJwtToken(token) && !isOAuth2Token(token)){
+                if(isOAuth2Token(token)){
                     handleJwtToken(token, request);
                 } else if (isOAuth2Token(token)){
                     handleOAuth2Token(token, request);
+
                 }
-            } catch (GeneralSecurityException e) {
+            }
+            catch (GeneralSecurityException e) {
                 /*
                 if (isJwtToken(token)) {
                     handleJwtToken(token, request);
