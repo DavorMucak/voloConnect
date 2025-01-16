@@ -50,7 +50,7 @@ public class SecurityConfig{
                         .requestMatchers("/api/projects").permitAll()
                         .requestMatchers("/api/auth/verify").permitAll()
                         .requestMatchers("/api/auth/resend").permitAll()
-                        .requestMatchers("/api/projects").permitAll()
+                        .requestMatchers("/api/projects").authenticated()
                         .requestMatchers("/api/auth/google-login").permitAll()
                         .anyRequest().authenticated()
 

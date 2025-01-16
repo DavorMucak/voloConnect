@@ -43,6 +43,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     public OAuth2User verifyOAuth2Token(String token) throws IOException, GeneralSecurityException {
         logger.info("Pokrenuta funkcija verifyOAuth2Token");
+        logger.info(token);
         // Inicijaliziraj verifyer za Google ID token
         GsonFactory jsonFactory = GsonFactory.getDefaultInstance();
         GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(
