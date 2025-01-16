@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="51dfa50d-1beb-4e99-9bfd-706792d077c5" name="Changes" comment="Google Authentication working with automatic registration of new users and sending role to frontend">
+      <change afterPath="$PROJECT_DIR$/backend/.idea/modules/demo.main.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/demo/Dockerfile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/apiClient.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/appwrite.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/components/MojiProjekti.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/components/Prituzbe.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/components/Profil.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/components/Registracije.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/components/za_profile/Biljeske.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/components/za_profile/ListaProjekata.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/components/za_profile/NoviProjekt.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/components/za_profile/Prituzbe.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/components/za_profile/Recenzije.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/components/za_profile/Registracije.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/Controller/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/Controller/AuthController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/demo/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/demo/src/main/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/App.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/App.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/assets/styles/base.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/assets/styles/base.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/assets/styles/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/assets/styles/main.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/Home.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Home.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/Login.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Login.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/Projekt.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Projekt.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/main.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/router/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/router/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/vite.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/vite.config.js" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$/backend/demo">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <projects_view>
+          <tree_state>
+            <expand />
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+        <option value="package.json" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="frontenddev" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;doraspoler&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/DavorMucak/voloConnect.git&quot;,
+    &quot;accountId&quot;: &quot;d5a1917f-723c-449f-95fe-6f254b27787e&quot;
+  }
+}</component>
+  <component name="KubernetesApiPersistence">{}</component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 7
+}</component>
+  <component name="ProjectId" id="2onUVKvGj5QWRdYEfDMeiFbGQBr" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "Gradle.Build demo.executor": "Run",
+    "Gradle.C:/Users/HP/Desktop/faks/5. semestar/progi/voloConnect/login/demo/build.gradle.executor": "Run",
+    "Gradle.Download Sources.executor": "Run",
+    "Gradle.demo [:DemoApplication.main()].executor": "Run",
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "Shell Script.gradlew.executor": "Run",
+    "Spring Boot.DemoApplication.executor": "Run",
+    "git-widget-placeholder": "Merging dev",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/sviWS/UTR_WS/UTR",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "reference.settingsdialog.project.gradle",
+    "ts.external.directory.path": "C:\\Program Files\\JetBrains\\IntelliJ IDEA 2024.2.4\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
+    "vue.rearranger.settings.migration": "true"
+  },
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "mysql_aurora",
+      "postgresql"
+    ]
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\HP\Desktop\faks\5. semestar\progi\voloConnect\IzvorniKod\backend\demo\src\main\java\com\example\demo\service" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\HP\Desktop\faks\5. semestar\progi\voloConnect\login\demo\src\main\java\com\example\demo\service" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Spring Boot.DemoApplication">
+    <configuration default="true" type="docs" factoryName="Docutils task">
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="" />
+      <option name="docutils_input_file" value="" />
+      <option name="docutils_output_file" value="" />
+      <option name="docutils_params" value="" />
+      <option name="docutils_task" value="" />
+      <option name="docutils_open_in_browser" value="false" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="docs" factoryName="Sphinx task">
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="" />
+      <option name="docutils_input_file" value="" />
+      <option name="docutils_output_file" value="" />
+      <option name="docutils_params" value="" />
+      <option name="docutils_task" value="" />
+      <option name="docutils_open_in_browser" value="false" />
+      <method v="2" />
+    </configuration>
+    <configuration name="console.sql" type="DatabaseScript" editBeforeRun="true" temporary="true" nameIsGenerated="true">
+      <script-file value="$APPLICATION_CONFIG_DIR$/consoles/db/5aa8b4da-889d-40e5-8488-8bcaf0a18fab/console.sql" />
+      <script-mode>FILE</script-mode>
+      <method v="2" />
+    </configuration>
+    <configuration name="gradlew" type="ShConfigurationType" temporary="true">
+      <option name="SCRIPT_TEXT" value="" />
+      <option name="INDEPENDENT_SCRIPT_PATH" value="true" />
+      <option name="SCRIPT_PATH" value="$PROJECT_DIR$/backend/demo/gradlew" />
+      <option name="SCRIPT_OPTIONS" value="" />
+      <option name="INDEPENDENT_SCRIPT_WORKING_DIRECTORY" value="true" />
+      <option name="SCRIPT_WORKING_DIRECTORY" value="$PROJECT_DIR$/backend/demo" />
+      <option name="INDEPENDENT_INTERPRETER_PATH" value="true" />
+      <option name="INTERPRETER_PATH" value="/bin/sh" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="EXECUTE_IN_TERMINAL" value="true" />
+      <option name="EXECUTE_SCRIPT_FILE" value="true" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <configuration name="gradlew" type="ShConfigurationType" temporary="true">
+      <option name="SCRIPT_TEXT" value="" />
+      <option name="INDEPENDENT_SCRIPT_PATH" value="true" />
+      <option name="SCRIPT_PATH" value="$PROJECT_DIR$/login/demo/gradlew" />
+      <option name="SCRIPT_OPTIONS" value="" />
+      <option name="INDEPENDENT_SCRIPT_WORKING_DIRECTORY" value="true" />
+      <option name="SCRIPT_WORKING_DIRECTORY" value="$PROJECT_DIR$/login/demo" />
+      <option name="INDEPENDENT_INTERPRETER_PATH" value="false" />
+      <option name="INTERPRETER_PATH" value="$PROJECT_DIR$/login/demo" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="EXECUTE_IN_TERMINAL" value="true" />
+      <option name="EXECUTE_SCRIPT_FILE" value="true" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <configuration name="DemoApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
+      <module name="demo.main" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.example.demo.DemoApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Database Script.console.sql" />
+        <item itemvalue="Shell Script.gradlew" />
+        <item itemvalue="Shell Script.gradlew" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-28b599e66164-intellij.indexing.shared.core-IU-242.23726.103" />
+        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-IU-242.23726.103" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="51dfa50d-1beb-4e99-9bfd-706792d077c5" name="Changes" comment="" />
+      <created>1731504855875</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1731504855875</updated>
+      <workItem from="1731504857400" duration="3740000" />
+      <workItem from="1731525984915" duration="7874000" />
+      <workItem from="1731538535269" duration="3945000" />
+      <workItem from="1731576630885" duration="16474000" />
+      <workItem from="1731621680024" duration="1779000" />
+      <workItem from="1731661514842" duration="12850000" />
+      <workItem from="1731682574910" duration="938000" />
+      <workItem from="1731683563763" duration="160000" />
+      <workItem from="1731683747253" duration="1243000" />
+      <workItem from="1731685029707" duration="5375000" />
+      <workItem from="1731692304548" duration="3887000" />
+      <workItem from="1731701930916" duration="2955000" />
+      <workItem from="1734354903966" duration="11301000" />
+      <workItem from="1734451273046" duration="3744000" />
+      <workItem from="1734542965831" duration="6174000" />
+      <workItem from="1734615598388" duration="2489000" />
+      <workItem from="1734962442177" duration="1172000" />
+      <workItem from="1734970303746" duration="3544000" />
+      <workItem from="1734974775992" duration="7253000" />
+      <workItem from="1735558109116" duration="6891000" />
+      <workItem from="1735827369185" duration="13231000" />
+      <workItem from="1735914657638" duration="3963000" />
+      <workItem from="1735918702481" duration="915000" />
+      <workItem from="1736611667322" duration="1797000" />
+      <workItem from="1736689619574" duration="201000" />
+      <workItem from="1736854009837" duration="2179000" />
+      <workItem from="1737023102428" duration="3578000" />
+      <workItem from="1737064440016" duration="5743000" />
+    </task>
+    <task id="LOCAL−00001" summary="Razvoj OAuth2.0 za prijavu preko Googlea">
+      <option name="closed" value="true" />
+      <created>1731683362926</created>
+      <option name="number" value="LOCAL−00001" />
+      <option name="presentableId" value="LOCAL−00001" />
+      <updated>1731683362926</updated>
+    </task>
+    <task id="LOCAL−00002" summary="Razvoj OAuth2.0 za prijavu preko Googlea">
+      <option name="closed" value="true" />
+      <created>1734549304102</created>
+      <option name="number" value="LOCAL−00002" />
+      <option name="presentableId" value="LOCAL−00002" />
+      <updated>1734549304102</updated>
+    </task>
+    <task id="LOCAL−00003" summary="jwt not working">
+      <option name="closed" value="true" />
+      <created>1734970358722</created>
+      <option name="number" value="LOCAL−00003" />
+      <option name="presentableId" value="LOCAL−00003" />
+      <updated>1734970358722</updated>
+    </task>
+    <task id="LOCAL−00004" summary="Google OAuth giving alert">
+      <option name="closed" value="true" />
+      <created>1735581478410</created>
+      <option name="number" value="LOCAL−00004" />
+      <option name="presentableId" value="LOCAL−00004" />
+      <updated>1735581478410</updated>
+    </task>
+    <task id="LOCAL−00005" summary="Google OAuth giving alert">
+      <option name="closed" value="true" />
+      <created>1735830389348</created>
+      <option name="number" value="LOCAL−00005" />
+      <option name="presentableId" value="LOCAL−00005" />
+      <updated>1735830389348</updated>
+    </task>
+    <task id="LOCAL−00006" summary="Google Authentication working!">
+      <option name="closed" value="true" />
+      <created>1735843744021</created>
+      <option name="number" value="LOCAL−00006" />
+      <option name="presentableId" value="LOCAL−00006" />
+      <updated>1735843744021</updated>
+    </task>
+    <task id="LOCAL−00007" summary="Google Authentication working with automatic registration of new users and sending role to frontend">
+      <option name="closed" value="true" />
+      <created>1735918113252</created>
+      <option name="number" value="LOCAL−00007" />
+      <option name="presentableId" value="LOCAL−00007" />
+      <updated>1735918113252</updated>
+    </task>
+    <task id="LOCAL−00008" summary="Google Authentication working with automatic registration of new users and sending role to frontend">
+      <option name="closed" value="true" />
+      <created>1735918355003</created>
+      <option name="number" value="LOCAL−00008" />
+      <option name="presentableId" value="LOCAL−00008" />
+      <updated>1735918355003</updated>
+    </task>
+    <task id="LOCAL−00009" summary="Google Authentication working with automatic registration of new users and sending role to frontend">
+      <option name="closed" value="true" />
+      <created>1735918443319</created>
+      <option name="number" value="LOCAL−00009" />
+      <option name="presentableId" value="LOCAL−00009" />
+      <updated>1735918443319</updated>
+    </task>
+    <task id="LOCAL−00010" summary="Google Authentication working with automatic registration of new users and sending role to frontend">
+      <option name="closed" value="true" />
+      <created>1735918581531</created>
+      <option name="number" value="LOCAL−00010" />
+      <option name="presentableId" value="LOCAL−00010" />
+      <updated>1735918581531</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="origin/frontenddev" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Razvoj OAuth2.0 za prijavu preko Googlea" />
+    <MESSAGE value="jwt not working" />
+    <MESSAGE value="Google OAuth giving alert" />
+    <MESSAGE value="Google Authentication working!" />
+    <MESSAGE value="Google Authentication working with automatic registration of new users and sending role to frontend" />
+    <option name="LAST_COMMIT_MESSAGE" value="Google Authentication working with automatic registration of new users and sending role to frontend" />
+  </component>
+  <component name="XDebuggerManager">
+    <watches-manager>
+      <configuration name="SpringBootApplicationConfigurationType">
+        <watch expression="idToken.payload.entrySet().toArray()[13]" />
+      </configuration>
+    </watches-manager>
+  </component>
+</project>

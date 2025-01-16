@@ -1,0 +1,48 @@
+Index: frontend/src/components/Login.vue
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><template>\r\n    <div class=\"container\">\r\n        <h2>Login</h2>\r\n\r\n        <form @submit.prevent=\"login\">\r\n            <!-- Form for entering user credentials -->\r\n            <select v-model=\"selected\" class=\"selection\">\r\n                <option disabled value=\"\">uloga</option>\r\n                <option v-for=\"option in options\" :key=\"option\" :value=\"option\">\r\n                    {{ option }}\r\n                </option>\r\n            </select>\r\n\r\n            <p v-if=\"selected == 'admin' || selected == 'volonter'\">\r\n                <input type=\"text\" v-model=\"username\" placeholder=\"korisničko ime\"/>\r\n                <input type=\"password\" v-model=\"password\" placeholder=\"lozinka\" />\r\n            </p>\r\n\r\n            <p v-if=\"selected == 'organizacija'\">\r\n                <input type=\"text\" v-model=\"username\" placeholder=\"ime organizacije\" />\r\n                <input type=\"password\" v-model=\"password\" placeholder=\"lozinka\" />\r\n            </p>\r\n\r\n            <button type=\"submit\">Prijava</button>\r\n            <p class=\"error\" v-if=\"error\">{{ error }}</p>\r\n        </form>\r\n\r\n    </div>\r\n\r\n    <div v-if=\"!isLoggedIn\" class=\"container\">\r\n        <div id=\"g_id_onload\"\r\n             data-client_id=\"368455952414-n0qaeppdv3gu4qpofn5f6jkc0gu4l19u.apps.googleusercontent.com\"\r\n             data-callback=\"handleCredentialResponse\">\r\n        </div>\r\n        <div class=\"g_id_signin\" data-type=\"standard\"></div>\r\n    </div>\r\n\r\n    <div v-if=\"isLoggedIn\" class=\"hidden\">\r\n        <p>Bok, <span id=\"user-name\">{{ userName }}</span>!</p>\r\n        <button @click=\"googleLogout\">logout</button>\r\n    </div>\r\n</template>\r\n\r\n<script>\r\nimport axios from 'axios';\r\nimport { useRouter } from 'vue-router';\r\n\r\nexport default {\r\n    data() {\r\n        return {\r\n            username: '',       // Username for manual login\r\n            password: '',\r\n            error: '',\r\n            selected: '',       // Selected role\r\n            options: [\"volonter\", \"organizacija\", \"admin\"],\r\n            isLoggedIn: false,\r\n            userName: '',       // Username for Google login\r\n        };\r\n    },\r\n    setup() {\r\n      const router = useRouter();\r\n      return { router }; // Vraćamo router kako bi bio dostupan u metodama\r\n    },\r\n    methods: {\r\n        async login() {\r\n            this.error = '';\r\n\r\n            if (!this.username || !this.password || !this.selected) {\r\n                this.error = 'Molimo unesite ime i lozinku.';\r\n                return;\r\n            }\r\n\r\n            try {\r\n                const response = await axios.post('http://localhost:8080/api/auth/login', {\r\n                    username: this.username,\r\n                    password: this.password\r\n                });\r\n\r\n                localStorage.setItem('token', response.data.token);\r\n                alert('Uspješna prijava');\r\n                this.isLoggedIn = true;\r\n                this.router.push('/');\r\n            } catch (error) {\r\n                console.error('greška u prijavi', error);\r\n                this.error = 'Neuspješna prijava. Pokušajte ponovno.';\r\n            }\r\n        },\r\n\r\n        handleCredentialResponse(response) {\r\n            const idToken = response.credential;\r\n            if (idToken) {\r\n              console.log(\"Primljen idToken: \", idToken);\r\n              // Slanje na backend...\r\n            } else {\r\n              console.error(\"Nije primljen idToken!\");\r\n            }\r\n            console.log(\"Šaljem token na backend\")\r\n            axios.post('http://localhost:8080/api/auth/google-login', {\r\n                idToken: response.credential, //saljem ID token tako da ne ovisi o autorizacijskom kodu\r\n            })\r\n            .then((res) => { //u responeseu poslan token (\"token\"), ime korisnika (\"name\") i njegova uloga (\"role\")\r\n                console.log(\"Spremam token u localStorage\");\r\n                localStorage.setItem('token', res.data.token);\r\n                alert('Uspješna Google prijava!');\r\n                this.isLoggedIn = true;\r\n                this.userName = res.data.name;\r\n                this.selected = res.data.role;\r\n                console.log(\"name: \" + this.userName + \" , role: \" + res.data.role);\r\n                this.router.push('/');\r\n            })\r\n            .catch((error) => {\r\n                console.error('Greška u prijavi s Googleom', error);\r\n                alert('Dogodila se pogreška pri prijavi s Googleom. Molimo pokušajte ponovo.');\r\n            });\r\n        },\r\n\r\n        googleLogout() {\r\n            localStorage.removeItem('token');\r\n            this.isLoggedIn = false;\r\n            this.userName = '';\r\n        }\r\n    },\r\n    mounted() {\r\n      console.log(\"Učitavam Google Client library...\");\r\n      const script = document.createElement('script');\r\n      script.src = 'https://accounts.google.com/gsi/client';\r\n      script.async = true;\r\n      script.defer = true;\r\n      document.head.appendChild(script);\r\n\r\n      window.handleCredentialResponse = this.handleCredentialResponse;\r\n      console.log(\"Postavljen handleCredentialResponse callback.\");\r\n    },\r\n};\r\n</script>\r\n\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/frontend/src/components/Login.vue b/frontend/src/components/Login.vue
+--- a/frontend/src/components/Login.vue	(revision 3e29fa125894e67150560ae558af39bdd446bed8)
++++ b/frontend/src/components/Login.vue	(date 1737026741406)
+@@ -37,7 +37,7 @@
+ 
+     <div v-if="isLoggedIn" class="hidden">
+         <p>Bok, <span id="user-name">{{ userName }}</span>!</p>
+-        <button @click="googleLogout">logout</button>
++        <button @click="handleCredentialResponse">logout</button>
+     </div>
+ </template>
+ 
+Index: backend/demo/src/main/resources/application.yml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>server:\r\n  error:\r\n    include-message: always\r\n    include-binding-errors: always\r\n\r\nspring:\r\n  mail:\r\n    host: smtp.gmail.com\r\n    port: 587\r\n    username: \"davor.mucak1@gmail.com\"\r\n    password: \"achw ztsp sdgl jgqw\"\r\n    properties:\r\n      mail:\r\n        smtp:\r\n          auth: true\r\n          starttls:\r\n            enable: true\r\n  web:\r\n    resources:\r\n      static-locations: classpath:/static/\r\n      chain:\r\n        cache: false\r\n  datasource:\r\n    password:\r\n    url: jdbc:postgresql://localhost:5433/demo\r\n    username: postgres\r\n  jpa:\r\n    hibernate:\r\n      ddl-auto: update\r\n    properties:\r\n      hibernate:\r\n        dialect: org.hibernate.dialect.PostgreSQLDialect\r\n        format_sql: true\r\n    show-sql: true\r\n  servlet:\r\n    multipart:\r\n      max-file-size: 10MB\r\n      max-request-size: 10MB\r\n  security:\r\n    oauth2:\r\n      client:\r\n        registration:\r\n          google:\r\n            client-id: 368455952414-n0qaeppdv3gu4qpofn5f6jkc0gu4l19u.apps.googleusercontent.com\r\n            client-secret:\r\n        provider:\r\n          google:\r\n            issuer-uri: https://accounts.google.com
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/backend/demo/src/main/resources/application.yml b/backend/demo/src/main/resources/application.yml
+--- a/backend/demo/src/main/resources/application.yml	(revision 3e29fa125894e67150560ae558af39bdd446bed8)
++++ b/backend/demo/src/main/resources/application.yml	(date 1737024213713)
+@@ -21,7 +21,7 @@
+       chain:
+         cache: false
+   datasource:
+-    password:
++    password: bazepodataka
+     url: jdbc:postgresql://localhost:5433/demo
+     username: postgres
+   jpa:
+@@ -42,7 +42,7 @@
+         registration:
+           google:
+             client-id: 368455952414-n0qaeppdv3gu4qpofn5f6jkc0gu4l19u.apps.googleusercontent.com
+-            client-secret:
++            client-secret: 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
+         provider:
+           google:
+             issuer-uri: https://accounts.google.com
+\ No newline at end of file

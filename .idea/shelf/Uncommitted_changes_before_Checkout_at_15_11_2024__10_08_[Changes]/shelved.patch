@@ -1,0 +1,178 @@
+Index: login-register_frontend/src/main.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import './assets/styles/base.css';\nimport './assets/styles/main.css';\n\n//import {account} from './appwrite'  //appwrite dio (potrebno za oauth)\n\nimport { createApp } from 'vue';\nimport App from './App.vue';\nimport router from './router';\n\ncreateApp(App).use(router).mount('#app');\n\n\n
+===================================================================
+diff --git a/login-register_frontend/src/main.js b/login-register_frontend/src/main.js
+--- a/login-register_frontend/src/main.js	(revision 19f765f817ed0f2c603ee2ba780c8ebfaad84d99)
++++ b/login-register_frontend/src/main.js	(date 1731661690142)
+@@ -1,7 +1,7 @@
+ import './assets/styles/base.css';
+ import './assets/styles/main.css';
+ 
+-//import {account} from './appwrite'  //appwrite dio (potrebno za oauth)
++//import {account} from './appwrite.js';  //appwrite dio (potrebno za oauth)
+ 
+ import { createApp } from 'vue';
+ import App from './App.vue';
+Index: login/demo/src/main/java/com/example/demo/controller/AuthController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.demo.controller;\n\nimport com.example.demo.dto.UserLoginDto;\nimport com.example.demo.dto.UserRegistrationDto;\nimport com.example.demo.repository.UserRepository;\nimport com.example.demo.service.UserService;\nimport org.springframework.beans.factory.annotation.Autowired;\nimport org.springframework.http.ResponseEntity;\nimport org.springframework.web.bind.annotation.*;\n\n@RestController\n@CrossOrigin\n@RequestMapping(\"/api/auth\")\npublic class AuthController {\n\n    private final UserService userService;\n    private final UserRepository userRepository;\n\n    @Autowired\n    public AuthController(UserService userService, UserRepository userRepository) {\n        this.userService = userService;\n        this.userRepository = userRepository;\n\n    }\n\n    @PostMapping(\"/register\")\n    public ResponseEntity<String> register(@RequestBody UserRegistrationDto userDto) {\n        String result = userService.register(userDto);\n\n        if (result.equals(\"Uspješna registracija!\")) {\n            return ResponseEntity.ok(result);\n        } else {\n            return ResponseEntity.badRequest().body(result);\n        }\n    }\n\n    @PostMapping(\"/login\")\n    public ResponseEntity<String> login(@RequestBody UserLoginDto loginDto) {\n        boolean authenticated = userService.authenticate(loginDto.getUsername(), loginDto.getPassword());\n\n        if (authenticated) {\n            // Optionally, generate a JWT token here and return it\n            return ResponseEntity.ok(\"Uspješna prijava!\");\n        } else {\n            return ResponseEntity.status(401).body(\"Neispravno korisničko ime ili lozinka.\");\n        }\n    }\n\n\n}\n
+===================================================================
+diff --git a/login/demo/src/main/java/com/example/demo/controller/AuthController.java b/login/demo/src/main/java/com/example/demo/controller/AuthController.java
+--- a/login/demo/src/main/java/com/example/demo/controller/AuthController.java	(revision 19f765f817ed0f2c603ee2ba780c8ebfaad84d99)
++++ b/login/demo/src/main/java/com/example/demo/controller/AuthController.java	(date 1731661690175)
+@@ -4,9 +4,13 @@
+ import com.example.demo.dto.UserRegistrationDto;
+ import com.example.demo.repository.UserRepository;
+ import com.example.demo.service.UserService;
++import com.example.demo.model.MyUser;
+ import org.springframework.beans.factory.annotation.Autowired;
+ import org.springframework.http.ResponseEntity;
+ import org.springframework.web.bind.annotation.*;
++import java.util.Map;
++import java.util.Optional;
++
+ 
+ @RestController
+ @CrossOrigin
+@@ -46,5 +50,22 @@
+         }
+     }
+ 
++    //google login endpoint
++    @PostMapping("/api/auth/google-login")
++    public ResponseEntity<String> googleLogin(@RequestBody Map<String, String> userData) {
++        //iz tijela zahtjeva dohvati podatke o korisniku od Google-a
++        String email = userData.get("email");
++        String name = userData.get("name");
++
++        Optional<MyUser> userOpt = userRepository.findByEmail(email);
++
++        //ako korisnik s tim emailom postoji u bazi - prijava uspješna, inače, obavijesti korisnika da je potrebno prvo se registrirati
++        if (userOpt.isPresent()) {
++            return ResponseEntity.ok("Uspješna prijava!");
++        } else {
++            return ResponseEntity.status(401).body("Korisnik nije registriran. Molimo registrirajte se.");
++        }
++    }
++
+ 
+ }
+Index: login/demo/src/main/resources/application.yml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>server:\n  error:\n    include-message: always\n    include-binding-errors: always\n\nspring:\n  web:\n    resources:\n      static-locations: classpath:/static/\n      chain:\n        cache: false\n  datasource:\n    password: simulatoR\n    url: jdbc:postgresql://localhost:5433/demo\n    username: postgres\n  jpa:\n    hibernate:\n      ddl-auto: update\n    properties:\n      hibernate:\n        dialect: org.hibernate.dialect.PostgreSQLDialect\n        format_sql: true\n    show-sql: true\n
+===================================================================
+diff --git a/login/demo/src/main/resources/application.yml b/login/demo/src/main/resources/application.yml
+--- a/login/demo/src/main/resources/application.yml	(revision 19f765f817ed0f2c603ee2ba780c8ebfaad84d99)
++++ b/login/demo/src/main/resources/application.yml	(date 1731661690190)
+@@ -10,7 +10,7 @@
+       chain:
+         cache: false
+   datasource:
+-    password: simulatoR
++    password: bazepodataka
+     url: jdbc:postgresql://localhost:5433/demo
+     username: postgres
+   jpa:
+@@ -21,3 +21,12 @@
+         dialect: org.hibernate.dialect.PostgreSQLDialect
+         format_sql: true
+     show-sql: true
++  security:
++    oauth2:
++      client:
++        registration:
++          google:
++            client-id: 368455952414-n0qaeppdv3gu4qpofn5f6jkc0gu4l19u.apps.googleusercontent.com
++            client-secret: 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
++            scope: profile, email
++
+Index: login-register_frontend/src/appwrite.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import { Client, Account } from 'appwrite';\nconst client = new Client();\nclient.setProject('673237a1001caeb141b9');\nclient.setEndpoint('https://cloud.appwrite.io/v1');\n\nconst account = new Account(client)\nexport {account, client};
+===================================================================
+diff --git a/login-register_frontend/src/appwrite.js b/login-register_frontend/src/appwrite.js
+--- a/login-register_frontend/src/appwrite.js	(revision 19f765f817ed0f2c603ee2ba780c8ebfaad84d99)
++++ b/login-register_frontend/src/appwrite.js	(date 1731661690203)
+@@ -1,6 +1,6 @@
+ import { Client, Account } from 'appwrite';
+ const client = new Client();
+-client.setProject('673237a1001caeb141b9');
++client.setProject('67360315002f28d905a9');
+ client.setEndpoint('https://cloud.appwrite.io/v1');
+ 
+ const account = new Account(client)
+Index: login/demo/src/main/java/com/example/demo/security/SecurityConfig.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.demo.security;\n\nimport com.example.demo.service.UserService;\nimport org.springframework.beans.factory.annotation.Autowired;\nimport org.springframework.context.annotation.Bean;\nimport org.springframework.context.annotation.Configuration;\nimport org.springframework.http.HttpMethod;\nimport org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;\nimport org.springframework.security.config.annotation.web.builders.HttpSecurity;\nimport org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;\nimport org.springframework.security.core.userdetails.UserDetailsService;\nimport org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;\nimport org.springframework.security.crypto.password.PasswordEncoder;\nimport org.springframework.security.web.SecurityFilterChain;\n\n@Configuration\n@EnableWebSecurity\npublic class SecurityConfig {\n\n\n    @Bean\n    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {\n        return httpSecurity\n                .authorizeRequests(authz -> authz\n                        .requestMatchers(\"/assets/**\", \"/index.html\").permitAll() // Dozvoli pristup statičkim datotekama\n                        .requestMatchers(\"/login\", \"/register\").permitAll()\n                        .requestMatchers(\"/api/auth/register\").permitAll()\n                        .requestMatchers(\"/api/auth/login\").permitAll()\n                        .requestMatchers(HttpMethod.OPTIONS, \"/**\").permitAll()// Dopušta pristup registraciji bez autentifikacije\n                        .anyRequest().authenticated()                           // Zahtijevaj autentifikaciju za ostale rute\n                )\n                .formLogin(login -> login\n                        .loginPage(\"/login\").permitAll()\n                )\n                .csrf().disable()\n                .build();\n    }\n\n\n    @Bean\n    public PasswordEncoder passwordEncoder() {\n        return new BCryptPasswordEncoder();\n    }\n}\n\n\n
+===================================================================
+diff --git a/login/demo/src/main/java/com/example/demo/security/SecurityConfig.java b/login/demo/src/main/java/com/example/demo/security/SecurityConfig.java
+--- a/login/demo/src/main/java/com/example/demo/security/SecurityConfig.java	(revision 19f765f817ed0f2c603ee2ba780c8ebfaad84d99)
++++ b/login/demo/src/main/java/com/example/demo/security/SecurityConfig.java	(date 1731661690221)
+@@ -13,10 +13,18 @@
+ import org.springframework.security.crypto.password.PasswordEncoder;
+ import org.springframework.security.web.SecurityFilterChain;
+ 
++import com.example.demo.service.CustomOAuth2UserService;
++
+ @Configuration
+ @EnableWebSecurity
+ public class SecurityConfig {
+ 
++    private final CustomOAuth2UserService customOAuth2UserService;
++
++    @Autowired
++    public SecurityConfig(CustomOAuth2UserService customOAuth2UserService) {
++        this.customOAuth2UserService = customOAuth2UserService;
++    }
+ 
+     @Bean
+     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+@@ -32,6 +40,17 @@
+                 .formLogin(login -> login
+                         .loginPage("/login").permitAll()
+                 )
++                /*
++                .oauth2Login(oauth2 -> oauth2
++                                .loginPage("/login")
++                )
++                */
++                .oauth2Login(oauth2 -> oauth2
++                        .loginPage("/login")
++                        .userInfoEndpoint(userInfo -> userInfo
++                                .userService(customOAuth2UserService)
++                        )
++                )
+                 .csrf().disable()
+                 .build();
+     }
+Index: login/demo/build.gradle
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>plugins {\n\tid 'java'\n\tid 'org.springframework.boot' version '3.3.5'\n\tid 'io.spring.dependency-management' version '1.1.6'\n}\n\ngroup = 'com.example'\nversion = '0.0.1-SNAPSHOT'\n\njava {\n\ttoolchain {\n\t\tlanguageVersion = JavaLanguageVersion.of(17)\n\t}\n}\n\nconfigurations {\n\tcompileOnly {\n\t\textendsFrom annotationProcessor\n\t}\n}\n\nrepositories {\n\tmavenCentral()\n}\n\ndependencies {\n\timplementation 'org.springframework.boot:spring-boot-starter-data-jpa'\n\timplementation 'org.springframework.boot:spring-boot-starter-mail'\n\timplementation 'org.springframework.boot:spring-boot-starter-security'\n\timplementation 'org.springframework.boot:spring-boot-starter-web'\n\timplementation 'org.springframework.boot:spring-boot-starter-data-rest'\n\tcompileOnly 'org.projectlombok:lombok'\n\tdevelopmentOnly 'org.springframework.boot:spring-boot-devtools'\n\truntimeOnly 'org.postgresql:postgresql'\n\tannotationProcessor 'org.projectlombok:lombok'\n\ttestImplementation 'org.springframework.boot:spring-boot-starter-test'\n\ttestImplementation 'org.springframework.security:spring-security-test'\n\ttestRuntimeOnly 'org.junit.platform:junit-platform-launcher'\n}\n\ntasks.named('test') {\n\tuseJUnitPlatform()\n}\n
+===================================================================
+diff --git a/login/demo/build.gradle b/login/demo/build.gradle
+--- a/login/demo/build.gradle	(revision 19f765f817ed0f2c603ee2ba780c8ebfaad84d99)
++++ b/login/demo/build.gradle	(date 1731661690236)
+@@ -21,6 +21,7 @@
+ 
+ repositories {
+ 	mavenCentral()
++	gradlePluginPortal()
+ }
+ 
+ dependencies {
+@@ -28,6 +29,8 @@
+ 	implementation 'org.springframework.boot:spring-boot-starter-mail'
+ 	implementation 'org.springframework.boot:spring-boot-starter-security'
+ 	implementation 'org.springframework.boot:spring-boot-starter-web'
++	implementation 'org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.1.7.RELEASE'
++	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+ 	implementation 'org.springframework.boot:spring-boot-starter-data-rest'
+ 	compileOnly 'org.projectlombok:lombok'
+ 	developmentOnly 'org.springframework.boot:spring-boot-devtools'

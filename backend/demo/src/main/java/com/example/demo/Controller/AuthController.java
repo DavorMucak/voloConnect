@@ -85,10 +85,10 @@ public class AuthController {
 
     @PostMapping("/google-login")
     public ResponseEntity<?> googleLogin(@RequestBody Map<String, String> payload) {
-            String idToken = payload.get("idToken");
-            if (idToken == null || idToken.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid ID token");
-            }
+        String idToken = payload.get("idToken");
+        if (idToken == null || idToken.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid ID token");
+        }
         try {
             OAuth2User oAuth2User = customOAuth2UserService.verifyOAuth2Token(idToken);
             if (oAuth2User == null) {
@@ -102,7 +102,7 @@ public class AuthController {
                     "token", jwt,
                     "name", oAuth2User.getAttribute("name"),
                     "role", oAuth2User.getAttribute("role")
-                    ));
+            ));
 
         } catch (Exception e) {
             e.printStackTrace();
