@@ -59,6 +59,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public String login(@RequestBody UserLoginDto loginDto) {
+        System.out.println("Login endpoint called with: " + loginDto);
         return userService.authenticate(loginDto);
     }
 
@@ -94,7 +95,7 @@ public class AuthController {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Google ID token");
             }
 
-            String jwt = jwtService.generateToken(idToken);
+            String jwt = jwtService.generateToken(idToken, "neodređeno");
 
             //Saznaj ima li user odreden role, ako ima proslijedi ga na frontend
             return ResponseEntity.ok(Map.of(
