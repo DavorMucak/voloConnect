@@ -28,6 +28,8 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 @EnableWebSecurity
 public class SecurityConfig{
 
+
+
     @Autowired
     private UserDetailsService userDetailsService;
 
@@ -55,6 +57,7 @@ public class SecurityConfig{
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .httpBasic(Customizer.withDefaults())
+                //.oauth2Login().disable()
                 .oauth2Login(Customizer.withDefaults())
                 .oauth2Login(oAuth2 -> oAuth2
                         .loginPage("/api/auth/google-login")

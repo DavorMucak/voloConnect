@@ -49,7 +49,7 @@ public class UserService {
         Optional<MyUser> userOpt = userRepository.findByUsername(userLoginDto.getUsername());
         if (userOpt.isPresent()) {
             if (authentication.isAuthenticated()){
-                return jwtService.generateToken(userOpt.get().getUsername());
+                return jwtService.generateToken(userOpt.get().getUsername(), userOpt.get().getRole());
             } else {
                 return "fail";
             }

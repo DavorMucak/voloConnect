@@ -29,7 +29,7 @@
 
     <div v-if="!isLoggedIn" class="container">
         <div id="g_id_onload"
-             data-client_id=""
+             data-client_id="368455952414-n0qaeppdv3gu4qpofn5f6jkc0gu4l19u.apps.googleusercontent.com"
              data-callback="handleCredentialResponse">
         </div>
         <div class="g_id_signin" data-type="standard"></div>
@@ -71,14 +71,14 @@ export default {
             }
 
             try {
-                const response = await axios.post('http://localhost:8080/api/auth/google-login', {
+                const response = await axios.post('http://localhost:8080/api/auth/login', {
                     username: this.username,
                     password: this.password
                 });
 
-                localStorage.setItem('token', response.data.token);
+                //localStorage.setItem('token', response.data.token);
                 alert('Uspješna prijava');
-                this.isLoggedIn = true;
+                //this.isLoggedIn = true;
                 this.router.push('/');
             } catch (error) {
                 console.error('greška u prijavi', error);
