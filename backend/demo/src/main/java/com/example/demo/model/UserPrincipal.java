@@ -53,4 +53,6 @@ public class UserPrincipal implements UserDetails {
     }
 
     public boolean isValidated() {return user.get().isValidated();}
+
 }
+

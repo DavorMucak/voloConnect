@@ -200,7 +200,6 @@ public class UserService {
             if(userRepository.existsByUsername(username)){
                 throw new RuntimeException("Admin user could not be deleted.");
             }
-
         } else {
             throw new RuntimeException("User not found.");
         }

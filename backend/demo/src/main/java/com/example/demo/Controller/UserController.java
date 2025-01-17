@@ -70,5 +70,6 @@ public class UserController {
             return ResponseEntity.status(404).body("Korisnik s korisničkim imenom '" + username + "' nije pronađen.");
         }
 
+
     }
 }
