@@ -92,7 +92,6 @@ public class JwtFilter extends OncePerRequestFilter {
         } else {
             throw new GeneralSecurityException("OAuth2 Google token verification failed");
         }
-
     }
 
 
