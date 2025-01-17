@@ -45,7 +45,7 @@ export default {
   data() {
     return {
       korisnickoIme: ' ',
-      isLoggedIn: true,      //prati je li korisnik ulogiran t.d. mozemo prikazati Login/Logout botun po potrebi
+      isLoggedIn: false,      //prati je li korisnik ulogiran t.d. mozemo prikazati Login/Logout botun po potrebi
     };
   },
   methods: {
