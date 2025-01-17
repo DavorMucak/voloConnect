@@ -52,6 +52,7 @@ public class SecurityConfig{
                         .requestMatchers("/api/auth/resend").permitAll()
                         .requestMatchers("/api/projects").authenticated()
                         .requestMatchers("/api/auth/google-login").permitAll()
+                        .requestMatchers("/api/validate-users").permitAll()
                         .anyRequest().authenticated()
 
                 )
