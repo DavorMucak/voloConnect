@@ -28,7 +28,7 @@
     <p><strong>Email:</strong> {{ korisnik.email }}</p>
     <p><strong>Ime:</strong> {{ korisnik.name }}</p>
     <p><strong>Prezime:</strong> {{ korisnik.surname }}</p>
-    <p><strong>Broj telefona:</strong> {{ korisnik.phone }}</p>
+    <p><strong>Broj telefona:</strong> {{ korisnik.phonenum }}</p>
     <p><strong>Uloga:</strong> {{ korisnik.role }}</p>
   </div>
   <!-- ako je ovo profil prijavljenog korisnika moze prominit detalje -->
@@ -40,10 +40,12 @@
 
 <script>
 import axios from 'axios';
+import apiClient from '@/apiClient';
 import Biljeske from './za_profile/Biljeske.vue';
 import Recenzije from './za_profile/Recenzije.vue';
 import Prituzbe from './za_profile/Prituzbe.vue';
 import Registracije from './za_profile/Registracije.vue';
+import VueJwtDecode from 'vue-jwt-decode';
 
 
 export default {
@@ -73,24 +75,19 @@ export default {
       try {
         // dohvat podataka o prijavljenon korisniku
         const token = localStorage.getItem("token");
-        const response = await axios.get("http://localhost:8080/api/auth/users", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        this.uloga = response.data.role
-        this.korisnickoIme = response.data.username
-        //!!!!triba dohvatit podatke o useru na kojoj se stranici nalazi
-        //!!!ako se prijavljeni korisnik poklapa s time onda je drugacija stranica
+        if (token) {    //ako postoji token korisnik je prijavljen
+          
+          //sprema username
+          this.korisnickoIme = VueJwtDecode.decode(token).sub;
+          this.uloga = VueJwtDecode.decode(token).role;
+          this.korisnik.role = VueJwtDecode.decode(token).role;
+          this.korisnik.username = VueJwtDecode.decode(token).sub;
 
-        //!!!usporedi username iz headera sa usernameon prijavljenog korisnika
-
-
-        /* this.korisnik.username = user.username;
-        this.korisnik.password = user.password;
-        this.korisnik.email = user.email;
-        this.korisnik.name = user.name;
-        this.korisnik.surname = user.surname;
-        this.korisnik.phonenum = user.phonenum;
-        this.korisnik.role = user.role; */
+          const response = await apiClient.get(`http://localhost:8080/api/user/${this.korisnik.username}`);
+          console.log(response.data);
+          
+          Object.assign(this.korisnik, response.data);
+        }
 
       } catch (error) {
         console.error('Greska u dohvavanju podataka:', error);
