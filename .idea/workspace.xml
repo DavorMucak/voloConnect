@@ -4,22 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="51dfa50d-1beb-4e99-9bfd-706792d077c5" name="Changes" comment="Admin new user validation in progress">
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/za_profile/RegistracijeAdmina.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/5aa8b4da-889d-40e5-8488-8bcaf0a18fab.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/5aa8b4da-889d-40e5-8488-8bcaf0a18fab.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/5aa8b4da-889d-40e5-8488-8bcaf0a18fab/storage_v2/_src_/database/demo.4_0uAA/schema/public.abK9xQ.meta" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/5aa8b4da-889d-40e5-8488-8bcaf0a18fab/storage_v2/_src_/database/demo.4_0uAA/schema/public.abK9xQ.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/Controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/Controller/UserController.java" afterDir="false" />
+    <list default="true" id="51dfa50d-1beb-4e99-9bfd-706792d077c5" name="Changes" comment="Google Authentication working with automatic registration of new users and sending role to frontend">
+      <change beforePath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/Controller/ProjectController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/Controller/ProjectController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/model/MyUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/model/MyUser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/model/Project.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/model/Project.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/repository/ProjectRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/repository/ProjectRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/security/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/security/SecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/service/CustomOAuth2UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/service/CustomOAuth2UserService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/service/UserService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/demo/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/demo/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/App.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/App.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/Prituzbe.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Prituzbe.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/Profil.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Profil.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/Registracije.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/ValidacijaNovihKorisnika.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/router/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/router/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/service/ProjectService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/service/ProjectService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/za_profile/ListaProjekata.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/za_profile/ListaProjekata.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/za_profile/NoviProjekt.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/za_profile/NoviProjekt.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,9 +39,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="package.json" />
         <option value="Class" />
-        <option value="Vue Composition API Component" />
+        <option value="package.json" />
       </list>
     </option>
   </component>
@@ -66,12 +58,12 @@
     &quot;assignee&quot;: &quot;doraspoler&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/DavorMucak/voloConnect.git&quot;,
-    &quot;accountId&quot;: &quot;d5a1917f-723c-449f-95fe-6f254b27787e&quot;
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/DavorMucak/voloConnect.git",
+    "accountId": "6ace282e-9dad-42ee-90a7-619bc289a292"
   }
-}</component>
+}]]></component>
   <component name="KubernetesApiPersistence">{}</component>
   <component name="KubernetesApiProvider">{
   &quot;isMigrated&quot;: true
@@ -104,7 +96,7 @@
     "Spring Boot.DemoApplication.executor": "Run",
     "git-widget-placeholder": "dev",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/sviWS/UTR_WS/UTR",
+    "last_opened_file_path": "C:/Users/Dalibor/Desktop/alfa/voloConnect",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -121,9 +113,6 @@
     "DatabaseDriversLRU": [
       "mysql_aurora",
       "postgresql"
-    ],
-    "vue.recent.templates": [
-      "Vue Composition API Component"
     ]
   }
 }]]></component>
@@ -264,8 +253,8 @@
       <workItem from="1736689619574" duration="201000" />
       <workItem from="1736854009837" duration="2179000" />
       <workItem from="1737023102428" duration="3578000" />
-      <workItem from="1737064440016" duration="14638000" />
-      <workItem from="1737114907012" duration="12016000" />
+      <workItem from="1737064440016" duration="8767000" />
+      <workItem from="1737135491600" duration="12000" />
     </task>
     <task id="LOCAL−00001" summary="Razvoj OAuth2.0 za prijavu preko Googlea">
       <option name="closed" value="true" />
@@ -337,28 +326,7 @@
       <option name="presentableId" value="LOCAL−00010" />
       <updated>1735918581531</updated>
     </task>
-    <task id="LOCAL−00011" summary="Merged new backend from googleOAuthdev and new frontend from frontenddev">
-      <option name="closed" value="true" />
-      <created>1737073859419</created>
-      <option name="number" value="LOCAL−00011" />
-      <option name="presentableId" value="LOCAL−00011" />
-      <updated>1737073859419</updated>
-    </task>
-    <task id="LOCAL−00012" summary="Added button validate new user">
-      <option name="closed" value="true" />
-      <created>1737075760079</created>
-      <option name="number" value="LOCAL−00012" />
-      <option name="presentableId" value="LOCAL−00012" />
-      <updated>1737075760079</updated>
-    </task>
-    <task id="LOCAL−00013" summary="Admin new user validation in progress">
-      <option name="closed" value="true" />
-      <created>1737079484835</created>
-      <option name="number" value="LOCAL−00013" />
-      <option name="presentableId" value="LOCAL−00013" />
-      <updated>1737079484835</updated>
-    </task>
-    <option name="localTasksCounter" value="14" />
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -393,39 +361,9 @@
     <MESSAGE value="Google OAuth giving alert" />
     <MESSAGE value="Google Authentication working!" />
     <MESSAGE value="Google Authentication working with automatic registration of new users and sending role to frontend" />
-    <MESSAGE value="Merged new backend from googleOAuthdev and new frontend from frontenddev" />
-    <MESSAGE value="Added button validate new user" />
-    <MESSAGE value="Admin new user validation in progress" />
-    <option name="LAST_COMMIT_MESSAGE" value="Admin new user validation in progress" />
+    <option name="LAST_COMMIT_MESSAGE" value="Google Authentication working with automatic registration of new users and sending role to frontend" />
   </component>
   <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-method">
-          <url>file://$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/service/UserService.java</url>
-          <line>178</line>
-          <properties class="com.example.demo.service.UserService" method="approveAdmin">
-            <option name="EMULATED" value="true" />
-            <option name="WATCH_EXIT" value="false" />
-          </properties>
-          <option name="timeStamp" value="34" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-method">
-          <url>file://$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/Controller/UserController.java</url>
-          <line>42</line>
-          <properties class="com.example.demo.Controller.UserController" method="approveAdmin">
-            <option name="EMULATED" value="true" />
-            <option name="WATCH_EXIT" value="false" />
-          </properties>
-          <option name="timeStamp" value="36" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/Controller/UserController.java</url>
-          <line>41</line>
-          <option name="timeStamp" value="35" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
     <watches-manager>
       <configuration name="SpringBootApplicationConfigurationType">
         <watch expression="idToken.payload.entrySet().toArray()[13]" />

@@ -53,8 +53,9 @@ public class SecurityConfig{
                         .requestMatchers("/api/projects").permitAll()
                         .requestMatchers("/api/auth/google-login").permitAll()
                         .requestMatchers("api/user/**").permitAll()
-                        .requestMatchers("api/user/approve-admins/**").permitAll()
+                        .requestMatchers("/api/projects/owner/**").permitAll()
                         .anyRequest().authenticated()
+
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .httpBasic(Customizer.withDefaults())

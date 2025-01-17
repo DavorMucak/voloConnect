@@ -26,4 +26,6 @@ public class Project {
     private String vrstaAktivnosti;
     @Getter @Setter
     private boolean jeLiHitno;
+    @Getter @Setter
+    private String ownerId;
 }
