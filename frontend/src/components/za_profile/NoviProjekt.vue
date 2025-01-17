@@ -37,6 +37,8 @@
 
 <script>
 import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
+import VueJwtDecode from 'vue-jwt-decode';
 export default {
   data() {
     return {
@@ -47,6 +49,7 @@ export default {
       datumKraj: '',
       jeLiHitno: false,
       vrstaAktivnosti: 'Administrativni poslovi',
+      ownerId: '',
       error: '',
       success: '',
       datumGreska: '',
@@ -90,14 +93,19 @@ export default {
       }
       try {
         //ako je sve okej, salji podatke backendu
+        const token = localStorage.getItem('token');
+        this.ownerId = VueJwtDecode.decode(token).sub;
+        console.log(this.ownerId);
+        
         const response = await axios.post('http://localhost:8080/api/projects', {
-          imeProjekta: this.imeProjekta.replace(/\s+/g, '-').toLowerCase(),
+          imeProjekta: this.imeProjekta,
           opisProjekta: this.opisProjekta,
           brojLjudi: this.brojLjudi,
           datumPoc: this.datumPoc,
           datumKraj: this.datumKraj,
           vrstaAktivnosti:this.vrstaAktivnosti,
           jeLiHitno: this.jeLiHitno,
+          ownerId: this.ownerId
         });
 
         this.success = 'Projekt uspješno kreiran!';

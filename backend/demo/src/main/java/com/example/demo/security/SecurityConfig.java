@@ -53,6 +53,7 @@ public class SecurityConfig{
                         .requestMatchers("/api/projects").permitAll()
                         .requestMatchers("/api/auth/google-login").permitAll()
                         .requestMatchers("api/user/**").permitAll()
+                        .requestMatchers("/api/projects/owner/**").permitAll()
                         .anyRequest().authenticated()
 
                 )

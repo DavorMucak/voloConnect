@@ -1,6 +1,7 @@
 package com.example.demo.Controller;
 
 import com.example.demo.model.Project;
+import com.example.demo.repository.ProjectRepository;
 import com.example.demo.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,8 @@ import java.util.List;
 public class ProjectController {
 
     private final ProjectService projectService;
+    @Autowired
+    private ProjectRepository projectRepository;
 
     @Autowired
     public ProjectController(ProjectService projectService) {
@@ -31,4 +34,11 @@ public class ProjectController {
         List<Project> projects = projectService.getAllProjects();
         return ResponseEntity.ok(projects);
     }
+
+    @GetMapping("/owner/{ownerId}")
+    public ResponseEntity<List<Project>> getProjectsByOwner(@PathVariable String ownerId) {
+        List<Project> projects = projectRepository.findByOwnerId(ownerId);
+        return ResponseEntity.ok(projects);
+    }
+
 }
