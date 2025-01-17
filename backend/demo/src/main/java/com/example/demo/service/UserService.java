@@ -131,7 +131,7 @@ public class UserService {
         }
     }
 
-    private void sendVerificationEmail(MyUser user) { //TODO: Update with company logo
+    private void sendVerificationEmail(MyUser user) { //TODO: Update with voloconnect logo
         String subject = "Account Verification";
         String verificationCode = "VERIFICATION CODE " + user.getVerificationCode();
         String htmlMessage = "<html>"

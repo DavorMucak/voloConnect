@@ -23,5 +23,7 @@ public class Project {
     @Getter @Setter
     private LocalDate datumKraj;
     @Getter @Setter
+    private String vrstaAktivnosti;
+    @Getter @Setter
     private boolean jeLiHitno;
 }
