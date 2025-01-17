@@ -32,6 +32,7 @@ import Login from './components/Login.vue';
 import Register from './components/Register.vue';
 import NoviProjekt from './components/za_profile/NoviProjekt.vue';
 import Profil from './components/Profil.vue';
+import VueJwtDecode from 'vue-jwt-decode';
 
 
 export default {
@@ -54,11 +55,9 @@ export default {
         // dohvat podataka o prijavljenon korisniku
         const token = localStorage.getItem("token");
         if (token) {    //ako postoji token korisnik je prijavljen
-          const response = await axios.get("http://localhost:8080/api/auth/users", {
-            headers: { Authorization: `Bearer ${token}` },
-          });
+          
           //sprema username
-          this.korisnickoIme = response.data.username;
+          this.korisnickoIme = VueJwtDecode.decode(token).sub;
           this.isLoggedIn = true;   // korisnik prijavljen
         }
 
