@@ -19,6 +19,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
@@ -156,6 +158,17 @@ public class UserService {
         Random random = new Random();
         int code = random.nextInt(900000) + 100000;
         return String.valueOf(code);
+    }
+
+    //mozda nije najelegantnije rjesenje ali je najbolje kojeg sam se mogla sjetiti sad
+    public List<MyUser> getUnvalidatedUsers() {
+        List<MyUser> allUsers = userRepository.findAll();
+        List<MyUser> unvalidatedUsers = new ArrayList<>();
+        for(MyUser user : allUsers) {
+            if(!user.isValidated())
+                unvalidatedUsers.add(user);
+        }
+        return unvalidatedUsers;
     }
 }
 
