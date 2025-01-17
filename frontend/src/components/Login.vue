@@ -87,7 +87,7 @@ export default {
                 localStorage.setItem('role', decodedToken.role);    // role
 
 
-                //this.$root.fetchKorisnik();     // automatski updatea podatke o korisniku u root komponenti (Vue.js)
+                this.$root.fetchKorisnik();     // automatski updatea podatke o korisniku u root komponenti (Vue.js)
 
                 alert('Uspješna prijava');
                 this.isLoggedIn = true;
