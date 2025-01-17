@@ -51,6 +51,11 @@ const routes = [
         component: ListaProjekata,
         props:true
     },
+    {
+        path: '/validate-new-users',
+        name: 'ValidacijaNovihKorisnika',
+        component: ValidacijaNovihKorisnika,
+    }
     // !!!popravit rute
     /*   {
         path: '/volonteri/:username',

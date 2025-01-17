@@ -88,6 +88,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 newUser.setRole("neodređen");
                 //kod prijave googleom nije potrebno slati verifikacijski mail?
                 newUser.setEnabled(true);
+                newUser.setValidated(false);
                 System.out.println("Saving user to database...");
                 userRepository.save(newUser);
                 logger.info("Novi korisnik registriran u bazu podataka.");

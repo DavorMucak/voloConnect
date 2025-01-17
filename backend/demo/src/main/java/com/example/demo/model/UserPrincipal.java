@@ -51,4 +51,6 @@ public class UserPrincipal implements UserDetails {
     public boolean isEnabled() {
         return user.get().isEnabled();
     }
+
+    public boolean isValidated() {return user.get().isValidated();}
 }
