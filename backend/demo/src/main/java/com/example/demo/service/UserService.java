@@ -84,6 +84,7 @@ public class UserService {
         user.setVerificationCode(generateVerificationCode());
         user.setVerificationCodeExpiresAt(LocalDateTime.now().plusMinutes(15));
         user.setEnabled(false);
+        user.setValidated(false);
         sendVerificationEmail(user);
 
         System.out.println("Saving user to database...");

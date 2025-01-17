@@ -28,7 +28,8 @@ public class MyUser {
 
     private String verificationCode;
     private LocalDateTime verificationCodeExpiresAt;
-    private boolean enabled;
+    private boolean enabled; //potvrdio email verifikacijskim kodom
+    private boolean validated; //potvdio ga admin
 
 
 
