@@ -1,23 +1,25 @@
 <template>
   <!-- kad se pritisne na ovo ide prikaz projekata na koje je korisnik prijavljen(volonter) ili cije je vlasnik (organizacija) -->
-  <router-link v-if="uloga !== 'admin'" to="/moji-projekti"> <button>Moji projekti</button> </router-link>
+  <div v-if="uloga !== 'admin'">
+    <router-link to="/moji-projekti"> <button>Moji projekti</button> </router-link>
 
-  <button @click="obrisiProfil">Obriši profil</button>
+    <button @click="obrisiProfil">Obriši profil</button>
 
-  <!-- prikaz biljezaka i recenzija -->
-  <Biljeske />
+    <!-- prikaz biljezaka i recenzija -->
+    <Biljeske />
 
-  <Recenzije />
+    <Recenzije />
 
-  <!-- ako je korisnik organizacija, ima opciju izrade novog projekta -->
-  <router-link v-if="uloga === 'organizacija'" to="/novi-projekt"> <button>Novi projekt</button> </router-link>
+    <!-- ako je korisnik organizacija, ima opciju izrade novog projekta -->
+    <router-link v-if="uloga === 'organizacija'" to="/novi-projekt"> <button>Novi projekt</button> </router-link>
+
+  </div>
 
   <!-- ako je korisnik admin, moze vidit i prituzbe i registracije -->
   <div v-if="uloga === 'admin'">
     <Prituzbe />
-    <Registracije />
+    <RegistracijeAdmina />
   </div>
-
 
 
 
@@ -44,7 +46,7 @@ import apiClient from '@/apiClient';
 import Biljeske from './za_profile/Biljeske.vue';
 import Recenzije from './za_profile/Recenzije.vue';
 import Prituzbe from './za_profile/Prituzbe.vue';
-import Registracije from './za_profile/Registracije.vue';
+import RegistracijeAdmina from './za_profile/RegistracijeAdmina.vue';
 import VueJwtDecode from 'vue-jwt-decode';
 
 
@@ -53,7 +55,7 @@ export default {
     Biljeske,
     Recenzije,
     Prituzbe,
-    Registracije,
+    RegistracijeAdmina,
   },
   data() {
     return {

@@ -14,7 +14,6 @@
       <template v-else>
         <!-- kad se pritisne salje na profil od korisnickog imena prijavljenog korisnika (profil/:username) -->
         <router-link :to="{ name: 'Profil', params: { username: korisnickoIme } }"> <button>Profil</button>
-          <router-link to="/validate-users"> <button>Validiraj Nove Korisnike</button> </router-link>
         </router-link>
 
         <button @click="logout">Odjava</button>
