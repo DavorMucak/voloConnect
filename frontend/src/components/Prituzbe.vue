@@ -1,3 +1,3 @@
 <template>
-    <p>ovdje ide popis prituzbi ig (samoza admina)</p>
+    <h3>Prituzbe</h3>
 </template>

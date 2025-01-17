@@ -11,7 +11,6 @@ import ListaProjekata from '@/components/za_profile/ListaProjekata.vue';
 import Registracije from '@/components/za_profile/Registracije.vue';
 import Prituzbe from '@/components/za_profile/Prituzbe.vue';
 import Recenzije from '@/components/za_profile/Recenzije.vue';
-import ValidacijaNovihKorisnika from '@/components/ValidacijaNovihKorisnika.vue';
 
 const routes = [
     {
@@ -51,11 +50,6 @@ const routes = [
         name: 'ListaProjekata',
         component: ListaProjekata,
         props:true
-    },
-    {
-        path: '/validate-users',
-        name: 'ValidacijaNovihKorisnika',
-        component: ValidacijaNovihKorisnika,
     }
     // !!!popravit rute
     /*   {

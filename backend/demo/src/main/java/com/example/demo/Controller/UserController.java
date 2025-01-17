@@ -25,19 +25,38 @@ public class UserController {
     private final UserService userService;
     private final UserRepository userRepository;
 
-    @Autowired
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
 
-    public UserController(UserRepository userRepository) {
+    @Autowired
+    public UserController(UserService userService, UserRepository userRepository) {
+        this.userService = userService;
         this.userRepository = userRepository;
     }
 
-    @GetMapping("/{username}/approve-admins")
-    public ResponseEntity<List<MyUser>> getUnvalidatedUsers() {
-        List<MyUser> users = userService.getUnvalidatedUsers();
+
+    @GetMapping("/approve-admins")
+    public ResponseEntity<List<MyUser>> getUnvalidatedAdmins() {
+        List<MyUser> users = userService.getUnvalidatedAdmins();
         return ResponseEntity.ok(users);
+    }
+
+    @PostMapping("/approve-admins/{username}")
+    public ResponseEntity<String> approveAdmin(@PathVariable String username) {
+        Optional<MyUser> user = userRepository.findByUsername(username);
+        if (!user.isPresent()) {
+            return ResponseEntity.status(404).body("Korisnik s korisničkim imenom " + username + " nije pronađen.");
+        }
+        userService.approveAdmin(username);
+        return ResponseEntity.status(200).body("Admin " + username + " odobren!");
+    }
+
+    @DeleteMapping("/approve-admins/{username}")
+    public ResponseEntity<String> disapproveAdmin(@PathVariable String username){
+        Optional<MyUser> user = userRepository.findByUsername(username);
+        if (!user.isPresent()) {
+            return ResponseEntity.status(404).body("Korisnik s korisničkim imenom " + username + " nije pronađen.");
+        }
+        userService.disapproveAdmin(username);
+        return ResponseEntity.status(200).body("Admin zahtjev " + username + " izbrisan!");
     }
 
     // Endpoint za dohvaćanje korisnika prema korisničkom imenu
@@ -50,5 +69,6 @@ public class UserController {
         } else {
             return ResponseEntity.status(404).body("Korisnik s korisničkim imenom '" + username + "' nije pronađen.");
         }
+
     }
 }

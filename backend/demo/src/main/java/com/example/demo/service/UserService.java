@@ -86,7 +86,11 @@ public class UserService {
         user.setVerificationCode(generateVerificationCode());
         user.setVerificationCodeExpiresAt(LocalDateTime.now().plusMinutes(15));
         user.setEnabled(false);
-        user.setValidated(false);
+
+        if(user.getRole().equals("admin")){
+            user.setValidated(false);
+        } else user.setValidated(true);
+
         sendVerificationEmail(user);
 
         System.out.println("Saving user to database...");
@@ -106,6 +110,7 @@ public class UserService {
                 user.setEnabled(true);
                 user.setVerificationCode(null);
                 user.setVerificationCodeExpiresAt(null);
+
                 userRepository.save(user);
             } else {
                 throw new RuntimeException("Invalid verification code");
@@ -161,14 +166,44 @@ public class UserService {
     }
 
     //mozda nije najelegantnije rjesenje ali je najbolje kojeg sam se mogla sjetiti sad
-    public List<MyUser> getUnvalidatedUsers() {
+    public List<MyUser> getUnvalidatedAdmins() {
         List<MyUser> allUsers = userRepository.findAll();
         List<MyUser> unvalidatedUsers = new ArrayList<>();
         for(MyUser user : allUsers) {
-            if(!user.isValidated())
+            if(!user.isValidated() && user.getRole().equals("admin"))
                 unvalidatedUsers.add(user);
         }
         return unvalidatedUsers;
+    }
+
+    public void approveAdmin(String username) {
+        Optional<MyUser> optionalUser = userRepository.findByUsername(username);
+        if (optionalUser.isPresent()) {
+            MyUser user = optionalUser.get();
+            if (user.isValidated()) {
+                throw new RuntimeException("Admin account is already approved");
+            }
+            user.setValidated(true);
+            userRepository.save(user);
+        } else {
+            throw new RuntimeException("User not found");
+        }
+
+    }
+
+    public void disapproveAdmin(String username) {
+        Optional<MyUser> optionalUser = userRepository.findByUsername(username);
+        if (optionalUser.isPresent()) {
+            MyUser user = optionalUser.get();
+            userRepository.delete(user);
+
+            if(userRepository.existsByUsername(username)){
+                throw new RuntimeException("Admin user could not be deleted.");
+            }
+
+        } else {
+            throw new RuntimeException("User not found.");
+        }
     }
 }
 
