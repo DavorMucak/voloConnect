@@ -20,28 +20,31 @@
   
   <script>
   import axios from 'axios';
+  import VueJwtDecode from 'vue-jwt-decode';
   
   export default {
-    props: {
-      username: {
-        type: String,
-        required: true
-      }
-    },
     data() {
       return {
         projects: [],
         showObjaviProjektButton: false,
-        isViewingVolunteerProjects: false
+        isViewingVolunteerProjects: false,
+        name: ""
       };
     },
     created() {
       this.fetchProjects();
-      this.checkUserRole();
     },
     methods: {
       fetchProjects() {
-        axios.get(`http://localhost:8080/projects/${this.username}`)
+        const token = localStorage.getItem("token");
+        if (token) {    //ako postoji token korisnik je prijavljen
+          
+          //sprema username
+          this.name = VueJwtDecode.decode(token).sub;
+        }
+        console.log(this.name);
+        
+        axios.get(`http://localhost:8080/api/projects/owner/${this.name}`)
           .then(response => {
             this.projects = response.data;
           })
