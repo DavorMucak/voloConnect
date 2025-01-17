@@ -4,15 +4,26 @@ server:
     include-binding-errors: always
 
 spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: "davor.mucak1@gmail.com"
+    password: "achw ztsp sdgl jgqw"
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
   web:
     resources:
       static-locations: classpath:/static/
       chain:
         cache: false
   datasource:
-    password: mIsKTtyPBx0ulquVCCDo82s0biYovaA1
-    url: jdbc:postgresql://volobaza_user:mIsKTtyPBx0ulquVCCDo82s0biYovaA1@dpg-csrkph9u0jms7392dpd0-a:5432/volobaza
-    username: volobaza_user
+    password: simulatoR
+    url: jdbc:postgresql://localhost:5433/demo
+    username: postgres
   jpa:
     hibernate:
       ddl-auto: update
@@ -21,9 +32,18 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
     show-sql: true
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 368455952414-n0qaeppdv3gu4qpofn5f6jkc0gu4l19u.apps.googleusercontent.com
+            client-secret: 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
+        provider:
+          google:
+            issuer-uri: https://accounts.google.com
 
-    spring:
-      servlet:
-        multipart:
-          max-file-size: 10MB
-          max-request-size: 10MB
