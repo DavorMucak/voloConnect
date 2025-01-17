@@ -116,8 +116,6 @@ export default {
             .then((res) => { //u responeseu poslan token ("token"), ime korisnika ("name") i njegova uloga ("role")
                 console.log("Spremam token u localStorage");
                 localStorage.setItem('token', res.data.token);
-                localStorage.setItem('username', res.data.name);
-                localStorage.setItem('role', res.data.role);
                 alert('Uspješna Google prijava!');
                 this.isLoggedIn = true;
                 this.userName = res.data.name;

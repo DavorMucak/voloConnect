@@ -5,35 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="51dfa50d-1beb-4e99-9bfd-706792d077c5" name="Changes" comment="Google Authentication working with automatic registration of new users and sending role to frontend">
-      <change afterPath="$PROJECT_DIR$/backend/.idea/modules/demo.main.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/demo/Dockerfile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/apiClient.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/appwrite.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/MojiProjekti.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/Prituzbe.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/Profil.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/Registracije.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/za_profile/Biljeske.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/za_profile/ListaProjekata.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/za_profile/NoviProjekt.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/za_profile/Prituzbe.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/za_profile/Recenzije.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/za_profile/Registracije.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/Controller/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/Controller/AuthController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/5aa8b4da-889d-40e5-8488-8bcaf0a18fab.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/5aa8b4da-889d-40e5-8488-8bcaf0a18fab.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/5aa8b4da-889d-40e5-8488-8bcaf0a18fab/storage_v2/_src_/database/demo.4_0uAA/schema/public.abK9xQ.meta" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/5aa8b4da-889d-40e5-8488-8bcaf0a18fab/storage_v2/_src_/database/demo.4_0uAA/schema/public.abK9xQ.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/security/JwtFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/security/JwtFilter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/demo/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/demo/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/App.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/App.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/assets/styles/base.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/assets/styles/base.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/assets/styles/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/assets/styles/main.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/Home.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Home.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/components/Login.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Login.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/Projekt.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Projekt.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/main.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/router/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/router/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/vite.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/vite.config.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -115,7 +92,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "Shell Script.gradlew.executor": "Run",
     "Spring Boot.DemoApplication.executor": "Run",
-    "git-widget-placeholder": "Merging dev",
+    "git-widget-placeholder": "dev",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/sviWS/UTR_WS/UTR",
     "node.js.detected.package.eslint": "true",
@@ -274,7 +251,7 @@
       <workItem from="1736689619574" duration="201000" />
       <workItem from="1736854009837" duration="2179000" />
       <workItem from="1737023102428" duration="3578000" />
-      <workItem from="1737064440016" duration="5743000" />
+      <workItem from="1737064440016" duration="8767000" />
     </task>
     <task id="LOCAL−00001" summary="Razvoj OAuth2.0 za prijavu preko Googlea">
       <option name="closed" value="true" />
