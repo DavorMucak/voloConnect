@@ -21,6 +21,7 @@
   <script>
   import axios from 'axios';
   import VueJwtDecode from 'vue-jwt-decode';
+  import apiClient from '@/apiClient';
   
   export default {
     data() {
@@ -44,7 +45,7 @@
         }
         console.log(this.name);
         
-        axios.get(`http://localhost:8080/api/projects/owner/${this.name}`)
+        apiClient.get(`http://localhost:8080/api/projects/owner/${this.name}`)
           .then(response => {
             this.projects = response.data;
           })

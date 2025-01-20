@@ -3,6 +3,7 @@ package com.example.demo.Controller;
 import com.example.demo.model.Project;
 import com.example.demo.repository.ProjectRepository;
 import com.example.demo.service.ProjectService;
+import com.example.demo.service.UserProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +18,9 @@ public class ProjectController {
     private final ProjectService projectService;
     @Autowired
     private ProjectRepository projectRepository;
+
+    @Autowired
+    private UserProjectService userProjectService;
 
     @Autowired
     public ProjectController(ProjectService projectService) {
@@ -39,6 +43,20 @@ public class ProjectController {
     public ResponseEntity<List<Project>> getProjectsByOwner(@PathVariable String ownerId) {
         List<Project> projects = projectRepository.findByOwnerId(ownerId);
         return ResponseEntity.ok(projects);
+    }
+
+    @PostMapping("/{projectId}/apply")
+    public ResponseEntity<String> applyToProject(
+            @PathVariable Long projectId,
+            @RequestParam Long userId)
+    {
+
+        boolean success = userProjectService.applyToProject(userId, projectId);
+        if (success) {
+            return ResponseEntity.ok("Successfully applied to the project!");
+        } else {
+            return ResponseEntity.badRequest().body("Failed to apply to the project.");
+        }
     }
 
 }

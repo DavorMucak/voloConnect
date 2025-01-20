@@ -19,7 +19,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/user")
-@CrossOrigin// Ako frontend i backend rade na različitim domenama
+@CrossOrigin
 public class UserController {
 
     private final UserService userService;

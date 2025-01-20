@@ -95,7 +95,7 @@ public class AuthController {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Google ID token");
             }
 
-            String jwt = jwtService.generateToken(idToken, "neodređeno");
+            String jwt = jwtService.generateToken(idToken, "neodređeno", "nista");
 
             //Saznaj ima li user odreden role, ako ima proslijedi ga na frontend
             return ResponseEntity.ok(Map.of(

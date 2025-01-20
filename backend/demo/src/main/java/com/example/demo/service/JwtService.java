@@ -24,9 +24,10 @@ public class JwtService {
         this.secretkey = Base64.getEncoder().encodeToString(Keys.secretKeyFor(SignatureAlgorithm.HS256).getEncoded());
     }
 
-    public String generateToken(String username, String role) {
+    public String generateToken(String username, String role, String userID) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("role", role);
+        claims.put("userID", userID);
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(username)
@@ -41,7 +42,12 @@ public class JwtService {
     }
 
     public String extractRole(String token) {
+        System.out.println("Role korisnika: " + extractClaim(token, claims -> claims.get("role", String.class)));
         return extractClaim(token, claims -> claims.get("role", String.class));
+    }
+
+    public String extractUserID(String token) {
+        return extractClaim(token, claims -> claims.get("userID", String.class));
     }
 
     public boolean validateToken(String token, UserDetails userDetails) {

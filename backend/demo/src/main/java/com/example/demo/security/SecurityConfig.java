@@ -23,6 +23,9 @@ import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserServ
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.web.cors.CorsConfiguration;
+
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -50,12 +53,11 @@ public class SecurityConfig{
                         .requestMatchers("/api/projects").permitAll()
                         .requestMatchers("/api/auth/verify").permitAll()
                         .requestMatchers("/api/auth/resend").permitAll()
-                        .requestMatchers("/api/projects").permitAll()
                         .requestMatchers("/api/auth/google-login").permitAll()
                         .requestMatchers("api/user/**").permitAll()
                         .requestMatchers("/api/projects/owner/**").permitAll()
-                        .anyRequest().authenticated()
-
+                        .requestMatchers("api/user/approve-admins/**").permitAll()
+                        .requestMatchers("projekt/**").permitAll()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .httpBasic(Customizer.withDefaults())
@@ -70,6 +72,7 @@ public class SecurityConfig{
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
+
 
     @Bean
     public AuthenticationProvider authenticationProvider() {

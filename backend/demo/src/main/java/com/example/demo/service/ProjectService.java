@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 
+
 import com.example.demo.model.MyUser;
 import com.example.demo.model.Project;
 import com.example.demo.repository.ProjectRepository;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -28,6 +30,8 @@ public class ProjectService {
         System.out.println("Saving project to database...");
         return projectRepository.save(project);
     }
+
+
 
     public List<Project> getAllProjects() {
         return projectRepository.findAll();
