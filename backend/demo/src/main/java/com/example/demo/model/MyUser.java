@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Setter
@@ -31,6 +32,10 @@ public class MyUser {
     private LocalDateTime verificationCodeExpiresAt;
     private boolean enabled; //potvrdio email verifikacijskim kodom
     private boolean validated; //potvdio ga admin
+
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserProject> appliedProjects = new ArrayList<>();
 
 
 

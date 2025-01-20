@@ -85,6 +85,7 @@ export default {
                 localStorage.setItem('token', token);
                 localStorage.setItem('username', decodedToken.sub); // username
                 localStorage.setItem('role', decodedToken.role);    // role
+                localStorage.setItem('userID', decodedToken.userID);
 
 
                 this.$root.fetchKorisnik();     // automatski updatea podatke o korisniku u root komponenti (Vue.js)
@@ -131,6 +132,8 @@ export default {
 
         googleLogout() {
             localStorage.removeItem('token');
+            localStorage.removeItem('role');
+            localStorage.removeItem('userID');
             this.isLoggedIn = false;
             this.userName = '';
         }

@@ -5,6 +5,7 @@ import com.example.demo.service.CustomOAuth2UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -43,6 +44,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
         String token = null;
         String authenticationHeader = request.getHeader("Authorization");
+        System.out.println("Authorization header: " + authenticationHeader);
         if (authenticationHeader != null && authenticationHeader.startsWith("Bearer ")){
             token = authenticationHeader.substring(7);
         }
@@ -97,12 +99,17 @@ public class JwtFilter extends OncePerRequestFilter {
 
     private void handleJwtToken(String token, HttpServletRequest request) {
         String username = jwtService.extractUserName(token);
+        String role = jwtService.extractRole(token);
+        String formattedRole = "ROLE_" + role.toUpperCase();
         if(username != null && SecurityContextHolder.getContext().getAuthentication() == null){
             UserDetails userDetails = context.getBean(MyUserDetailsService.class).loadUserByUsername(username);
             if (jwtService.validateToken(token, userDetails)){
-                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                Collection<? extends GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(formattedRole));
+                System.out.println("Autoritet: " + authorities);
+                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
                 authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                System.out.println("Role korisnika na kraju baš: " +  SecurityContextHolder.getContext().getAuthentication());
             }
         }
     }

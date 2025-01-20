@@ -39,6 +39,7 @@ export default {
       // privremeni projekti dok ne povezemo s backendon
       projekti: [
         {
+          projectId: 1,
           imeProjekta: "izrada-web-aplikacije",
           opisProjekta: "Razvoj interaktivne web aplikacije koristeći Vue.js.",
           brojLjudi: 5,
@@ -47,6 +48,7 @@ export default {
           vrstaAktivnosti: "Fizički poslovi"
         },
         {
+          projectId: 2,
           imeProjekta: "analiza-podataka",
           opisProjekta: "Projekt fokusiran na analizu podataka koristeći Python i Pandas.",
           brojLjudi: 3,
@@ -55,6 +57,7 @@ export default {
           vrstaAktivnosti: "Administrativni poslovi"
         },
         {
+          projectId: 3,
           imeProjekta: "mobilna-aplikacija",
           opisProjekta: "Razvoj mobilne aplikacije za Android i iOS platforme.",
           brojLjudi: 6,
@@ -78,18 +81,18 @@ export default {
   },
   async created() {
     try {
-      //!!!!ovo odkomentirat kad se spaja s backendon:
-      //const response = await axios.get('http://localhost:8080/api/projects');
-      //this.projekti = response.data;
+      //ovo odkomentirat kad se spaja s backendon:
+      const response = await axios.get('http://localhost:8080/api/projects');
+      this.projekti = response.data;      
       const token = localStorage.getItem("token");
-      const response = await axios.get("http://localhost:8080/api/auth/users", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      this.uloga=response.data.role;
+
+      this.uloga=localStorage.getItem('role');
       //pronalazi projekt tako da iz liste projekata nade onaj koji se poklapa s imenom projekta
       this.projekt = this.projekti.find(
           (projekt) => projekt.imeProjekta === this.imeProjekta.replace(/\s+/g, '-').toLowerCase()
       );
+      console.log(this.projekt);
+      
       if (!this.projekt) {
         throw new Error("Project not found");
       }
@@ -98,25 +101,25 @@ export default {
     }
   },
   methods: {
-    async prijavaProjekt() {
-      try {
-        //kad korisnik stisne prijava onda se salje id backendu
-        //!!!!tribalo bi jos poslat koji profil se prijavljuje??? znaci id korisnika i projekta??? not sure
-        const response = await axios.post('http://localhost:8080/api/signup',
-            { id: this.projekt.id }
-        );
-        alert("Uspješna prijava!");
-      } catch (error) {
-        alert(
-            "Greška."
-        );
-      }
-    },
+    prijavaProjekt() {
+    const projectId = this.projekt.id;    
+    const userId = localStorage.getItem('userID'); // ID ulogovanog korisnika
+    axios.post(`/api/projects/${projectId}/apply`, null, {
+        params: { userId: userId }
+    })
+    .then(response => {
+        alert(response.data);
+    })
+    .catch(error => {
+        alert("Failed to apply: " + error.response.data);
+    });
+  },
+
     async odjavaProjekt() {
       //!!!kod za odjavu projekta
     },
     provjeriPrijavu(){
-      //!!!kod za provjeru prijave
+      return true;
     }
   },
 };

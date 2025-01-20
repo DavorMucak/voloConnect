@@ -109,13 +109,13 @@ export default {
       if (confirmation) {
         try {
           const token = localStorage.getItem('token');
-          const response = await axios.delete('http://localhost:8080/api/auth/delete-account', {
-            headers: { Authorization: `Bearer ${token}` },
-          });
+          const response = await axios.delete('http://localhost:8080/api/auth/delete-account');
 
           alert(response.data.message);  // poruka (uspjeh)
 
           localStorage.removeItem('token');
+          localStorage.removeItem('role');
+          localStorage.removeItem('userID');
           this.isLoggedIn = false;  // vise nije ulogiran
           this.$router.push('/login'); // redirectaj na home
 
