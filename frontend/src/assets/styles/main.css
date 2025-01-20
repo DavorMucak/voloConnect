@@ -3,7 +3,7 @@
 .filteri,
 .container {
   width: 300px;
-  margin: 0 auto; 
+  margin: 0 auto;
   margin-bottom: 20px;
   padding: 20px;
   background-color: #e5e2a2;
@@ -12,7 +12,7 @@
   font-weight: bold;
 }
 
-button{
+button {
   padding: 7px;
   margin-left: 7px;
   margin-top: 7px;
@@ -63,7 +63,7 @@ button{
 }
 
 .filteri select,
-.selection{
+.selection {
   width: 97%;
   padding: 10px;
   margin: 10px 0;
@@ -72,12 +72,12 @@ button{
   background-color: #f6f4d2;
 }
 
-.image-preview{
+.image-preview {
   width: 50%;
 }
 
 .filteri input,
-.filteri select{
+.filteri select {
   width: 100%;
   padding: 10px;
   margin: 10px 0;
@@ -88,7 +88,7 @@ button{
 }
 
 ul {
-  list-style-type:none;
+  list-style-type: none;
   padding: 10px;
   margin: 0;
   text-align: center;
@@ -113,4 +113,19 @@ ul li a {
 
 ul li a:hover h3 {
   color: #4c8139;
+}
+
+.code-input {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.digit-box {
+  width: 50%;
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+  border: 1px solid #ccc;
+  border-radius: 5px;
 }

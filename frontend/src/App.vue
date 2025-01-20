@@ -54,7 +54,7 @@ export default {
         // dohvat podataka o prijavljenon korisniku
         const token = localStorage.getItem("token");
         if (token) {    //ako postoji token korisnik je prijavljen
-          
+
           //sprema username
           this.korisnickoIme = VueJwtDecode.decode(token).sub;
           this.isLoggedIn = true;   // korisnik prijavljen
@@ -84,6 +84,13 @@ export default {
   },
   mounted() {
     this.fetchKorisnik();  // Fetch the user info when the component is mounted
+    const loggedIn = localStorage.getItem('isLoggedIn');
+    if (loggedIn) {
+      this.isLoggedIn = true;
+      this.userName = localStorage.getItem('userName'); // Retrieve the username
+    } else {
+      this.isLoggedIn = false;
+    }
   }
 };
 </script>
