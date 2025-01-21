@@ -162,7 +162,9 @@ export default {
 
         alert('Kod je točan! Uspješna registracija.');
 
-        this.$router.push('/');
+        this.$router
+          .push({ path: '/' })
+          .then(() => { this.$router.go(0) })   //redirect i reload
 
       } else {
         this.verifError = "Kod nije točan. Pokušajte ponovno.";

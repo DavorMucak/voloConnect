@@ -17,6 +17,8 @@
         </router-link>
 
         <button @click="logout">Odjava</button>
+
+        <button  style="float: right; margin-right: 15px;">🔔</button>
       </template>
     </div>
 
