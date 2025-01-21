@@ -39,7 +39,7 @@
         class="digit-box" />
     </div>
 
-    <p>Kod vrijedi: {{ timer }} sekundi</p>
+    <p>Kod vrijedi još: {{ formattedTimer }} </p>
     <div v-if="timer == 0">
       <button @click="resendCode" r> Trebam novi kod </button>
     </div>
@@ -75,11 +75,17 @@ export default {
       digits: Array(6).fill(""),    //polje za displayanje znamenki koda
       userCode: "",
       expectedCode: "123456",   //123546 radi testiranja
-      timer: 10,
+      timer: 900,   //15min
       timerInterval: null,
     };
   },
-
+  computed: {
+    formattedTimer() {
+      const minutes = Math.floor(this.timer / 60);
+      const seconds = this.timer % 60;
+      return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    },
+  },
   methods: {
     async register() {
       // resetiranje error i success poruke
@@ -182,7 +188,7 @@ export default {
         clearInterval(this.timerInterval);
       }
 
-      this.timer = 10;
+      this.timer = 600;
 
       this.timerInterval = setInterval(() => {
         if (this.timer > 0) {
@@ -194,7 +200,13 @@ export default {
         }
       }, 1000);
     },
-  }
+  },
+  beforeDestroy() {
+    // Clean up interval when component is destroyed
+    if (this.timerInterval) {
+      clearInterval(this.timerInterval);
+    }
+  },
 };
 </script>
 
