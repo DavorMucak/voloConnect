@@ -188,7 +188,7 @@ export default {
         clearInterval(this.timerInterval);
       }
 
-      this.timer = 600;
+      this.timer = 900;
 
       this.timerInterval = setInterval(() => {
         if (this.timer > 0) {
