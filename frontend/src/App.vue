@@ -76,6 +76,8 @@ export default {
 
       if (confirmed) {
         localStorage.removeItem("token"); // uklanja token i podatke o korisniku
+        localStorage.removeItem("isLoggedIn");
+        localStorage.removeItem("username");
         this.korisnickoIme = '';
         this.isLoggedIn = false;
         this.$router.push('/');   // redirecta na home

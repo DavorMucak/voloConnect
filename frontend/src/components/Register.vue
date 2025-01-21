@@ -39,6 +39,11 @@
         class="digit-box" />
     </div>
 
+    <p>Kod vrijedi: {{ timer }} sekundi</p>
+    <div v-if="timer == 0">
+      <button @click="resendCode" r> Trebam novi kod </button>
+    </div>
+
     <button @click="verifyCode">Potvrdi kod</button>
     <p class="error" v-if="verifError">{{ verifError }}</p>
     <p class="success" v-if="verifSuccess">{{ verifSuccess }}</p>
@@ -70,14 +75,19 @@ export default {
       digits: Array(6).fill(""),    //polje za displayanje znamenki koda
       userCode: "",
       expectedCode: "123456",   //123546 radi testiranja
+      timer: 10,
+      timerInterval: null,
     };
   },
+
   methods: {
     async register() {
       // resetiranje error i success poruke
       this.error = '';
       this.success = '';
       this.showCode = true;   //showa se odmah radi testiranja, inace treba biti dolje
+
+      this.startTimer();
 
       // provjera jesu li svi podaci uneseni
       if (this.selected === 'organizacija' && (!this.username || !this.email || !this.password)) {
@@ -102,14 +112,14 @@ export default {
           role: this.selected,
         });
         // ako je uspjesno
+
+
         this.success = response.data;
-        localStorage.setItem('token', response.data.token);
         this.showCode = true;
         this.userCode = '';
         this.digits = Array(6).fill('');
 
-      } catch (error) {
-        // ako nije uspjesno
+      } catch (error) {// ako nije uspjesno
         this.error = error.response ? error.response.data : 'Došlo je do greške.';
       }
     },
@@ -144,15 +154,50 @@ export default {
       if (userCode === this.expectedCode) {
         this.verifError = "";
         this.verifSuccess = "Kod je točan!";
-        this.isLoggedIn = true;
         localStorage.setItem('isLoggedIn', true);
+        this.isLoggedIn = true;
         this.clearForm();
+
+        this.$root.fetchKorisnik();     // automatski updatea podatke o korisniku u root komponenti (Vue.js)
+
+        alert('Kod je točan! Uspješna registracija.');
+
         this.$router.push('/');
+
       } else {
         this.verifError = "Kod nije točan. Pokušajte ponovno.";
         this.verifSuccess = "";
       }
     },
+    resendCode() {
+      //slanje novog maila s kodom 
+      this.expectedCode = "654321"; // simulacija dobivanja nogov koda radi testiranja
+      alert('Novi kod je poslan na vašu email adresu: ');
+      this.startTimer(); // reset timera
+    },
+    startTimer() {
+      if (this.timerInterval) {
+        clearInterval(this.timerInterval);
+      }
+
+      this.timer = 10;
+
+      this.timerInterval = setInterval(() => {
+        if (this.timer > 0) {
+          this.timer--;
+        } else {
+          clearInterval(this.timerInterval);
+          this.expectedCode = null;   //"kod nevazeci"
+          this.timerInterval = null;
+        }
+      }, 1000);
+    },
   }
 };
 </script>
+
+
+/*treba popravit/provjerit:
+-nakon registracije se redirecta na home ali se ne refresha tj ne loada se isLoggedIn pravilno
+-slanje koda mailom
+-notif inbox
