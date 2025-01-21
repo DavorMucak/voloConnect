@@ -6,6 +6,7 @@
   margin: 0 auto;
   margin-bottom: 20px;
   padding: 20px;
+  margin-top: 40px;
   background-color: #e5e2a2;
   border-radius: 8px;
   text-align: center;
@@ -31,6 +32,10 @@ button {
   border: 1px solid #ccc;
   border-radius: 4px;
   background-color: #f6f4d2;
+}
+
+.mini-container{
+    background-color: #e5e2a2;
 }
 
 .filteri button,
