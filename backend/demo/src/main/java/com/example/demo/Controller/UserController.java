@@ -1,5 +1,6 @@
 package com.example.demo.Controller;
 
+import com.example.demo.dto.UserDTO;
 import com.example.demo.model.MyUser;
 import com.example.demo.model.UserPrincipal;
 import com.example.demo.repository.UserRepository;
@@ -65,11 +66,11 @@ public class UserController {
         Optional<MyUser> user = userRepository.findByUsername(username);
 
         if (user.isPresent()) {
-            return ResponseEntity.ok(user.get());
+            // Vraćamo samo DTO umjesto kompletnog objekta
+            return ResponseEntity.ok(new UserDTO(user.get()));
         } else {
             return ResponseEntity.status(404).body("Korisnik s korisničkim imenom '" + username + "' nije pronađen.");
         }
-
-
     }
+
 }
