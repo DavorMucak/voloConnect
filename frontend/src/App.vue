@@ -11,7 +11,7 @@
       </template>
 
       <!-- ako je korisnik prijavljen prikazuju se logout i profil botuni -->
-      <template v-else>
+      <!-- <template v-else> -->
         <!-- kad se pritisne salje na profil od korisnickog imena prijavljenog korisnika (profil/:username) -->
         <router-link :to="{ name: 'Profil', params: { username: korisnickoIme } }"> <button>Profil</button>
         </router-link>
@@ -19,7 +19,7 @@
         <button @click="logout">Odjava</button>
 
         <button  style="float: right; margin-right: 15px;">🔔</button>
-      </template>
+      <!-- </template> -->
     </div>
 
     <router-view />
