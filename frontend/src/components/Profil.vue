@@ -128,9 +128,13 @@ export default {
           this.korisnik.username = VueJwtDecode.decode(token).sub;
 
           const response = await apiClient.get(`http://localhost:8080/api/user/${this.korisnik.username}`);
-          console.log(response.data);
+          this.korisnik.phonenum = response.data.phonenum;
+          this.korisnik.email = response.data.email;
+          this.korisnik.name = response.data.name;
+          this.korisnik.surname = response.data.surname;
           
-          Object.assign(this.korisnik, response.data);
+          
+          console.log("Ovo ispisuje,: " + response.data);          
         }
         this.korisnik.name = "netko"
         this.korisnik.surname = "nesto"
@@ -149,27 +153,37 @@ export default {
         return false;
       }
     },
-    async obrisiProfil() {   
-      const confirmation = window.confirm("Jeste li sigurni da želite obrisati svoj profil? Bit će trajno izbrisan.");
+    async obrisiProfil() {
+      const confirmation = window.confirm(
+        "Jeste li sigurni da želite obrisati svoj profil? Bit će trajno izbrisan."
+      );
       if (confirmation) {
         try {
-          const token = localStorage.getItem('token');
-          const response = await axios.delete('http://localhost:8080/api/auth/delete-account');
+          const username = localStorage.getItem("username"); // Dohvaćanje username-a iz localStorage
 
-          alert(response.data.message);  // poruka (uspjeh)
+          if (!username) {
+            alert("Korisničko ime nije pronađeno.");
+            return;
+          }
 
-          localStorage.removeItem('token');
-          localStorage.removeItem('role');
-          localStorage.removeItem('userID');
-          this.isLoggedIn = false;  // vise nije ulogiran
-          this.$router.push('/login'); // redirectaj na home
+          const response = await axios.delete(
+            `http://localhost:8080/api/auth/delete-account/${username}`
+          );
 
+          alert(response.data.message); // Poruka o uspjehu
+
+          // Brisanje podataka iz localStorage i redirekcija
+          localStorage.removeItem("username");
+          localStorage.removeItem("role");
+          localStorage.removeItem("token");
+          this.$router.push("/login"); // Preusmjeri na login
         } catch (error) {
-          console.error('Greška u brisanju profila', error);
-          alert('Došlo je do greške pri brisanju profila. Molimo pokušajte ponovno.');
+          console.error("Greška u brisanju profila", error);
+          alert("Došlo je do greške pri brisanju profila. Molimo pokušajte ponovno.");
         }
       }
     }
+
   },
   async created() {
     await this.fetchKorisnik();
