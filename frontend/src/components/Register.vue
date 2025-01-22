@@ -38,11 +38,9 @@
         placeholder="-" @input="moveToNext(index, $event)" @keydown.backspace="moveToPrev(index, $event)"
         class="digit-box" />
     </div>
-
+ 
     <p>Kod vrijedi još: {{ formattedTimer }} </p>
-    <div v-if="timer == 0">
-      <button @click="resendCode" r> Trebam novi kod </button>
-    </div>
+    <button @click="resendCode" r> Trebam novi kod </button>
 
     <button @click="verifyCode">Potvrdi kod</button>
     <p class="error" v-if="verifError">{{ verifError }}</p>
@@ -159,9 +157,9 @@ export default {
       }
       try {
         const response = await axios.post('http://localhost:8080/api/auth/verify', {
-        email: this.email,
-        verificationCode: userCode,
-      });
+          email: this.email,
+          verificationCode: userCode,
+        });
         this.verifSuccess = response.data;
         this.verifError = "";
         this.isLoggedIn = true;
@@ -180,10 +178,10 @@ export default {
     async resendCode() {
       try {
         await axios.post('http://localhost:8080/api/auth/resend', null, {
-        params: { email: this.email },
-      });
-      alert('Novi kod je poslan na vašu email adresu.');
-      this.startTimer();
+          params: { email: this.email },
+        });
+        alert('Novi kod je poslan na vašu email adresu.');
+        this.startTimer();
       } catch (error) {
         alert('Došlo je do greške prilikom slanja novog koda.');
       }
@@ -207,16 +205,9 @@ export default {
     },
   },
   beforeDestroy() {
-    // Clean up interval when component is destroyed
     if (this.timerInterval) {
       clearInterval(this.timerInterval);
     }
   },
 };
 </script>
-
-
-/*treba popravit/provjerit:
--nakon registracije se redirecta na home ali se ne refresha tj ne loada se isLoggedIn pravilno
--slanje koda mailom
--notif inbox
