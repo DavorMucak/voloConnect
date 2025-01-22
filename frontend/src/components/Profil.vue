@@ -1,31 +1,6 @@
 <template>
-  <!-- kad se pritisne na ovo ide prikaz projekata na koje je korisnik prijavljen(volonter) ili cije je vlasnik (organizacija) -->
-  <div v-if="uloga !== 'admin'">
-    <router-link to="/moji-projekti"> <button>Moji projekti</button> </router-link>
-
-    <button @click="obrisiProfil">Obriši profil</button>
-
-    <!-- prikaz biljezaka i recenzija -->
-    <Biljeske />
-
-    <Recenzije />
-
-    <!-- ako je korisnik organizacija, ima opciju izrade novog projekta -->
-    <router-link v-if="uloga === 'organizacija'" to="/novi-projekt"> <button>Novi projekt</button> </router-link>
-
-  </div>
-
-  <!-- ako je korisnik admin, moze vidit i prituzbe i registracije -->
-  <div v-if="uloga === 'admin'">
-    <Prituzbe />
-    <RegistracijeAdmina />
-  </div>
-
-
-
-
   <!-- prikaz podataka o korisniku -->
-  <div>
+  <div v-if="!urediDetalje">
     <h2>Podaci o korisniku</h2>
     <p><strong>Korisničko ime:</strong> {{ korisnik.username }}</p>
     <p><strong>Email:</strong> {{ korisnik.email }}</p>
@@ -36,8 +11,51 @@
   </div>
   <!-- ako je ovo profil prijavljenog korisnika moze prominit detalje -->
   <div v-if="jeLiMojProfil()">
-    <!-- !!!napravit promjenu detalja -->
-    <p>promjeni detalje</p>
+    <button v-if="!urediDetalje" @click="pokreniUredivanje">Promijeni detalje</button>
+  
+    <div v-if="urediDetalje">
+      <div>
+        <label>Email:</label>
+        <input v-model="privremeniPodaci.email" />
+      </div>
+      <div>
+        <label>Ime:</label>
+        <input v-model="privremeniPodaci.name" />
+      </div>
+      <div>
+        <label>Prezime:</label>
+        <input v-model="privremeniPodaci.surname" />
+      </div>
+    <div>
+      <label>Broj telefona:</label>
+      <input v-model="privremeniPodaci.phonenum" />
+    </div>
+      <button @click="spremiPromjene">Spremi</button>
+      <button @click="prekiniUredivanje">Odustani</button>
+    </div>
+  </div>
+  <!-- kad se pritisne na ovo ide prikaz projekata na koje je korisnik prijavljen(volonter) ili cije je vlasnik (organizacija) -->
+  <div v-if="uloga !== 'admin'">
+
+    <!-- prikaz biljezaka i recenzija -->
+    <div v-if="uloga === 'volonter'">
+      <Biljeske :username="korisnik.username"/>
+    </div>
+
+    <Recenzije :username="korisnik.username"/>
+
+    <!-- ako je korisnik organizacija, ima opciju izrade novog projekta -->
+    <router-link v-if="uloga === 'organizacija'" to="/novi-projekt"> <button>Novi projekt</button> </router-link>
+
+    <router-link :to="{ name: 'ListaProjekata', params: { username: korisnik.username } }"> <button>Moji projekti</button> </router-link>
+
+    <button @click="obrisiProfil">Obriši profil</button>
+  </div>
+
+  <!-- ako je korisnik admin, moze vidit i prituzbe i registracije -->
+  <div v-if="uloga === 'admin'">
+    <Prituzbe />
+    <RegistracijeAdmina />
   </div>
 </template>
 
@@ -69,11 +87,34 @@ export default {
         phonenum: '',
         role: ["volonter", "organizacija", "admin"],
       },
+      privremeniPodaci: {},
       uloga: '',
       korisnickoIme: ' ',
+      urediDetalje: false,
     };
   },
   methods: {
+    pokreniUredivanje() {
+      this.privremeniPodaci = { ...this.korisnik };
+      this.urediDetalje = true;
+    },
+    prekiniUredivanje() {
+      this.urediDetalje = false;
+      this.privremeniPodaci = {};
+    },
+    async spremiPromjene() {
+      try {
+        const response = await apiClient.put(`http://localhost:8080/api/user/${this.korisnik.username}`, {
+          email: this.privremeniPodaci.email,
+          name: this.privremeniPodaci.name,
+          surname: this.privremeniPodaci.surname,
+          phonenum: this.privremeniPodaci.phonenum,
+        });
+        this.urediDetalje = false;
+      } catch (error) {
+        console.error('Greška pri spremanju promjena:', error);
+      }
+    },
     async fetchKorisnik() {
       try {
         // dohvat podataka o prijavljenon korisniku
@@ -91,6 +132,10 @@ export default {
           
           Object.assign(this.korisnik, response.data);
         }
+        this.korisnik.name = "netko"
+        this.korisnik.surname = "nesto"
+        this.korisnik.phonenum = "dknsdkjsndfkjdn"
+        this.korisnik.email = "dkjsndvkdjn"
 
       } catch (error) {
         console.error('Greska u dohvavanju podataka:', error);

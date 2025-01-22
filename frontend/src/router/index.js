@@ -46,7 +46,7 @@ const routes = [
         props:true
     },
     {
-        path: '/moji-projekti',
+        path: '/moji-projekti/:username',
         name: 'ListaProjekata',
         component: ListaProjekata,
         props:true
