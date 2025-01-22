@@ -21,7 +21,7 @@ spring:
       chain:
         cache: false
   datasource:
-    password: pass123
+    password: simulatoR
     url: jdbc:postgresql://localhost:5433/demo
     username: postgres
   jpa:

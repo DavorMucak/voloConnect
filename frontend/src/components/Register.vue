@@ -150,38 +150,43 @@ export default {
         this.$refs.digitInputs[index - 1].focus();
       }
     },
-    verifyCode() {
+    async verifyCode() {
       const userCode = this.digits.join("");
       if (userCode.length !== 6) {
         this.verifError = "Kod mora biti šesteroznamenkasti broj.";
         this.verifSuccess = "";
         return;
       }
-      if (userCode === this.expectedCode) {
+      try {
+        const response = await axios.post('http://localhost:8080/api/auth/verify', {
+        email: this.email,
+        verificationCode: userCode,
+      });
+        this.verifSuccess = response.data;
         this.verifError = "";
-        this.verifSuccess = "Kod je točan!";
-        localStorage.setItem('isLoggedIn', true);
         this.isLoggedIn = true;
+
+        // Reset forme
         this.clearForm();
-
-        this.$root.fetchKorisnik();     // automatski updatea podatke o korisniku u root komponenti (Vue.js)
-
         alert('Kod je točan! Uspješna registracija.');
 
-        this.$router
-          .push({ path: '/' })
-          .then(() => { this.$router.go(0) })   //redirect i reload
-
-      } else {
-        this.verifError = "Kod nije točan. Pokušajte ponovno.";
+        // Redirect na početnu stranicu
+        this.$router.push({ path: '/' }).then(() => this.$router.go(0));
+      } catch (error) {
+        this.verifError = error.response ? error.response.data : "Došlo je do greške.";
         this.verifSuccess = "";
       }
     },
-    resendCode() {
-      //slanje novog maila s kodom 
-      this.expectedCode = "654321"; // simulacija dobivanja nogov koda radi testiranja
-      alert('Novi kod je poslan na vašu email adresu: ');
-      this.startTimer(); // reset timera
+    async resendCode() {
+      try {
+        await axios.post('http://localhost:8080/api/auth/resend', null, {
+        params: { email: this.email },
+      });
+      alert('Novi kod je poslan na vašu email adresu.');
+      this.startTimer();
+      } catch (error) {
+        alert('Došlo je do greške prilikom slanja novog koda.');
+      }
     },
     startTimer() {
       if (this.timerInterval) {
