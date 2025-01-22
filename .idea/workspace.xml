@@ -5,26 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="51dfa50d-1beb-4e99-9bfd-706792d077c5" name="Changes" comment="Admin new user validation in progress">
-      <change afterPath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/model/UserProject.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/repository/UserProjectRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/service/UserProjectService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/modules/demo.main.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/demo.main.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/Controller/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/Controller/AuthController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/Controller/ProjectController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/Controller/ProjectController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/Controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/Controller/UserController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/WebConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/WebConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/model/MyUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/model/MyUser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/model/Project.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/model/Project.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/security/JwtFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/security/JwtFilter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/security/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/security/SecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/service/JwtService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/service/JwtService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/service/ProjectService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/service/ProjectService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/service/UserService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/Login.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Login.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/Profil.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Profil.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/Projekt.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Projekt.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/za_profile/ListaProjekata.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/za_profile/ListaProjekata.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/demo/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/demo/src/main/resources/application.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -72,12 +55,12 @@
     &quot;assignee&quot;: &quot;doraspoler&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/DavorMucak/voloConnect.git",
-    "accountId": "6ace282e-9dad-42ee-90a7-619bc289a292"
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/DavorMucak/voloConnect.git&quot;,
+    &quot;accountId&quot;: &quot;6ace282e-9dad-42ee-90a7-619bc289a292&quot;
   }
-}]]></component>
+}</component>
   <component name="KubernetesApiPersistence">{}</component>
   <component name="KubernetesApiProvider">{
   &quot;isMigrated&quot;: true
@@ -110,7 +93,7 @@
     &quot;Spring Boot.DemoApplication.executor&quot;: &quot;Run&quot;,
     &quot;git-widget-placeholder&quot;: &quot;dev&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/sviWS/UTR_WS/UTR&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Dalibor/Desktop/mail/voloConnect&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -273,6 +256,7 @@
       <workItem from="1737064440016" duration="14638000" />
       <workItem from="1737114907012" duration="12016000" />
       <workItem from="1737375806926" duration="22836000" />
+      <workItem from="1737538766178" duration="4035000" />
     </task>
     <task id="LOCAL−00001" summary="Razvoj OAuth2.0 za prijavu preko Googlea">
       <option name="closed" value="true" />
