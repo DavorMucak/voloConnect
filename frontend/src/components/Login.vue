@@ -23,16 +23,16 @@
 
             <button type="submit">Prijava</button>
             <p class="error" v-if="error">{{ error }}</p>
-
         </form>
+
     </div>
 
-    <div v-if="!isLoggedIn" class="container">
-      <div id="g_id_onload"
-           data-client_id="368455952414-n0qaeppdv3gu4qpofn5f6jkc0gu4l19u.apps.googleusercontent.com"
-           data-callback="handleCredentialResponse">
-      </div>
-      <div class="g_id_signin" data-type="standard"></div>
+    <div v-show="!isLoggedIn && selected" class="container">
+        <div id="g_id_onload"
+             data-client_id="368455952414-n0qaeppdv3gu4qpofn5f6jkc0gu4l19u.apps.googleusercontent.com"
+             data-callback="handleCredentialResponse">
+        </div>
+        <div class="g_id_signin" data-type="standard"></div>
     </div>
 
     <div v-if="isLoggedIn" class="hidden">
@@ -72,17 +72,15 @@ export default {
             }
 
             try {
-              console.log("Saljem post request: " + this.username + "  " + this.password);
                 const response = await axios.post('http://localhost:8080/api/auth/login', {
                     username: this.username,
                     password: this.password
                 });
-                console.log("primljen token: " + response.data);
-                let token = response.data.substring("<CustomJWT>".length);
-                if(token.startsWith("<CustomJWT>"))
-                  token = token.substring("<CustomJWT>".length)
-                console.log("token: " + token);
-                console.log(VueJwtDecode.decode(token));
+
+                localStorage.setItem('token', response.data);     //spremanje tokena (korisnik prijavljen)
+                let tokenvar = localStorage.getItem('token');
+                console.log(VueJwtDecode.decode(response.data));
+                const token = response.data;
                 const decodedToken = VueJwtDecode.decode(token);
                 localStorage.setItem('token', token);
                 localStorage.setItem('username', decodedToken.sub); // username
@@ -92,12 +90,11 @@ export default {
 
                 this.$root.fetchKorisnik();     // automatski updatea podatke o korisniku u root komponenti (Vue.js)
 
+                alert('Uspješna prijava');
                 this.isLoggedIn = true;
                 this.userName = response.data
 
-              alert('Uspješna prijava');
-
-              console.log("name: " + this.userName);
+                console.log("name: " + this.userName);
                 this.router.push('/');
             } catch (error) {
                 console.error('Greška u prijavi', error);
@@ -116,26 +113,17 @@ export default {
             console.log("Šaljem token na backend")
             axios.post('http://localhost:8080/api/auth/google-login', {
                 idToken: response.credential, //saljem ID token tako da ne ovisi o autorizacijskom kodu
+                role: this.selected,        //slanje rolea u back
             })
             .then((res) => { //u responeseu poslan token ("token"), ime korisnika ("name") i njegova uloga ("role")
                 console.log("Spremam token u localStorage");
+                localStorage.setItem('token', res.data.token);
                 alert('Uspješna Google prijava!');
-                let token = res.data.token;
-                console.log(token);
-                if(token)
-                  if(token.startsWith("<CustomJWT>"))
-                    token = token.substring("<CustomJWT>".length)
-                console.log(VueJwtDecode.decode(token));
-                const decodedToken = VueJwtDecode.decode(token);
-                localStorage.setItem('token', token);
-                localStorage.setItem('username', decodedToken.sub); // username
-                localStorage.setItem('role', decodedToken.role);    // role
-                localStorage.setItem('userID', decodedToken.userID);
-                this.$root.fetchKorisnik();     // automatski updatea podatke o korisniku u root komponenti (Vue.js)
-
                 this.isLoggedIn = true;
+                this.userName = res.data.name;
+                this.selected = res.data.role;
+                console.log("name: " + this.userName + " , role: " + res.data.role);
                 this.router.push('/');
-
             })
             .catch((error) => {
                 console.error('Greška u prijavi s Googleom', error);
@@ -147,7 +135,6 @@ export default {
             localStorage.removeItem('token');
             localStorage.removeItem('role');
             localStorage.removeItem('userID');
-            localStorage.removeItem('username');
             this.isLoggedIn = false;
             this.userName = '';
         }
