@@ -121,6 +121,7 @@ export default {
                 console.log("Spremam token u localStorage");
                 alert('Uspješna Google prijava!');
                 let token = res.data.token;
+
                 console.log(token);
                 if(token)
                   if(token.startsWith("<CustomJWT>"))
