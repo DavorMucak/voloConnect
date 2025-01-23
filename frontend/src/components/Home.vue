@@ -40,87 +40,87 @@
     </div>
   </div>
 </template>
-  
+
 <script>
-  import axios from 'axios';
-  import apiClient from '@/apiClient';
-  
-  export default {
-    data() {
-      return {
-        // ovo su privremeni projekti samo za probu dok ne spojimo s backendon
-        projects: [
-          {
-            id:1,
-            imeProjekta: 'izrada-web-aplikacije',
-            opisProjekta: 'Razvoj interaktivne web aplikacije koristeći Vue.js.',
-            brojLjudi: 5,
-            datumPoc: '2024-01-15',
-            datumKraj: '2024-03-15',
-            vrstaAktivnosti: "Fizički poslovi"
-          },
-          {
-            id:2,
-            imeProjekta: 'analiza-podataka',
-            opisProjekta: 'Projekt fokusiran na analizu podataka koristeći Python i Pandas.',
-            brojLjudi: 3,
-            datumPoc: '2024-02-01',
-            datumKraj: '2024-04-01',
-            vrstaAktivnosti: "Administrativni poslovi"
-          },
-          {
-            id:3,
-            imeProjekta: 'mobilna-aplikacija',
-            opisProjekta: 'Razvoj mobilne aplikacije za Android i iOS platforme.',
-            brojLjudi: 6,
-            datumPoc: '2024-03-10',
-            datumKraj: '2024-06-10',
-            vrstaAktivnosti: "Podučavanje"
-          },
-        ],
-        filtriraniProjekti: [],
-        filterDatumKraja: '',
-        filterDatumPocetka: '',
-        error: null,
-      };
-    },
-    methods: {
-      // metoda za filtraciju projekata
-      filtrirano(){
-        this.filtriraniProjekti = [];
-        const filterDatumPocetka = this.filterDatumPocetka ? new Date(this.filterDatumPocetka) : null;
-        const filterDatumKraja = this.filterDatumKraja ? new Date(this.filterDatumKraja) : null;
-        for (const projekt of this.projects) {
-          const datumPoc = new Date(projekt.datumPoc);
-          const datumKraj = new Date(projekt.datumKraj);
-          if ((!filterDatumPocetka || datumPoc <= filterDatumPocetka) &&
-          (!filterDatumKraja || datumKraj >= filterDatumKraja) &&
-          (!this.filterVrstaAktivnosti || projekt.vrstaAktivnosti === this.filterVrstaAktivnosti)) {
-            this.filtriraniProjekti.push(projekt);
-          }
+import axios from 'axios';
+import apiClient from '@/apiClient';
+
+export default {
+  data() {
+    return {
+      // ovo su privremeni projekti samo za probu dok ne spojimo s backendon
+      projects: [
+        {
+          id:1,
+          imeProjekta: 'izrada-web-aplikacije',
+          opisProjekta: 'Razvoj interaktivne web aplikacije koristeći Vue.js.',
+          brojLjudi: 5,
+          datumPoc: '2024-01-15',
+          datumKraj: '2024-03-15',
+          vrstaAktivnosti: "Fizički poslovi"
+        },
+        {
+          id:2,
+          imeProjekta: 'analiza-podataka',
+          opisProjekta: 'Projekt fokusiran na analizu podataka koristeći Python i Pandas.',
+          brojLjudi: 3,
+          datumPoc: '2024-02-01',
+          datumKraj: '2024-04-01',
+          vrstaAktivnosti: "Administrativni poslovi"
+        },
+        {
+          id:3,
+          imeProjekta: 'mobilna-aplikacija',
+          opisProjekta: 'Razvoj mobilne aplikacije za Android i iOS platforme.',
+          brojLjudi: 6,
+          datumPoc: '2024-03-10',
+          datumKraj: '2024-06-10',
+          vrstaAktivnosti: "Podučavanje"
+        },
+      ],
+      filtriraniProjekti: [],
+      filterDatumKraja: '',
+      filterDatumPocetka: '',
+      error: null,
+    };
+  },
+  methods: {
+    // metoda za filtraciju projekata
+    filtrirano(){
+      this.filtriraniProjekti = [];
+      const filterDatumPocetka = this.filterDatumPocetka ? new Date(this.filterDatumPocetka) : null;
+      const filterDatumKraja = this.filterDatumKraja ? new Date(this.filterDatumKraja) : null;
+      for (const projekt of this.projects) {
+        const datumPoc = new Date(projekt.datumPoc);
+        const datumKraj = new Date(projekt.datumKraj);
+        if ((!filterDatumPocetka || datumPoc <= filterDatumPocetka) &&
+            (!filterDatumKraja || datumKraj >= filterDatumKraja) &&
+            (!this.filterVrstaAktivnosti || projekt.vrstaAktivnosti === this.filterVrstaAktivnosti)) {
+          this.filtriraniProjekti.push(projekt);
         }
-      },
-    },
-    computed: {
-      //ime projekta se formatirano slalo backendu, sad ga vracamo
-      formatiranoIme() {
-        return (name) => {
-          return name
-            .replace(/-/g, ' ')
-            .replace(/\b\w/g, char => char.toUpperCase());
-        };
-      },
-    },
-    async created() {
-      try {
-        //na pocetku se ne primjenjuje filter nego su svi projekti prikazani
-        this.filtriraniProjekti = this.projects;
-        //dohvat liste projekata s backenda
-        const response = await apiClient.get('http://localhost:8080/api/projects');
-        this.projects = response.data;
-      } catch (error) {
-        this.error = error.response ? error.response.data : 'Ne mogu se dohvatiti projekti.';
       }
     },
-  };
+  },
+  computed: {
+    //ime projekta se formatirano slalo backendu, sad ga vracamo
+    formatiranoIme() {
+      return (name) => {
+        return name
+            .replace(/-/g, ' ')
+            .replace(/\b\w/g, char => char.toUpperCase());
+      };
+    },
+  },
+  async created() {
+    try {
+      //na pocetku se ne primjenjuje filter nego su svi projekti prikazani
+      this.filtriraniProjekti = this.projects;
+      //dohvat liste projekata s backenda
+      const response = await axios.get('http://localhost:8080/api/projects');
+      this.projects = response.data;
+    } catch (error) {
+      this.error = error.response ? error.response.data : 'Ne mogu se dohvatiti projekti.';
+    }
+  },
+};
 </script>

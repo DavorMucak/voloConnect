@@ -28,7 +28,7 @@ public class JwtService {
         Map<String, Object> claims = new HashMap<>();
         claims.put("role", role);
         claims.put("userID", userID);
-        return Jwts.builder()
+        return "<CustomJWT>" + Jwts.builder()
                 .setClaims(claims)
                 .setSubject(username)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
@@ -42,11 +42,15 @@ public class JwtService {
     }
 
     public String extractRole(String token) {
+        if(token.startsWith("<CustomJWT>"))
+            token = token.substring("<CustomJWT>".length());
         System.out.println("Role korisnika: " + extractClaim(token, claims -> claims.get("role", String.class)));
         return extractClaim(token, claims -> claims.get("role", String.class));
     }
 
     public String extractUserID(String token) {
+        if(token.startsWith("<CustomJWT>"))
+            token = token.substring("<CustomJWT>".length());
         return extractClaim(token, claims -> claims.get("userID", String.class));
     }
 
@@ -56,19 +60,27 @@ public class JwtService {
     }
 
     private boolean isTokenExpired(String token) {
+        if(token.startsWith("<CustomJWT>"))
+            token = token.substring("<CustomJWT>".length());
         return extractExpiration(token).before(new Date());
     }
 
     private Date extractExpiration(String token) {
+        if(token.startsWith("<CustomJWT>"))
+            token = token.substring("<CustomJWT>".length());
         return extractClaim(token, Claims::getExpiration);
     }
 
     private <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+        if(token.startsWith("<CustomJWT>"))
+            token = token.substring("<CustomJWT>".length());
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
 
     private Claims extractAllClaims(String token) {
+        if(token.startsWith("<CustomJWT>"))
+            token = token.substring("<CustomJWT>".length());
         return Jwts.parserBuilder()
                 .setSigningKey(getKey())
                 .build()

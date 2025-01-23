@@ -102,24 +102,26 @@ public class AuthController {
 
     @PostMapping("/google-login")
     public ResponseEntity<?> googleLogin(@RequestBody Map<String, String> payload) {
-            String idToken = payload.get("idToken");
-            if (idToken == null || idToken.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid ID token");
-            }
+        String idToken = payload.get("idToken");
+        if (idToken == null || idToken.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid ID token");
+        }
         try {
             OAuth2User oAuth2User = customOAuth2UserService.verifyOAuth2Token(idToken);
             if (oAuth2User == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Google ID token");
             }
 
-            String jwt = jwtService.generateToken(idToken, "neodređeno", "nista");
+            String username = oAuth2User.getAttribute("username");
+            String role = oAuth2User.getAttribute("role");
+            String userId = Long.toString(oAuth2User.getAttribute("userId"));
+
+            String jwt = jwtService.generateToken(username, role, userId);
 
             //Saznaj ima li user odreden role, ako ima proslijedi ga na frontend
             return ResponseEntity.ok(Map.of(
-                    "token", jwt,
-                    "name", oAuth2User.getAttribute("name"),
-                    "role", oAuth2User.getAttribute("role")
-                    ));
+                    "token", jwt
+            ));
 
         } catch (Exception e) {
             e.printStackTrace();

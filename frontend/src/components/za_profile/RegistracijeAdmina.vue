@@ -63,7 +63,7 @@ export default {
     try {
 
       //dohvat liste nevalidiranih admina s backenda
-      const response = await apiClient.get(`http://localhost:8080/api/user/approve-admins`);
+      const response = await axios.get(`http://localhost:8080/api/user/approve-admins`);
       this.adminsWaiting = response.data;
     } catch (error) {
       this.error = error.response ? error.response.data : 'Ne mogu se dohvatiti korisnici.';

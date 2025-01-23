@@ -65,7 +65,6 @@ public class SecurityConfig{
                 .oauth2Login(Customizer.withDefaults())
                 .oauth2Login(oAuth2 -> oAuth2
                         .loginPage("/api/auth/google-login")
-                        .defaultSuccessUrl("/api/projects")
                         .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
                 )
                 .csrf(AbstractHttpConfigurer::disable)

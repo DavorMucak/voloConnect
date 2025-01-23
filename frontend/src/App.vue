@@ -80,6 +80,8 @@ export default {
         localStorage.removeItem("token"); // uklanja token i podatke o korisniku
         localStorage.removeItem("isLoggedIn");
         localStorage.removeItem("username");
+        localStorage.removeItem("userID");
+        localStorage.removeItem("role");
         this.korisnickoIme = '';
         this.isLoggedIn = false;
         this.$router.push('/');   // redirecta na home
