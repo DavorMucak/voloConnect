@@ -8,7 +8,6 @@ import Projekt from '@/components/Projekt.vue';
 import Profil from '@/components/Profil.vue';
 import Biljeske from '@/components/za_profile/Biljeske.vue';
 import ListaProjekata from '@/components/za_profile/ListaProjekata.vue';
-import Registracije from '@/components/za_profile/Registracije.vue';
 import Prituzbe from '@/components/za_profile/Prituzbe.vue';
 import Recenzije from '@/components/za_profile/Recenzije.vue';
 

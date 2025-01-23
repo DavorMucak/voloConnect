@@ -95,7 +95,9 @@ export default {
                 this.isLoggedIn = true;
                 this.userName = response.data
 
-                console.log("name: " + this.userName);
+              alert('Uspješna prijava');
+
+              console.log("name: " + this.userName);
                 this.router.push('/');
             } catch (error) {
                 console.error('Greška u prijavi', error);
@@ -131,7 +133,6 @@ export default {
                 localStorage.setItem('userID', decodedToken.userID);
                 this.$root.fetchKorisnik();     // automatski updatea podatke o korisniku u root komponenti (Vue.js)
 
-                alert('Uspješna prijava');
                 this.isLoggedIn = true;
                 this.router.push('/');
 
@@ -146,6 +147,7 @@ export default {
             localStorage.removeItem('token');
             localStorage.removeItem('role');
             localStorage.removeItem('userID');
+            localStorage.removeItem('username');
             this.isLoggedIn = false;
             this.userName = '';
         }

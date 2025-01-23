@@ -1,6 +1,6 @@
 <template>
   <div class="new-users">
-    <h2>Nepodobreni admini</h2>
+    <h2>Neodobreni admini</h2>
     <div v-if="adminsWaiting.length">
       <ul>
         <li v-for="korisnik in this.adminsWaiting">
