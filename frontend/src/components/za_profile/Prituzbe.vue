@@ -1,95 +1,52 @@
 <template>
   <div>
     <h2>Pritužbe</h2>
-    <div v-if="isAdmin">
       <div v-if="prituzbe.length">
-        <div v-for="prituzba in prituzbe" :key="prituzba.id" class="prituzba">
+        <div v-for="complaint in complaints" :key="prituzba.id" class="prituzba">
           <p>
-            <router-link :to="getProfileLink(prituzba.senderUsername)">{{ getUserName(prituzba.senderUsername) }}</router-link>
+            <router-link :to="`/profil/${encodeURIComponent(complaint.plaintiffUsername)}`">{{ complaint.plaintiffUsername }}</router-link>
             podnio/la pritužbu protiv
-            <router-link :to="getProfileLink(prituzba.receiverUsername)">{{ getUserName(prituzba.receiverUsername) }}</router-link>
+            <router-link :to="`/profil/${encodeURIComponent(complaint.defendantUsername)}`">{{ complaint.defendantUsername }}</router-link>
           </p>
+          
           <p>{{ prituzba.description }}</p>
-          <button @click="resolvePrituzba(prituzba.id)">Razriješeno</button>
+          <button @click="resolveComplaint(complaint.id)">Razriješeno</button> <!-- briše pritužbu -->
         </div>
       </div>
-      <div v-else>
-        <p>Nema pritužbi.</p>
-      </div>
-    </div>
-    <div v-else>
-      <p>Nemate ovlasti za pregled pritužbi.</p>
-    </div>
+      <p v-else>Nema pritužbi.</p>
   </div>
 </template>
 
 <script>
-import axios from 'axios';
+import apiClient from '@/apiClient';
 
 export default {
   name: 'Prituzbe',
   data() {
     return {
-      isAdmin: false, // Provjera je li korisnik administrator
-      prituzbe: [], // Polje za pohranu pritužbi
-      users: {} // Objekt za pohranu korisničkih podataka
+      complaints: [], // prituzbe korisnika
     };
   },
   created() {
-    this.checkAdmin();
-    this.fetchPrituzbe();
+    this.fetchComplaints();
   },
   methods: {
-    checkAdmin() {
-      const token = localStorage.getItem('token');
-      if (token) {
-        const user = JSON.parse(atob(token.split('.')[1]));
-        this.isAdmin = user.role === 'admin';
-      }
-    },
-    fetchPrituzbe() {
-      axios.get('/api/prituzbe')
+    fetchComplaints() { // dohvaca prituzbe
+      apiClient.get(`http://localhost:8080/api/prituzbe`)
         .then(response => {
-          this.prituzbe = response.data;
-          this.fetchUsers();
+          this.complaints = response.data;
         })
         .catch(error => {
-          console.error('Error fetching pritužbe:', error);
+          console.error('Error fetching complaints:', error);
         });
     },
-    fetchUsers() {
-      const usernames = new Set();
-      this.prituzbe.forEach(prituzba => {
-        usernames.add(prituzba.senderUsername);
-        usernames.add(prituzba.receiverUsername);
-      });
-      usernames.forEach(username => {
-        axios.get(`/api/users/${username}`)
-          .then(response => {
-            this.$set(this.users, username, response.data);
-          })
-          .catch(error => {
-            console.error('Error fetching user:', error);
-          });
-      });
-    },
-    getUserName(username) {
-      return this.users[username] ? this.users[username].name : username;
-    },
-    getProfileLink(username) {
-      if (this.users[username]) {
-        const role = this.users[username].role;
-        return role === 'volunteer' ? `/volonteri/${username}` : `/organizacije/${username}`;
-      }
-      return `/profil/${username}`;
-    },
-    resolvePrituzba(id) {
-      axios.delete(`/api/prituzbe/${id}`)
+    resolveComplaint(id) { // brise prituzbu kad je razrijesena
+      apiClient.delete(`http://localhost:8080/api/prituzbe/${id}`)
         .then(() => {
-          this.prituzbe = this.prituzbe.filter(prituzba => prituzba.id !== id);
+          this.complaints = this.complaints.filter(complaint => complaint.id !== id);
         })
         .catch(error => {
-          console.error('Error resolving pritužba:', error);
+          console.error('Error resolving complaint:', error);
         });
     }
   }
