@@ -1,7 +1,7 @@
 <template>
   <div>
     <h2>Pritužbe</h2>
-      <div v-if="prituzbe.length">
+      <div v-if="complaints.length">
         <div v-for="complaint in complaints" :key="prituzba.id" class="prituzba">
           <p>
             <router-link :to="`/profil/${encodeURIComponent(complaint.plaintiffUsername)}`">{{ complaint.plaintiffUsername }}</router-link>
