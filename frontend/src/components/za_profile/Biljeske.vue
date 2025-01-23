@@ -69,44 +69,44 @@ export default {
     },
     fetchNotes() { // dohvaca biljeske
       apiClient.get(`http://localhost:8080/api/biljeske?username=${this.username}`)
-        .then(response => {
-          this.notes = response.data.reverse();
-        })
-        .catch(error => {
-          console.error('Error fetching notes:', error);
-        });
+          .then(response => {
+            this.notes = response.data.reverse();
+          })
+          .catch(error => {
+            console.error('Error fetching notes:', error);
+          });
     },
     createNote() { // stvara novu biljesku i sprema ju u bazu podataka
       apiClient.post(`http://localhost:8080/api/biljeske/${this.username}`, {
-          sadrzaj: this.newNote
-        })
-        .then(response => {
-          const note = {
-            id: response.data.id, // apiClient request vraca id nove biljeske
-            content: this.newNote
-          };
-          this.notes.unshift(note);
-          this.newNote = '';
-          this.showNoteForm = false;
-        })
-        .catch(error => {
-          console.error('Error creating note:', error);
-        });
+        sadrzaj: this.newNote
+      })
+          .then(response => {
+            const note = {
+              id: response.data.id, // apiClient request vraca id nove biljeske
+              content: this.newNote
+            };
+            this.notes.unshift(note);
+            this.newNote = '';
+            this.showNoteForm = false;
+          })
+          .catch(error => {
+            console.error('Error creating note:', error);
+          });
     },
     editNote(note) { // omogucuje uređivanje biljeske
       if (this.editNote.id !== null) { // ako se neka biljeska vec uređuje obavijestava se korisnika
         const confirmation = window.confirm("Već uređujete bilješku. Želite li spremiti promjene i nastaviti?");
         if (confirmation) {
           apiClient.put(`http://localhost:8080/api/biljeske/${this.username}`, { // potvrdom se sprema stara biljeska i omogucuje uređivanje nove
-              id: note.id,
-              sadrzaj: this.editNote.content
-            })
-            .then(() => {
-              editNote = {content: note.content, id: note.id};
-            })
-            .catch(error => {
-              console.error('Error editing note:', error);
-            });
+            id: note.id,
+            sadrzaj: this.editNote.content
+          })
+              .then(() => {
+                editNote = {content: note.content, id: note.id};
+              })
+              .catch(error => {
+                console.error('Error editing note:', error);
+              });
         }
       } else {
         editNote = {content: note.content, id: note.id};
@@ -114,28 +114,28 @@ export default {
     },
     saveNote(id) { // klasicno spremanje promjena nakon uređivanja
       apiClient.put(`http://localhost:8080/api/biljeske/${this.username}`, {
-          id: id,
-          sadrzaj: this.editNote.content
-        })
-        .then(() => {
-          const index = this.notes.findIndex(note => note.id === id);
-          this.notes[index].content = editNote.content; // prikaz promjena
-          this.editNote = {content: '', id: null};
-        })
-        .catch(error => {
-          console.error('Error editing note:', error);
-        });
+        id: id,
+        sadrzaj: this.editNote.content
+      })
+          .then(() => {
+            const index = this.notes.findIndex(note => note.id === id);
+            this.notes[index].content = editNote.content; // prikaz promjena
+            this.editNote = {content: '', id: null};
+          })
+          .catch(error => {
+            console.error('Error editing note:', error);
+          });
     },
     async deleteNote(id) { // brisanje biljeske
       apiClient.delete(`http://localhost:8080/api/biljeske/${this.username}`, {
-          id: id
-        })
-        .then(() => {
-          this.notes = this.notes.filter(biljeska => biljeska.id !== id); // prikaz promjena
-        })
-        .catch(error => {
-          console.error('Error deleting note:', error);
-        });
+        id: id
+      })
+          .then(() => {
+            this.notes = this.notes.filter(biljeska => biljeska.id !== id); // prikaz promjena
+          })
+          .catch(error => {
+            console.error('Error deleting note:', error);
+          });
     }
   }
 };
