@@ -47,7 +47,7 @@
     <!-- ako je korisnik organizacija, ima opciju izrade novog projekta -->
     <router-link v-if="uloga === 'organizacija'" to="/novi-projekt"> <button>Novi projekt</button> </router-link>
 
-    <router-link :to="{ name: 'ListaProjekata', params: { username: korisnik.username } }"> <button>Moji projekti</button> </router-link>
+    <!-- <router-link :to="{ name: 'ListaProjekata', params: { username: korisnik.username } }"> <button>Moji projekti</button> </router-link> -->
 
     <button @click="obrisiProfil">Obriši profil</button>
   </div>
@@ -100,7 +100,6 @@ export default {
     },
     prekiniUredivanje() {
       this.urediDetalje = false;
-      this.privremeniPodaci = {};
     },
     async spremiPromjene() {
       try {
@@ -110,6 +109,7 @@ export default {
           surname: this.privremeniPodaci.surname,
           phonenum: this.privremeniPodaci.phonenum,
         });
+        this.korisnik = { ...this.privremeniPodaci };
         this.urediDetalje = false;
       } catch (error) {
         console.error('Greška pri spremanju promjena:', error);
@@ -128,18 +128,15 @@ export default {
           this.korisnik.username = VueJwtDecode.decode(token).sub;
 
           const response = await apiClient.get(`http://localhost:8080/api/user/${this.korisnik.username}`);
-          this.korisnik.phonenum = response.data.phonenum;
-          this.korisnik.email = response.data.email;
-          this.korisnik.name = response.data.name;
-          this.korisnik.surname = response.data.surname;
+          console.log(response.data);
           
-          
-          console.log("Ovo ispisuje,: " + response.data);          
+          Object.assign(this.korisnik, response.data);
         }
+        this.korisnik.role = 'volonter';
         this.korisnik.name = "netko"
         this.korisnik.surname = "nesto"
         this.korisnik.phonenum = "dknsdkjsndfkjdn"
-        this.korisnik.email = "dkjsndvkdjn"
+        this.korisnik.email = "njmsdkvjnd"
 
       } catch (error) {
         console.error('Greska u dohvavanju podataka:', error);
@@ -153,37 +150,27 @@ export default {
         return false;
       }
     },
-    async obrisiProfil() {
-      const confirmation = window.confirm(
-        "Jeste li sigurni da želite obrisati svoj profil? Bit će trajno izbrisan."
-      );
+    async obrisiProfil() {   
+      const confirmation = window.confirm("Jeste li sigurni da želite obrisati svoj profil? Bit će trajno izbrisan.");
       if (confirmation) {
         try {
-          const username = localStorage.getItem("username"); // Dohvaćanje username-a iz localStorage
+          const token = localStorage.getItem('token');
+          const response = await axios.delete('http://localhost:8080/api/auth/delete-account');
 
-          if (!username) {
-            alert("Korisničko ime nije pronađeno.");
-            return;
-          }
+          alert(response.data.message);  // poruka (uspjeh)
 
-          const response = await axios.delete(
-            `http://localhost:8080/api/auth/delete-account/${username}`
-          );
+          localStorage.removeItem('token');
+          localStorage.removeItem('role');
+          localStorage.removeItem('userID');
+          this.isLoggedIn = false;  // vise nije ulogiran
+          this.$router.push('/login'); // redirectaj na home
 
-          alert(response.data.message); // Poruka o uspjehu
-
-          // Brisanje podataka iz localStorage i redirekcija
-          localStorage.removeItem("username");
-          localStorage.removeItem("role");
-          localStorage.removeItem("token");
-          this.$router.push("/login"); // Preusmjeri na login
         } catch (error) {
-          console.error("Greška u brisanju profila", error);
-          alert("Došlo je do greške pri brisanju profila. Molimo pokušajte ponovno.");
+          console.error('Greška u brisanju profila', error);
+          alert('Došlo je do greške pri brisanju profila. Molimo pokušajte ponovno.');
         }
       }
     }
-
   },
   async created() {
     await this.fetchKorisnik();
