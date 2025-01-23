@@ -27,7 +27,7 @@
 
     </div>
 
-    <div v-if="!isLoggedIn" class="container">
+    <div v-show="!isLoggedIn && selected" class="container">
         <div id="g_id_onload"
              data-client_id="368455952414-n0qaeppdv3gu4qpofn5f6jkc0gu4l19u.apps.googleusercontent.com"
              data-callback="handleCredentialResponse">
@@ -113,6 +113,7 @@ export default {
             console.log("Šaljem token na backend")
             axios.post('http://localhost:8080/api/auth/google-login', {
                 idToken: response.credential, //saljem ID token tako da ne ovisi o autorizacijskom kodu
+                role: this.selected,        //slanje rolea u back
             })
             .then((res) => { //u responeseu poslan token ("token"), ime korisnika ("name") i njegova uloga ("role")
                 console.log("Spremam token u localStorage");
