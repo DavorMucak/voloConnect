@@ -36,8 +36,51 @@
   </div>
   <!-- ako je ovo profil prijavljenog korisnika moze prominit detalje -->
   <div v-if="jeLiMojProfil()">
-    <!-- !!!napravit promjenu detalja -->
-    <p>promjeni detalje</p>
+    <button v-if="!urediDetalje" @click="pokreniUredivanje">Promijeni detalje</button>
+  
+    <div v-if="urediDetalje">
+      <div>
+        <label>Email:</label>
+        <input v-model="privremeniPodaci.email" />
+      </div>
+      <div>
+        <label>Ime:</label>
+        <input v-model="privremeniPodaci.name" />
+      </div>
+      <div>
+        <label>Prezime:</label>
+        <input v-model="privremeniPodaci.surname" />
+      </div>
+    <div>
+      <label>Broj telefona:</label>
+      <input v-model="privremeniPodaci.phonenum" />
+    </div>
+      <button @click="spremiPromjene">Spremi</button>
+      <button @click="prekiniUredivanje">Odustani</button>
+    </div>
+  </div>
+  <!-- kad se pritisne na ovo ide prikaz projekata na koje je korisnik prijavljen(volonter) ili cije je vlasnik (organizacija) -->
+  <div v-if="uloga !== 'admin'">
+
+    <!-- prikaz biljezaka i recenzija -->
+    <div v-if="uloga === 'volonter'">
+      <Biljeske :username="korisnik.username"/>
+    </div>
+
+    <Recenzije :username="korisnik.username"/>
+
+    <!-- ako je korisnik organizacija, ima opciju izrade novog projekta -->
+    <router-link v-if="uloga === 'organizacija'" to="/novi-projekt"> <button>Novi projekt</button> </router-link>
+
+    <!-- <router-link :to="{ name: 'ListaProjekata', params: { username: korisnik.username } }"> <button>Moji projekti</button> </router-link> -->
+
+    <button @click="obrisiProfil">Obriši profil</button>
+  </div>
+
+  <!-- ako je korisnik admin, moze vidit i prituzbe i registracije -->
+  <div v-if="uloga === 'admin'">
+    <Prituzbe />
+    <RegistracijeAdmina />
   </div>
 </template>
 
@@ -74,6 +117,27 @@ export default {
     };
   },
   methods: {
+    pokreniUredivanje() {
+      this.privremeniPodaci = { ...this.korisnik };
+      this.urediDetalje = true;
+    },
+    prekiniUredivanje() {
+      this.urediDetalje = false;
+    },
+    async spremiPromjene() {
+      try {
+        const response = await apiClient.put(`http://localhost:8080/api/user/${this.korisnik.username}`, {
+          email: this.privremeniPodaci.email,
+          name: this.privremeniPodaci.name,
+          surname: this.privremeniPodaci.surname,
+          phonenum: this.privremeniPodaci.phonenum,
+        });
+        this.korisnik = { ...this.privremeniPodaci };
+        this.urediDetalje = false;
+      } catch (error) {
+        console.error('Greška pri spremanju promjena:', error);
+      }
+    },
     async fetchKorisnik() {
       try {
         // dohvat podataka o prijavljenon korisniku
@@ -86,11 +150,16 @@ export default {
           this.korisnik.role = VueJwtDecode.decode(token).role;
           this.korisnik.username = VueJwtDecode.decode(token).sub;
 
-          const response = await axios.get(`http://localhost:8080/api/user/${this.korisnik.username}`);
+          const response = await apiClient.get(`http://localhost:8080/api/user/${this.korisnik.username}`);
           console.log(response.data);
-
+          
           Object.assign(this.korisnik, response.data);
         }
+        this.korisnik.role = 'volonter';
+        this.korisnik.name = "netko"
+        this.korisnik.surname = "nesto"
+        this.korisnik.phonenum = "dknsdkjsndfkjdn"
+        this.korisnik.email = "njmsdkvjnd"
 
       } catch (error) {
         console.error('Greska u dohvavanju podataka:', error);
