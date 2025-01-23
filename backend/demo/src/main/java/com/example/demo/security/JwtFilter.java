@@ -22,7 +22,8 @@ import java.security.GeneralSecurityException;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
-
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.demo.service.JwtService;
 import com.example.demo.service.MyUserDetailsService;
 import com.example.demo.service.CustomOAuth2UserService;
@@ -59,13 +60,13 @@ public class JwtFilter extends OncePerRequestFilter {
                 }
             }
             catch (GeneralSecurityException e) {
-                /*
-                if (isJwtToken(token)) {
+
+                if (token.startsWith("ey")) {
                     handleJwtToken(token, request);
                 } else {
                     throw new RuntimeException(e);
                 }
-                 */
+
                 e.printStackTrace();
             }
         }
@@ -77,13 +78,11 @@ public class JwtFilter extends OncePerRequestFilter {
             return true;
         return false;
     }
-
     private boolean isGoogleToken(String token) {
-        if(token.startsWith("<GoogleJWT>"))
-            return true;
-        return false;
+        DecodedJWT decodedJWT = JWT.decode(token);
+        String issuer = decodedJWT.getIssuer();
+        return issuer != null && issuer.contains("accounts.google.com");
     }
-
 
     private void handleOAuth2Token(String token, HttpServletRequest request) throws GeneralSecurityException, IOException {
         if(token.startsWith("<GoogleJWT>"))
@@ -120,5 +119,5 @@ public class JwtFilter extends OncePerRequestFilter {
     }
 
 
-
 }
+
