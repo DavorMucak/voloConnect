@@ -39,7 +39,6 @@
         class="digit-box" />
     </div>
  
-    <p>Kod vrijedi još: {{ formattedTimer }} </p>
     <button @click="resendCode" r> Trebam novi kod </button>
 
     <button @click="verifyCode">Potvrdi kod</button>
@@ -77,21 +76,12 @@ export default {
       timerInterval: null,
     };
   },
-  computed: {
-    formattedTimer() {
-      const minutes = Math.floor(this.timer / 60);
-      const seconds = this.timer % 60;
-      return `${minutes}:${seconds.toString().padStart(2, '0')}`;
-    },
-  },
   methods: {
     async register() {
       // resetiranje error i success poruke
       this.error = '';
       this.success = '';
       this.showCode = true;   //showa se odmah radi testiranja, inace treba biti dolje
-
-      this.startTimer();
 
       // provjera jesu li svi podaci uneseni
       if (this.selected === 'organizacija' && (!this.username || !this.email || !this.password)) {
@@ -186,28 +176,6 @@ export default {
         alert('Došlo je do greške prilikom slanja novog koda.');
       }
     },
-    startTimer() {
-      if (this.timerInterval) {
-        clearInterval(this.timerInterval);
-      }
-
-      this.timer = 900;
-
-      this.timerInterval = setInterval(() => {
-        if (this.timer > 0) {
-          this.timer--;
-        } else {
-          clearInterval(this.timerInterval);
-          this.expectedCode = null;   //"kod nevazeci"
-          this.timerInterval = null;
-        }
-      }, 1000);
-    },
-  },
-  beforeDestroy() {
-    if (this.timerInterval) {
-      clearInterval(this.timerInterval);
-    }
-  },
+  }
 };
 </script>

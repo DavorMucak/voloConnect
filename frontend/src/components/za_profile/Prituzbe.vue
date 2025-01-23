@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import apiClient from '@/apiClient';
+import axios from 'axios';
 
 export default {
   name: 'Prituzbe',
@@ -32,7 +32,7 @@ export default {
   },
   methods: {
     fetchComplaints() { // dohvaca prituzbe
-      apiClient.get(`http://localhost:8080/api/prituzbe`)
+      axios.get(`http://localhost:8080/api/prituzbe`)
         .then(response => {
           this.complaints = response.data;
         })
@@ -41,7 +41,7 @@ export default {
         });
     },
     resolveComplaint(id) { // brise prituzbu kad je razrijesena
-      apiClient.delete(`http://localhost:8080/api/prituzbe/${id}`)
+      axios.delete(`http://localhost:8080/api/prituzbe/${id}`)
         .then(() => {
           this.complaints = this.complaints.filter(complaint => complaint.id !== id);
         })

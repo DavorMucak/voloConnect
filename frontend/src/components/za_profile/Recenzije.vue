@@ -81,7 +81,7 @@ export default {
       }
     },
     fetchReviews() { // dohvaca recenzije
-      apiClient.get(`http://localhost:8080/api/recenzije/${this.username}`)
+      axios.get(`http://localhost:8080/api/recenzije/${this.username}`)
         .then(response => {
           this.reviews = response.data;
         })
@@ -90,7 +90,7 @@ export default {
         });
     },
     submitFeedback(id) { // sprema nove povratne informacije lokalno i u bazu
-      apiClient.put(`http://localhost:8080/api/recenzije/${this.username}`, {
+      axios.put(`http://localhost:8080/api/recenzije/${this.username}`, {
           id: id,
           feedback: {description: this.feedback.description, grade: this.feedback.grade}
         })

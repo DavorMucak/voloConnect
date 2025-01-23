@@ -1,14 +1,14 @@
 <template>
   <!-- kad se pritisne na ovo ide prikaz projekata na koje je korisnik prijavljen(volonter) ili cije je vlasnik (organizacija) -->
   <div v-if="uloga !== 'admin'">
-    <router-link to="/moji-projekti"> <button>Moji projekti</button> </router-link>
+    <router-link to="{ path: '/moji-projekti', params: { username: korisnik.username } }"> <button>Moji projekti</button> </router-link>
 
     <button @click="obrisiProfil">Obriši profil</button>
 
     <!-- prikaz biljezaka i recenzija -->
-    <Biljeske />
+    <Biljeske :username="korisnik.username"/>
 
-    <Recenzije />
+    <Recenzije :username="korisnik.username"/>
 
     <!-- ako je korisnik organizacija, ima opciju izrade novog projekta -->
     <router-link v-if="uloga === 'organizacija'" to="/novi-projekt"> <button>Novi projekt</button> </router-link>

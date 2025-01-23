@@ -6,11 +6,7 @@ import Register from '@/components/Register.vue';
 import NoviProjekt from '@/components/za_profile/NoviProjekt.vue';
 import Projekt from '@/components/Projekt.vue';
 import Profil from '@/components/Profil.vue';
-import Biljeske from '@/components/za_profile/Biljeske.vue';
 import ListaProjekata from '@/components/za_profile/ListaProjekata.vue';
-import Registracije from '@/components/za_profile/Registracije.vue';
-import Prituzbe from '@/components/za_profile/Prituzbe.vue';
-import Recenzije from '@/components/za_profile/Recenzije.vue';
 
 const routes = [
     {
@@ -51,90 +47,6 @@ const routes = [
         component: ListaProjekata,
         props:true
     }
-    // !!!popravit rute
-    /*   {
-        path: '/volonteri/:username',
-        component: Profil,
-        children: [
-          {
-            path: '',
-            name: 'Profil',
-            component: Profil
-          },
-          {
-            path: 'biljeske',
-            name: 'Biljeske',
-            component: Biljeske
-          },
-          {
-            path: 'projekti',
-            name: 'ListaProjekata',
-            component: ListaProjekata
-          },
-          {
-            path: 'recenzije',
-            name: 'Recenzije',
-            component: Recenzije
-          },
-          {
-            path: 'projekt/:imeProjekta',
-            name: 'ProfilProjekt',
-            component: Projekt
-          }
-        ]
-      },
-      {
-        path: '/organizacije/:username',
-        component: Profil,
-        children: [
-          {
-            path: '',
-            name: 'Profil',
-            component: Profil
-          },
-          {
-            path: 'projekti',
-            name: 'ListaProjekata',
-            component: ListaProjekata
-          },
-          {
-            path: 'novi-projekt',
-            name: 'ProfilNoviProjekt',
-            component: NoviProjekt
-          },
-          {
-            path: 'recenzije',
-            name: 'Recenzije',
-            component: Recenzije
-          },
-          {
-            path: 'projekt/:imeProjekta',
-            name: 'ProfilProjekt',
-            component: Projekt
-          }
-        ]
-      },
-      {
-        path: '/admini/:username',
-        component: Profil,
-        children: [
-          {
-            path: '',
-            name: 'Profil',
-            component: Profil
-          },
-          {
-            path: 'prituzbe',
-            name: 'Prituzbe',
-            component: Prituzbe
-          },
-          {
-            path: 'registracije',
-            name: 'Registracije',
-            component: Registracije
-          }
-        ]
-      } */
 ];
 
 const router = createRouter({

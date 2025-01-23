@@ -49,14 +49,13 @@
 
 <script>
 import VueJwtDecode from 'vue-jwt-decode';
-import apiClient from '@/apiClient';
+import axios from 'axios';
 
 export default {
-  name: ListaProjekata,
-  props: {
-    username: { // korisnicko ime korisnika ciji se projekti pregledavaju
-      type: String,
-      required: true
+  name: 'ListaProjekata',
+  computed: {
+    username() {
+      return this.$route.params.username;
     }
   },
   data() {
@@ -93,7 +92,7 @@ export default {
       if (this.username === this.currentUser.username)
         this.isVolonteer = this.currentUser.role === 'volonter';
       else {
-        apiClient.get(`http://localhost:8080/api/user/${this.username}`)
+        axios.get(`http://localhost:8080/api/user/${this.username}`)
         .then(response => {
           const profile = response.data;
           this.isVolonteer = profile.role === 'volonter';
@@ -104,7 +103,7 @@ export default {
       }
     },
     fetchProjects() { // dohvaca projekte koje je organizacija organizirala/u kojima je volonter sudjelovao
-      apiClient.get(`http://localhost:8080/api/projects/owner/${this.username}`)
+      axios.get(`http://localhost:8080/api/projects/owner/${this.username}`)
         .then(response => {
           this.projects = response.data;
         })
@@ -130,7 +129,7 @@ export default {
     deleteProject(id) { // brise projekt
       const confirmation = window.confirm("Ova akcija se ne može poništiti. Želite li nastaviti?");
       if (confirmation) {
-        apiClient.delete(`http://localhost:8080/api/projects/${id}`)
+        axios.delete(`http://localhost:8080/api/projects/${id}`)
           .then(() => {
             this.projects = this.projects.filter(project => project.id !== id); // prikaz promjena
             alert('Projekt je uspješno obrisan.');
@@ -141,7 +140,7 @@ export default {
       }
     },
     leftReview(name) { // provjerava je li vovlonter vec ostavio recenziju organizaciji za taj projekt
-      apiClient.get(`http://localhost:8080/api/recenzije/${this.username}`)
+      axios.get(`http://localhost:8080/api/recenzije/${this.username}`)
         .then(response => {
           this.reviews = response.data;
           return this.reviews.some(review => review.projectName === name);
@@ -151,7 +150,7 @@ export default {
         });
     },
     submitReview(id) { // sprema novu recenziju u bazu
-      apiClient.put(`http://localhost:8080/api/recenzije/${this.username}`, {
+      axios.put(`http://localhost:8080/api/recenzije/${this.username}`, {
           projectId: id,
           review: {description: this.review.description, grade: this.review.grade}
         })
