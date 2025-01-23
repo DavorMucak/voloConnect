@@ -104,7 +104,8 @@ export default {
             }
         },
 
-        handleCredentialResponse(response) {
+        async handleCredentialResponse(response) {
+          this.error = '';
             const idToken = response.credential;
             if (idToken) {
               console.log("Primljen idToken: ", idToken);
@@ -112,35 +113,39 @@ export default {
             } else {
               console.error("Nije primljen idToken!");
             }
-            console.log("Šaljem token na backend")
-            axios.post('http://localhost:8080/api/auth/google-login', {
-                idToken: response.credential, //saljem ID token tako da ne ovisi o autorizacijskom kodu
-                role: this.selected,        //slanje rolea u back
-            })
-            .then((res) => { //u responeseu poslan token ("token"), ime korisnika ("name") i njegova uloga ("role")
-                console.log("Spremam token u localStorage");
-                alert('Uspješna Google prijava!');
-                let token = res.data.token;
-                console.log(token);
-                if(token)
-                  if(token.startsWith("<CustomJWT>"))
-                    token = token.substring("<CustomJWT>".length)
-                console.log(VueJwtDecode.decode(token));
-                const decodedToken = VueJwtDecode.decode(token);
-                localStorage.setItem('token', token);
-                localStorage.setItem('username', decodedToken.sub); // username
-                localStorage.setItem('role', decodedToken.role);    // role
-                localStorage.setItem('userID', decodedToken.userID);
-                this.$root.fetchKorisnik();     // automatski updatea podatke o korisniku u root komponenti (Vue.js)
+            try {
+              console.log("Šaljem token na backend" + "<GoogleJWT>" + response.credential);
+              const res = await axios.post('http://localhost:8080/api/auth/google-login', {role: this.selected}, // sending role to the backend as payload
+                  {
+                    headers: {
+                      Authorization: `Bearer <GoogleJWT>${response.credential}`,
+                    },
+                  })
+              console.log(res.data());
+              console.log("Spremam token u localStorage");
+              alert('Uspješna Google prijava!');
+              let token = res.data.token;
+              console.log(token);
+              if (token)
+                if (token.startsWith("<CustomJWT>"))
+                  token = token.substring("<CustomJWT>".length)
+              console.log(VueJwtDecode.decode(token));
+              const decodedToken = VueJwtDecode.decode(token);
+              localStorage.setItem('token', token);
+              localStorage.setItem('username', decodedToken.sub); // username
+              localStorage.setItem('role', decodedToken.role);    // role
+              localStorage.setItem('userID', decodedToken.userID);
+              this.$root.fetchKorisnik();     // automatski updatea podatke o korisniku u root komponenti (Vue.js)
 
-                this.isLoggedIn = true;
-                this.router.push('/');
+              this.isLoggedIn = true;
+              this.router.push('/');
 
-            })
-            .catch((error) => {
-                console.error('Greška u prijavi s Googleom', error);
-                alert('Dogodila se pogreška pri prijavi s Googleom. Molimo pokušajte ponovo.');
-            });
+
+            }catch (error) {
+            this.error = 'Greška u prijavi s Googleom';
+            console.error('Greška u prijavi s Googleom', error);
+            alert(this.error);
+          }
         },
 
         googleLogout() {
