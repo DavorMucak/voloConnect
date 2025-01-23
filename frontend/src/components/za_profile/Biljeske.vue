@@ -9,7 +9,7 @@
       </div>
     </div>
 
-    <div v-if="biljeske.length">
+    <div v-if="notes.length">
       <div v-for="note in notes" :key="note.id" class="biljeska">
         <div v-if="note.id === editNote.id"> <!-- editNote je biljeska koju uređujemo, ne moze se uređivati vise biljeski odjednom -->
           <textarea v-model="editNote.content"></textarea>
@@ -30,6 +30,7 @@
 </template>
 
 <script>
+
 import apiClient from '@/apiClient';
 import VueJwtDecode from 'vue-jwt-decode';
 
@@ -139,6 +140,8 @@ export default {
     }
   }
 };
+
+
 </script>
 
 <style scoped>

@@ -1,7 +1,7 @@
 <template>
   <!-- kad se pritisne na ovo ide prikaz projekata na koje je korisnik prijavljen(volonter) ili cije je vlasnik (organizacija) -->
   <div v-if="uloga !== 'admin'">
-    <router-link to="/moji-projekti"> <button>Moji projekti</button> </router-link>
+    <router-link :to="`/moji-projekti/${korisnik.username}`"> <button>Moji projekti</button> </router-link>
 
     <button @click="obrisiProfil">Obriši profil</button>
 

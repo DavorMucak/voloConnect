@@ -51,10 +51,11 @@ public class JwtFilter extends OncePerRequestFilter {
         }
         if (token != null && !token.isEmpty()) {
             try {
-                if(isJwtToken(token)){
-                    handleJwtToken(token, request);
-                } else {
+                if(isGoogleToken(token)){
                     handleOAuth2Token(token, request);
+                    return;
+                } else {
+                    handleJwtToken(token, request);
                 }
             }
             catch (GeneralSecurityException e) {
@@ -77,8 +78,16 @@ public class JwtFilter extends OncePerRequestFilter {
         return false;
     }
 
+    private boolean isGoogleToken(String token) {
+        if(token.startsWith("<GoogleJWT>"))
+            return true;
+        return false;
+    }
+
 
     private void handleOAuth2Token(String token, HttpServletRequest request) throws GeneralSecurityException, IOException {
+        if(token.startsWith("<GoogleJWT>"))
+            token = token.substring("<GoogleJWT>".length());
         OAuth2User oAuth2User = customOAuth2UserService.verifyOAuth2Token(token);
         if(oAuth2User != null){
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(oAuth2User, null, oAuth2User.getAuthorities());
@@ -109,6 +118,7 @@ public class JwtFilter extends OncePerRequestFilter {
             }
         }
     }
+
 
 
 }
