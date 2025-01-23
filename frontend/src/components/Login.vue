@@ -23,16 +23,16 @@
 
             <button type="submit">Prijava</button>
             <p class="error" v-if="error">{{ error }}</p>
-
         </form>
+
     </div>
 
-    <div v-if="!isLoggedIn" class="container">
-      <div id="g_id_onload"
-           data-client_id="368455952414-n0qaeppdv3gu4qpofn5f6jkc0gu4l19u.apps.googleusercontent.com"
-           data-callback="handleCredentialResponse">
-      </div>
-      <div class="g_id_signin" data-type="standard"></div>
+    <div v-show="!isLoggedIn && selected" class="container">
+        <div id="g_id_onload"
+             data-client_id="368455952414-n0qaeppdv3gu4qpofn5f6jkc0gu4l19u.apps.googleusercontent.com"
+             data-callback="handleCredentialResponse">
+        </div>
+        <div class="g_id_signin" data-type="standard"></div>
     </div>
 
     <div v-if="isLoggedIn" class="hidden">
@@ -92,12 +92,11 @@ export default {
 
                 this.$root.fetchKorisnik();     // automatski updatea podatke o korisniku u root komponenti (Vue.js)
 
+                alert('Uspješna prijava');
                 this.isLoggedIn = true;
                 this.userName = response.data
 
-              alert('Uspješna prijava');
-
-              console.log("name: " + this.userName);
+                console.log("name: " + this.userName);
                 this.router.push('/');
             } catch (error) {
                 console.error('Greška u prijavi', error);
@@ -116,6 +115,7 @@ export default {
             console.log("Šaljem token na backend")
             axios.post('http://localhost:8080/api/auth/google-login', {
                 idToken: response.credential, //saljem ID token tako da ne ovisi o autorizacijskom kodu
+                role: this.selected,        //slanje rolea u back
             })
             .then((res) => { //u responeseu poslan token ("token"), ime korisnika ("name") i njegova uloga ("role")
                 console.log("Spremam token u localStorage");
