@@ -45,7 +45,7 @@
         }
         console.log(this.name);
         
-        apiClient.get(`http://localhost:8080/api/projects/owner/${this.name}`)
+        axios.get(`http://localhost:8080/api/projects/owner/${this.name}`)
           .then(response => {
             this.projects = response.data;
           })

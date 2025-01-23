@@ -104,7 +104,7 @@ export default {
     },
     async spremiPromjene() {
       try {
-        const response = await apiClient.put(`http://localhost:8080/api/user/${this.korisnik.username}`, {
+        const response = await axios.put(`http://localhost:8080/api/user/${this.korisnik.username}`, {
           email: this.privremeniPodaci.email,
           name: this.privremeniPodaci.name,
           surname: this.privremeniPodaci.surname,
@@ -127,7 +127,7 @@ export default {
           this.korisnik.role = VueJwtDecode.decode(token).role;
           this.korisnik.username = VueJwtDecode.decode(token).sub;
 
-          const response = await apiClient.get(`http://localhost:8080/api/user/${this.korisnik.username}`);
+          const response = await axios.get(`http://localhost:8080/api/user/${this.korisnik.username}`);
           this.korisnik.phonenum = response.data.phonenum;
           this.korisnik.email = response.data.email;
           this.korisnik.name = response.data.name;

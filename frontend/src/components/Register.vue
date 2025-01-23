@@ -219,4 +219,5 @@ export default {
 /*treba popravit/provjerit:
 -nakon registracije se redirecta na home ali se ne refresha tj ne loada se isLoggedIn pravilno
 -slanje koda mailom
--notif inbox
+-notif inboX
+*/

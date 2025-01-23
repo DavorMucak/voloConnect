@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class UserProject {
-
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,4 +25,6 @@ public class UserProject {
     private Project project;
 
     private LocalDateTime applicationDate = LocalDateTime.now(); // Kada se prijavio
+
+
 }

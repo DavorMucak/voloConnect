@@ -45,15 +45,15 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         logger.info("Pokrenuta funkcija verifyOAuth2Token");
         logger.info(token);
         // Inicijaliziraj verifyer za Google ID token
-        GsonFactory jsonFactory = GsonFactory.getDefaultInstance();
         GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(
-                GoogleNetHttpTransport.newTrustedTransport(), jsonFactory)
+                GoogleNetHttpTransport.newTrustedTransport(), GsonFactory.getDefaultInstance())
                 .setAudience(Collections.singletonList(clientId))
                 .setIssuer(issuer)
                 .build();
 
         GoogleIdToken idToken = verifier.verify(token);
         logger.info("Generiran verifier, verificiram Google ID token");
+        //PROBLEM JE STO IDTOKEN BUDE NULL!!!
         if (idToken != null) {
             GoogleIdToken.Payload payload = idToken.getPayload();
 
@@ -84,6 +84,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 newUser.setName((String) payload.get(givenName));
                 Object familyName = "family_name";
                 newUser.setSurname((String) payload.get(familyName));
+                newUser.setUsername(newUser.getName() + newUser.getUsername() + newUser.getId());
                 //SKUZI KAKO DA ODREDIS ROLE NOVOG USERA
                 newUser.setRole("neodređen");
                 //kod prijave googleom nije potrebno slati verifikacijski mail?
@@ -101,7 +102,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             Map<String, Object> attributes = Map.of(
                     "email", email,
                     "name", name,
-                    "role", user.get().getRole()
+                    "role", user.get().getRole(),
+                    "userId", user.get().getId(),
+                    "username", user.get().getUsername()
             );
 
             return new CustomOAuth2User(userPrincipal, attributes);
