@@ -101,20 +101,20 @@ export default {
     }
   },
   methods: {
-    prijavaProjekt() {
-    const projectId = this.projekt.id;    
-    const userId = localStorage.getItem('userID'); // ID ulogovanog korisnika
-    axios.post(`/api/projects/${projectId}/apply`, null, {
-        params: { userId: userId }
-    })
-    .then(response => {
-        alert(response.data);
-    })
-    .catch(error => {
-        alert("Failed to apply: " + error.response.data);
-    });
-  },
-
+    async prijavaProjekt() {
+      try {
+        //kad korisnik stisne prijava onda se salje id backendu
+        //!!!!tribalo bi jos poslat koji profil se prijavljuje??? znaci id korisnika i projekta??? not sure
+        const response = await axios.post('http://localhost:8080/api/signup',
+            { id: this.projekt.id }
+        );
+        alert("Uspješna prijava!");
+      } catch (error) {
+        alert(
+            "Greška."
+        );
+      }
+    },
     async odjavaProjekt() {
       //!!!kod za odjavu projekta
     },

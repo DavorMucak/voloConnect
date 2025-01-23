@@ -116,7 +116,7 @@ export default {
       //na pocetku se ne primjenjuje filter nego su svi projekti prikazani
       this.filtriraniProjekti = this.projects;
       //dohvat liste projekata s backenda
-      const response = await apiClient.get('http://localhost:8080/api/projects');
+      const response = await axios.get('http://localhost:8080/api/projects');
       this.projects = response.data;
     } catch (error) {
       this.error = error.response ? error.response.data : 'Ne mogu se dohvatiti projekti.';

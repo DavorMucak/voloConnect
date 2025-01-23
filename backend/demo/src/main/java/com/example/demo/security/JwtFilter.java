@@ -1,5 +1,6 @@
 package com.example.demo.security;
 
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import org.springframework.context.ApplicationContext;
 import com.example.demo.service.CustomOAuth2UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,17 +45,16 @@ public class JwtFilter extends OncePerRequestFilter {
 
         String token = null;
         String authenticationHeader = request.getHeader("Authorization");
-        System.out.println("Authorization header: " + authenticationHeader);
+        //System.out.println("Authorization header: " + authenticationHeader);
         if (authenticationHeader != null && authenticationHeader.startsWith("Bearer ")){
             token = authenticationHeader.substring(7);
         }
         if (token != null && !token.isEmpty()) {
             try {
-                if(isOAuth2Token(token)){
+                if(isJwtToken(token)){
                     handleJwtToken(token, request);
-                } else if (isOAuth2Token(token)){
+                } else {
                     handleOAuth2Token(token, request);
-
                 }
             }
             catch (GeneralSecurityException e) {
@@ -71,16 +71,9 @@ public class JwtFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    //Google ID token pocinje znakovima eyJ i mora sadržavati točku
-    private boolean isOAuth2Token(String token) {
-        return token.startsWith("eyJ") && token.contains(".");
-    }
-
-    //jwt token mora imati 3 dijela
     private boolean isJwtToken(String token) {
-        if (token.split("\\.").length == 3) {
+        if(token.startsWith("<CustomJWT>"))
             return true;
-        }
         return false;
     }
 
@@ -98,6 +91,9 @@ public class JwtFilter extends OncePerRequestFilter {
 
 
     private void handleJwtToken(String token, HttpServletRequest request) {
+        if(token.startsWith("<CustomJWT>"))
+            token = token.substring("<CustomJWT>".length());
+        System.out.println("token " + token);
         String username = jwtService.extractUserName(token);
         String role = jwtService.extractRole(token);
         String formattedRole = "ROLE_" + role.toUpperCase();

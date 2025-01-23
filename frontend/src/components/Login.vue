@@ -72,15 +72,17 @@ export default {
             }
 
             try {
+              console.log("Saljem post request: " + this.username + "  " + this.password);
                 const response = await axios.post('http://localhost:8080/api/auth/login', {
                     username: this.username,
                     password: this.password
                 });
-
-                localStorage.setItem('token', response.data);     //spremanje tokena (korisnik prijavljen)
-                let tokenvar = localStorage.getItem('token');
-                console.log(VueJwtDecode.decode(response.data));
-                const token = response.data;
+                console.log("primljen token: " + response.data);
+                let token = response.data.substring("<CustomJWT>".length);
+                if(token.startsWith("<CustomJWT>"))
+                  token = token.substring("<CustomJWT>".length)
+                console.log("token: " + token);
+                console.log(VueJwtDecode.decode(token));
                 const decodedToken = VueJwtDecode.decode(token);
                 localStorage.setItem('token', token);
                 localStorage.setItem('username', decodedToken.sub); // username
@@ -117,13 +119,23 @@ export default {
             })
             .then((res) => { //u responeseu poslan token ("token"), ime korisnika ("name") i njegova uloga ("role")
                 console.log("Spremam token u localStorage");
-                localStorage.setItem('token', res.data.token);
                 alert('Uspješna Google prijava!');
+                let token = res.data.token;
+                console.log(token);
+                if(token)
+                  if(token.startsWith("<CustomJWT>"))
+                    token = token.substring("<CustomJWT>".length)
+                console.log(VueJwtDecode.decode(token));
+                const decodedToken = VueJwtDecode.decode(token);
+                localStorage.setItem('token', token);
+                localStorage.setItem('username', decodedToken.sub); // username
+                localStorage.setItem('role', decodedToken.role);    // role
+                localStorage.setItem('userID', decodedToken.userID);
+                this.$root.fetchKorisnik();     // automatski updatea podatke o korisniku u root komponenti (Vue.js)
+
                 this.isLoggedIn = true;
-                this.userName = res.data.name;
-                this.selected = res.data.role;
-                console.log("name: " + this.userName + " , role: " + res.data.role);
                 this.router.push('/');
+
             })
             .catch((error) => {
                 console.error('Greška u prijavi s Googleom', error);
@@ -135,6 +147,7 @@ export default {
             localStorage.removeItem('token');
             localStorage.removeItem('role');
             localStorage.removeItem('userID');
+            localStorage.removeItem('username');
             this.isLoggedIn = false;
             this.userName = '';
         }
