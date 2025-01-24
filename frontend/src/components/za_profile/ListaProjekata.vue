@@ -1,40 +1,44 @@
 <template>
   <div v-if="projects.length">
-    <div v-for="project in projects" :key="project.id" class="project-box">
-      <div v-if="!(isVolonteer === true && currentUser.username !== username && project.statusPrijave === 'cekas')"> <!-- ne prikazuju se projekti za koje volonter ceka odobrenje prijave -->
-        <router-link :to="`/projekti/${encodeURIComponent(project.imeProjekta)}`"> <!-- ime projekta je jedinstveno -->
-          <p>{{ project.imeProjekta }}</p>
+    <div v-for="item in projects" :key="item.project?.id" class="project-box">
+      <div v-if="!(isVolonteer === true && currentUser.username !== username)"> <!-- prikazuju se i projekti za koje volonter ceka odobrenje prijave -->
+        <router-link :to="`/projekt/${encodeURIComponent(item.project.imeProjekta)}`"> <!-- ime projekta je jedinstveno -->
+          <p>{{ item.project.imeProjekta }}</p>
         </router-link>
         <div v-if="isVolonteer">
-          <router-link :to="`/profil/${encodeURIComponent(project.imeOrg)}`"> <!-- imeOrg je efektivno korisnicko ime organizacije -->
-            <p>{{ orgText(project) }} {{ project.imeOrg }}</p>
+          <router-link :to="`/profil/${encodeURIComponent(item.project.ownerId)}`"> <!-- imeOrg je efektivno korisnicko ime organizacije -->
+            <p>{{ orgText(item.project) }} {{ item.project.ownerId }}</p>
           </router-link>
         </div>
 
-        <p>Od {{ project.datumPoc }} do {{ project.datumKraj }}</p>
-        <p v-if="isProjectUpcoming(project) && project.jeLiHitno">Hitno!</p>
+        <p>Od {{ item.project.datumPoc || "N/A" }} do {{ item.project.datumKraj || "N/A" }}</p>
+        <p v-if="isProjectUpcoming(item.project) && item.project.jeLiHitno">Hitno!</p>
 
-        <p v-if="isProjectUpcoming(project)">Broj sudionika:
-          {{ project.brojPrijava }} / {{ project.brojLjudi }}</p> <!-- brojPrijava: broj odobrenih prijava -->
-        <p v-else>Broj sudionika: {{ project.brojPrijava }}</p>
+        <p v-if="isProjectUpcoming(item.project)">Broj sudionika:
+          {{ item.project.brojLjudi }}</p> <!-- brojPrijava: broj odobrenih prijava -->
+        <p v-else>Broj ljudi trazeno: {{ item.project.brojLjudi }}</p>
 
         <div v-if="currentUser.username === username && currentUser.role === 'volonter'"> <!-- volonter vidi status prijave na projekt -->
-          <p v-if="isProjectUpcoming(project) && project.statusPrijave === 'prijavljen'">Prijava odobrena</p> <!-- statusPrijave ostaje 'prijavljen' nakon kraja projekta -->
-          <p v-else-if="isProjectUpcoming(project) && project.statusPrijave === 'cekas'">Prijava poslana</p>
+          <p v-if="isProjectUpcoming(item.project) && item.status === 'accepted'">Prijava odobrena</p> <!-- statusPrijave ostaje 'prijavljen' nakon kraja projekta -->
+          <p v-else-if="isProjectUpcoming(item.project) && item.status === 'waiting'">Prijava poslana</p>
+          <p v-if="item.status === 'declined'">Prijava odbijena</p> <!-- statusPrijave ostaje 'prijavljen' nakon kraja projekta -->
 
-          <div v-else-if="!leftReview(project.imeProjekta)">
-            <button @click="review.projectName = project.imeProjekta">Napiši recenziju</button> <!-- ako vec nije, volonter moze ostaviti recenziju organizaciji putem projekta koji ih veze -->
-            <div v-if="project.imeProjekta === review.projectName">
-              <textarea v-model="review.description" :placeholder="`Opišite iskustvo s korisnikom ${project.imeOrg}`"></textarea>
+          <!-- Commented out reviews -->
+          <!--
+          <div v-else-if="!leftReview(item.project.imeProjekta)">
+            <button @click="review.projectName = item.project.imeProjekta">Napiši recenziju</button>
+            <div v-if="item.project.imeProjekta === review.projectName">
+              <textarea v-model="review.description" :placeholder="`Opišite iskustvo s korisnikom ${item.project.ownerId}`"></textarea>
               <input v-model="review.grade" type="number" min="1" max="5" placeholder="Ocjena" />
-              <button @click="submitReview(project.id)">Objavi</button>
+              <button @click="submitReview(item.project.id)">Objavi</button>
             </div>
           </div>
+          -->
         </div>
 
         <div v-if="currentUser.username === username && currentUser.role === 'organizacija'
           || isVolonteer === false && currentUser.role === 'admin'">
-          <button @click="deleteProject(project.id)">Obriši projekt</button> <!-- omoguceno organizacijama na vlastitom profilu i adminima -->
+          <button @click="deleteProject(item.project.id)">Obriši projekt</button> <!-- omoguceno organizacijama na vlastitom profilu i adminima -->
         </div>
       </div>
     </div>
@@ -52,25 +56,29 @@ import VueJwtDecode from 'vue-jwt-decode';
 import apiClient from '@/apiClient';
 import axios from 'axios';
 
-
 export default {
   name: 'ListaProjekata',
   props: {
-    username: { // korisnicko ime korisnika ciji se projekti pregledavaju
+    username: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
     return {
       projects: [],
-      currentUser: {username: '', role: ''}, // podaci o trenutnom korisniku
-      isVolonteer: false, // uloga korisnika ciji se projekti pregledavaju
+      currentUser: { username: '', role: '' },
+      isVolonteer: false,
+      // Commented out review-related data
+      /*
       review: {
         projectName: '',
         description: '',
-        grade: ''
-      }
+        grade: '',
+      },
+      */
+      projectsWithStatus: [],
+      error: null,
     };
   },
   created() {
@@ -79,9 +87,9 @@ export default {
     this.fetchProjects();
   },
   methods: {
-    fetchUser() { // dohvaca podatke o trenutnom korisniku
+    fetchUser() {
       try {
-        const token = localStorage.getItem("token");
+        const token = localStorage.getItem('token');
         if (token) {
           const decodedToken = VueJwtDecode.decode(token);
           this.currentUser.username = decodedToken.sub;
@@ -91,30 +99,65 @@ export default {
         console.error('Error fetching current user:', error);
       }
     },
-    checkUserRole() { // dohvaca ulogu korisnika ciji se projekti pregledavaju
+    checkUserRole() {
       if (this.username === this.currentUser.username)
         this.isVolonteer = this.currentUser.role === 'volonter';
       else {
-        axios.get(`http://localhost:8080/api/user/${this.username}`)
-        .then(response => {
-          const profile = response.data;
-          this.isVolonteer = profile.role === 'volonter';
-        })
-        .catch(error => {
-          console.error('Error fetching user:', error);
-        });
+        axios
+            .get(`http://localhost:8080/api/user/${this.username}`)
+            .then((response) => {
+              const profile = response.data;
+              this.isVolonteer = profile.role === 'volonter';
+            })
+            .catch((error) => {
+              console.error('Error fetching user:', error);
+            });
       }
     },
-    fetchProjects() { // dohvaca projekte koje je organizacija organizirala/u kojima je volonter sudjelovao
-      axios.get(`http://localhost:8080/api/projects/owner/${this.username}`)
-        .then(response => {
-          this.projects = response.data;
-        })
-        .catch(error => {
-          console.error('Error fetching projects:', error);
-        });
+    fetchProjects() {
+      if (this.currentUser.role === 'organizacija') {
+        this.fetchOrgProjects();
+      } else if (this.currentUser.role === 'volonter') {
+        this.fetchVolProjects();
+      }
     },
-    orgText(project) { // formatira izjavu temeljeno na aktualnosti projekta
+    fetchOrgProjects() {
+      axios
+          .get(`http://localhost:8080/api/projects/owner/${this.username}`)
+          .then((response) => {
+            this.projects = [
+              ...response.data.map((project) => ({
+                ...project,
+                status: project.status || null,
+              })),
+            ];
+            console.log('Fetched Organization Projects:', this.projects);
+          })
+          .catch((error) => {
+            console.error('Error fetching organization projects:', error);
+          });
+    },
+    fetchVolProjects() {
+      axios
+          .get(
+              `http://localhost:8080/api/projects/owner/${this.username}/withstatus`
+          )
+          .then((response) => {
+            this.projects = [
+              ...response.data.map((project) => ({
+                ...project,
+                status: project.status || null,
+              })),
+            ];
+            console.log('Fetched Volunteer Projects:', this.projects);
+          })
+          .catch((error) => {
+            this.error = error.response?.data || 'Failed to fetch projects.';
+            console.error('Error fetching volunteer projects:', error);
+          });
+    },
+    orgText(project) {
+      if(!project) return false;
       const currentDate = new Date();
       const endDate = new Date(project.datumKraj);
 
@@ -124,54 +167,61 @@ export default {
         return 'Organizira';
       }
     },
-    isProjectUpcoming(project) { // provjerava aktualnost projekta
+    isProjectUpcoming(project) {
+      if (!project) return false;
       const currentDate = new Date();
       const startDate = new Date(project.datumPoc);
       return startDate > currentDate;
     },
-    deleteProject(id) { // brise projekt
-      const confirmation = window.confirm("Ova akcija se ne može poništiti. Želite li nastaviti?");
+    deleteProject(id) {
+      const confirmation = window.confirm(
+          'Ova akcija se ne može poništiti. Želite li nastaviti?'
+      );
       if (confirmation) {
-        axios.delete(`http://localhost:8080/api/projects/${id}`)
-          .then(() => {
-            this.projects = this.projects.filter(project => project.id !== id); // prikaz promjena
-            alert('Projekt je uspješno obrisan.');
-          })
-          .catch(error => {
-            console.error('Error deleting project:', error);
-          });
+        axios
+            .delete(`http://localhost:8080/api/projects/${id}`)
+            .then(() => {
+              this.projects = this.projects.filter(
+                  (project) => project.id !== id
+              );
+              alert('Projekt je uspješno obrisan.');
+            })
+            .catch((error) => {
+              console.error('Error deleting project:', error);
+            });
       }
     },
-    leftReview(name) { // provjerava je li vovlonter vec ostavio recenziju organizaciji za taj projekt
-      axios.get(`http://localhost:8080/api/recenzije/${this.username}`)
-        .then(response => {
+    /*
+    leftReview(name) {
+      axios
+        .get(`http://localhost:8080/api/recenzije/${this.username}`)
+        .then((response) => {
           this.reviews = response.data;
-          return this.reviews.some(review => review.projectName === name);
+          return this.reviews.some(
+            (review) => review.projectName === name
+          );
         })
-        .catch(error => {
+        .catch((error) => {
           console.error('Error fetching reviews:', error);
         });
     },
-    submitReview(id) { // sprema novu recenziju u bazu
-      axios.put(`http://localhost:8080/api/recenzije/${this.username}`, {
+    submitReview(id) {
+      axios
+        .put(`http://localhost:8080/api/recenzije/${this.username}`, {
           projectId: id,
-          review: {description: this.review.description, grade: this.review.grade}
+          review: {
+            description: this.review.description,
+            grade: this.review.grade,
+          },
         })
         .then(() => {
           this.review = { projectName: '', description: '', grade: '' };
         })
-        .catch(error => {
+        .catch((error) => {
           console.error('Error submitting review:', error);
         });
-    }
-  }
+    },
+    */
+  },
 };
 </script>
-
-<style scoped>
-.project-box {
-  border: 1px solid #ccc;
-  padding: 10px;
-  margin: 10px;
-}
-</style>

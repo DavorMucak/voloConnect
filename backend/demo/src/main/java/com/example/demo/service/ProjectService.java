@@ -1,7 +1,5 @@
 package com.example.demo.service;
 
-
-
 import com.example.demo.model.MyUser;
 import com.example.demo.model.Project;
 import com.example.demo.repository.ProjectRepository;
@@ -21,17 +19,18 @@ public class ProjectService {
 
     private final ProjectRepository projectRepository;
 
+    private final UserRepository userRepository;
+
     @Autowired
     public ProjectService(ProjectRepository projectRepository, UserRepository userRepository) {
         this.projectRepository = projectRepository;
+        this.userRepository = userRepository;
     }
 
     public Project kreirajProjekt(Project project) {
         System.out.println("Saving project to database...");
         return projectRepository.save(project);
     }
-
-
 
     public List<Project> getAllProjects() {
         return projectRepository.findAll();

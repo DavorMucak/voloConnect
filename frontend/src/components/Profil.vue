@@ -15,14 +15,6 @@
 
   </div>
 
-  <!-- ako je korisnik admin, moze vidit i prituzbe i registracije -->
-  <div v-if="uloga === 'admin'">
-    <Prituzbe />
-    <RegistracijeAdmina />
-  </div>
-
-
-
 
   <!-- prikaz podataka o korisniku -->
   <div>
@@ -126,7 +118,7 @@ export default {
     },
     async spremiPromjene() {
       try {
-        const response = await apiClient.put(`http://localhost:8080/api/user/${this.korisnik.username}`, {
+        const response = await axios.put(`http://localhost:8080/api/user/${this.korisnik.username}`, {
           email: this.privremeniPodaci.email,
           name: this.privremeniPodaci.name,
           surname: this.privremeniPodaci.surname,
@@ -150,7 +142,7 @@ export default {
           this.korisnik.role = VueJwtDecode.decode(token).role;
           this.korisnik.username = VueJwtDecode.decode(token).sub;
 
-          const response = await apiClient.get(`http://localhost:8080/api/user/${this.korisnik.username}`);
+          const response = await axios.get(`http://localhost:8080/api/user/${this.korisnik.username}`);
           console.log(response.data);
           
           Object.assign(this.korisnik, response.data);

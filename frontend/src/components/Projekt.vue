@@ -5,8 +5,9 @@
     <div v-if="projekt">
       <!-- prikaz detalja projekta -->
       <p>{{ projekt.opisProjekta }}</p>
+      <p><strong>Organizator:</strong> {{ projekt.ownerId }}</p>
       <p><strong>Broj ljudi:</strong> {{ projekt.brojLjudi }}</p>
-      <p><strong>Datum početka:</strong> {{ projekt.datumPoc }}</p>
+      <p><strong>Datum početka:</strong> {{ projekt.datumPolc }}</p>
       <p><strong>Datum kraja:</strong> {{ projekt.datumKraj }}</p>
       <p><strong>Vrsta aktivnosti:</strong> {{ projekt.vrstaAktivnosti }}</p>
       <!-- !!!treba dodat jos organizaciju ciji je projekt -->
@@ -16,6 +17,16 @@
         <button v-else @click="odjavaProjekt">Odjavi projekt</button>
       </div>
       <!-- !!!!ako je korisnik organizacija=> uredi podatke + vidi prijavljene ako je njihov projekt inace view only -->
+      <div v-if="provjeriVlasnika()">
+        <button @click="dohvatiPrijave()">Dohvati Prijave</button>
+          <div v-if="applications.length">
+            <div v-for="application in applications" :key="prijava.id" class="prijava">
+              <button>PROFIL</button>
+              <p>podaci o prijavi</p>
+              <button @click="odobriPrijavu()">Odobri prijavu</button> <button @click="odbaciPrijavu()">Odbaci prijavu</button>
+            </div>
+          </div>
+      </div>
     </div>
     <div v-else>
       <p>Nema projekata.</p>
@@ -69,6 +80,8 @@ export default {
       projekt: null,
       error: null,
       uloga: '',
+      applications: [],
+      application: null
     };
   },
   computed: {
@@ -105,8 +118,11 @@ export default {
       try {
         //kad korisnik stisne prijava onda se salje id backendu
         //!!!!tribalo bi jos poslat koji profil se prijavljuje??? znaci id korisnika i projekta??? not sure
-        const response = await axios.post('http://localhost:8080/api/signup',
-            { id: this.projekt.id }
+        console.log("Prijavljujem usera: " + localStorage.getItem('userID'));
+        const response = await axios.post(`http://localhost:8080/api/projects/${this.projekt.id}/apply`,
+            {
+              userId: localStorage.getItem('userID')
+            }
         );
         alert("Uspješna prijava!");
       } catch (error) {
@@ -120,7 +136,48 @@ export default {
     },
     provjeriPrijavu(){
       return true;
+      //!!!kod za prijavu projekta
+    },
+
+    provjeriVlasnika() {
+      const currentUserId = localStorage.getItem("userID");
+      if (localStorage.getItem("role") !== 'organizacija' && currentUserId !== this.projekt.ownerId)
+        return false;
+      return true;
+    },
+
+    async dohvatiPrijave() {
+      try {
+        const response = await axios.get(`http://localhost:8080/api/projects/${this.projekt.id}/applications`);
+        console.log(response.data);
+        this.applications = response.data;
+
+      } catch (error) {
+        console.error(error);
+      }
+    },
+
+    async odobriPrijavu() {
+      try{
+        const response = await axios.post(`http://localhost:8080/api/projects/${this.projekt.id}/${application.id}/accept`);
+
+        alert("Uspješno odobrena prijava!");
+      } catch (error) {
+        alert("Greška pri odobravanju prijave.");
+        console.error(error);
+      }
+    },
+    async odbaciPrijavu() {
+      try{
+
+        alert("Uspješno odbačena prijava!");
+      } catch (error) {
+        alert("Greška pri odbacivanju prijave.");
+        console.error(error);
+      }
     }
   },
 };
+</script>
+<script setup lang="ts">
 </script>
