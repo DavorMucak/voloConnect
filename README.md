@@ -32,7 +32,7 @@ Cilj ovog projekta je izgradnja platforme za povezivanje volontera s organizacij
 * Java - programski jezik
 * VueJS - radni okvir za izradu klijentske strane (front-end)
 * Spring - radni okvir za izradu poslužiteljske strane (back-end)
-* Render - alat za deployment
+* Render (1. ciklus), AWS (2. ciklus) - alati za deployment
 * Astah - alat za izradu UML dijagrama
 * Github - alat za verzioniranje koda i suradnju
 * Github Wiki - alat za izradu dokumentacije
