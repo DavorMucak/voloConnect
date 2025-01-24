@@ -225,3 +225,49 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.project-box {
+  border: 1px solid black;
+  padding: 10px;
+  margin: 10px;
+  background-color: #e5e2a2;
+  border-radius: 8px;
+  text-align: center;
+  font-weight: bold;
+}
+
+button {
+  padding: 7px;
+  margin-left: 7px;
+  margin-top: 7px;
+  margin-bottom: 30px;
+  background-color: #aeae53;
+  color: black;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #3a6b2d;
+}
+
+textarea {
+  width: 90%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid black;
+  border-radius: 4px;
+  background-color: #f6f4d2;
+}
+
+input[type="number"] {
+  width: 90%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid black;
+  border-radius: 4px;
+  background-color: #f6f4d2;
+}
+</style>

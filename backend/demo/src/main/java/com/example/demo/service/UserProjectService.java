@@ -33,6 +33,14 @@ public class UserProjectService {
         Optional<Project> project = projectRepository.findById(projectId);
 
         if (user.isPresent() && project.isPresent()) {
+
+            List<UserProject> projectsTemp = userProjectRepository.findByProjectId(projectId);
+            for(UserProject userProject : projectsTemp) {
+                if(userProject.getUser().getId().equals(userId)) {
+                    return true;
+                }
+            }
+
             UserProject userProject = new UserProject();
             userProject.setUser(user.get());
             userProject.setProject(project.get());
