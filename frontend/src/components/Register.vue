@@ -25,7 +25,7 @@
 
       <button type="submit">Registriraj se</button>
       <p class="error" v-if="error">{{ error }}</p>
-      <p class="success" v-if="success">{{ success }}</p>
+      <p class="success" v-if="success"></p>
     </form>
   </div>
 
@@ -95,7 +95,6 @@ export default {
         this.error = 'Lozinka mora imati najmanje 6 znakova, uključujući jedno veliko slovo i jednu znamenku.';
         return;
       }
-
       try {
         // slanje POST requesta backendu
         const response = await axios.post('http://localhost:8080/api/auth/register', {

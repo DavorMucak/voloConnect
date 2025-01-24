@@ -13,19 +13,25 @@
       <!-- !!!treba dodat jos organizaciju ciji je projekt -->
       <!-- ako je korisnik volonter moze se prijaviti na projekt, ili odjaviti ako je vec prijavljen -->
       <div v-if="uloga === 'volonter'">
-        <button v-if="provjeriPrijavu()" @click="prijavaProjekt">Prijavi se!</button>
-        <button v-else @click="odjavaProjekt">Odjavi projekt</button>
+        <button v-if="provjeriPrijavu()" @click="prijavaProjekt()">Prijavi se!</button>
+        <button v-else @click="odjavaProjekt()">Odjavi projekt</button>
       </div>
       <!-- !!!!ako je korisnik organizacija=> uredi podatke + vidi prijavljene ako je njihov projekt inace view only -->
       <div v-if="provjeriVlasnika()">
         <button @click="dohvatiPrijave()">Dohvati Prijave</button>
-          <div v-if="applications.length">
-            <div v-for="application in applications" :key="application.id" class="prijava">
-              <button>PROFIL</button>
-              <p>podaci o prijavi</p>
-              <button @click="odobriPrijavu()">Odobri prijavu</button> <button @click="odbaciPrijavu()">Odbaci prijavu</button>
+        <div v-if="applications.length">
+          <div v-for="application in applications" :key="application.id" class="prijava">
+            <div v-if="!(application.status === 'declined')">
+              <router-link :to="`/profil/${application.userName}`">{{ application.userName }}</router-link>
+              <p v-if="application.status === 'accepted'">Korisnik je prijavljen na projekt</p>
+              <button v-if="application.status === 'waiting'" @click="odobriPrijavu(application.id)">Odobri prijavu</button>
+              <button v-if="application.status === 'waiting'" @click="odbaciPrijavu(application.id)">Odbaci prijavu</button>
             </div>
           </div>
+        </div>
+        <div v-else>
+          <p>Nema prijava.</p>
+        </div>
       </div>
     </div>
     <div v-else>
@@ -157,19 +163,25 @@ export default {
       }
     },
 
-    async odobriPrijavu() {
+    async odobriPrijavu(id) {
       try{
-        const response = await axios.post(`http://localhost:8080/api/projects/${this.projekt.id}/${this.application.id}/accept`);
-
+        const response = await axios.post(`http://localhost:8080/api/projects/${this.projekt.id}/${id}/accept`);
+        const applicationIndex = this.applications.findIndex(application => application.id === id);
+        if (applicationIndex !== -1)
+          this.applications[applicationIndex].status = 'accepted';
         alert("Uspješno odobrena prijava!");
       } catch (error) {
         alert("Greška pri odobravanju prijave.");
         console.error(error);
       }
     },
-    async odbaciPrijavu() {
+    async odbaciPrijavu(id) {
       try{
-
+        const response = await axios.post(`http://localhost:8080/api/projects/${this.projekt.id}/${id}/decline`);
+        const applicationIndex = this.applications.findIndex(application => application.id === id);
+        if (applicationIndex !== -1) {
+          this.applications[applicationIndex].status = 'declined';
+        }
         alert("Uspješno odbačena prijava!");
       } catch (error) {
         alert("Greška pri odbacivanju prijave.");

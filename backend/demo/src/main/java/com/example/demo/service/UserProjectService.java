@@ -8,6 +8,8 @@ import com.example.demo.repository.UserProjectRepository;
 import com.example.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.example.demo.dto.ApplicationDto;
+
 
 import java.util.HashMap;
 import java.util.Map;
@@ -72,5 +74,25 @@ public class UserProjectService {
         }
         return projects;
     }
+
+    public ApplicationDto getApplicationDto(UserProject appl) {
+        MyUser tempUser = appl.getUser();
+        Long userId = null;
+        String userName = "";
+        if(tempUser != null){
+            userId = tempUser.getId();
+            userName = tempUser.getUsername();
+        }
+        Long projectId = null;
+        String projectName = "";
+        Project tempProject = appl.getProject();
+        if(tempProject != null){
+            projectId = tempProject.getId();
+            projectName = tempProject.getImeProjekta();
+        }
+        return new ApplicationDto(appl.getId(), userId, userName, projectId, projectName, appl.getApplicationDate(), appl.getStatus());
+    }
+
+
 }
 
