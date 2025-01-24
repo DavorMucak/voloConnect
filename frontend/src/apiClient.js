@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Kreiraj instancu Axios-a
 const apiClient = axios.create({
-    baseURL: 'http://localhost:8080', // Tvoj backend URL
+    baseURL: 'https://voloconnect.onrender.com', // Tvoj backend URL
 });
 
 // Dodaj interceptor za svaki zahtjev

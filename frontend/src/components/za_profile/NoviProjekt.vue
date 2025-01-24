@@ -97,7 +97,7 @@ export default {
         this.ownerId = VueJwtDecode.decode(token).sub;
         console.log(this.ownerId);
         
-        const response = await axios.post('http://localhost:8080/api/projects', {
+        const response = await axios.post('https://voloconnect.onrender.com/api/projects', {
           imeProjekta: this.imeProjekta.replace(/\s+/g, '-').toLowerCase(),
           opisProjekta: this.opisProjekta,
           brojLjudi: this.brojLjudi,

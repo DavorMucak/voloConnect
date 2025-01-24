@@ -32,7 +32,7 @@ export default {
   },
   methods: {
     fetchComplaints() { // dohvaca prituzbe
-      apiClient.get(`http://localhost:8080/api/prituzbe`)
+      apiClient.get(`https://voloconnect.onrender.com/api/prituzbe`)
         .then(response => {
           this.complaints = response.data;
         })
@@ -41,7 +41,7 @@ export default {
         });
     },
     resolveComplaint(id) { // brise prituzbu kad je razrijesena
-      apiClient.delete(`http://localhost:8080/api/prituzbe/${id}`)
+      apiClient.delete(`https://voloconnect.onrender.com/api/prituzbe/${id}`)
         .then(() => {
           this.complaints = this.complaints.filter(complaint => complaint.id !== id);
         })

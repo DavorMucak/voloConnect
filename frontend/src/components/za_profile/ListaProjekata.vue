@@ -104,7 +104,7 @@ export default {
         this.isVolonteer = this.currentUser.role === 'volonter';
       else {
         axios
-            .get(`http://localhost:8080/api/user/${this.username}`)
+            .get(`https://voloconnect.onrender.com/api/user/${this.username}`)
             .then((response) => {
               const profile = response.data;
               this.isVolonteer = profile.role === 'volonter';
@@ -123,7 +123,7 @@ export default {
     },
     fetchOrgProjects() {
       axios
-          .get(`http://localhost:8080/api/projects/owner/${this.username}`)
+          .get(`https://voloconnect.onrender.com/api/projects/owner/${this.username}`)
           .then((response) => {
             this.projects = [
               ...response.data.map((project) => ({
@@ -140,7 +140,7 @@ export default {
     fetchVolProjects() {
       axios
           .get(
-              `http://localhost:8080/api/projects/owner/${this.username}/withstatus`
+              `https://voloconnect.onrender.com/api/projects/owner/${this.username}/withstatus`
           )
           .then((response) => {
             this.projects = [
@@ -179,7 +179,7 @@ export default {
       );
       if (confirmation) {
         axios
-            .delete(`http://localhost:8080/api/projects/${id}`)
+            .delete(`https://voloconnect.onrender.com/api/projects/${id}`)
             .then(() => {
               this.projects = this.projects.filter(
                   (project) => project.id !== id
@@ -194,7 +194,7 @@ export default {
     /*
     leftReview(name) {
       axios
-        .get(`http://localhost:8080/api/recenzije/${this.username}`)
+        .get(`https://voloconnect.onrender.com/api/recenzije/${this.username}`)
         .then((response) => {
           this.reviews = response.data;
           return this.reviews.some(
@@ -207,7 +207,7 @@ export default {
     },
     submitReview(id) {
       axios
-        .put(`http://localhost:8080/api/recenzije/${this.username}`, {
+        .put(`https://voloconnect.onrender.com/api/recenzije/${this.username}`, {
           projectId: id,
           review: {
             description: this.review.description,

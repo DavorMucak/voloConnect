@@ -73,7 +73,7 @@ export default {
 
       try {
         console.log("Saljem post request: " + this.username + "  " + this.password);
-        const response = await axios.post('http://localhost:8080/api/auth/login', {
+        const response = await axios.post('https://voloconnect.onrender.com/api/auth/login', {
           username: this.username,
           password: this.password
         });
@@ -113,7 +113,7 @@ export default {
         console.error("Nije primljen idToken!");
       }
       console.log("Šaljem token na backend")
-      axios.post('http://localhost:8080/api/auth/google-login', {
+      axios.post('https://voloconnect.onrender.com/api/auth/google-login', {
         idToken: response.credential, //saljem ID token tako da ne ovisi o autorizacijskom kodu
         role: this.selected,        //slanje rolea u back
       })

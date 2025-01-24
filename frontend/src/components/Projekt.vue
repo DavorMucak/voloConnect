@@ -118,7 +118,7 @@ export default {
     try {
       await this.fetchKorisnik();
       //ovo odkomentirat kad se spaja s backendon:
-      const response = await axios.get(`http://localhost:8080/api/projects/${this.projektId}`);
+      const response = await axios.get(`https://voloconnect.onrender.com/api/projects/${this.projektId}`);
       this.projekt = response.data;      
       const token = localStorage.getItem("token");
 
@@ -150,7 +150,7 @@ export default {
     },
     async spremiPromjene() {
       try {
-        const response = await axios.put('http://localhost:8080/api/projects', {
+        const response = await axios.put('https://voloconnect.onrender.com/api/projects', {
           imeProjekta: this.privremeniPodaci.imeProjekta.replace(/\s+/g, '-').toLowerCase(),
           opisProjekta: this.privremeniPodaci.opisProjekta,
           brojLjudi: this.privremeniPodaci.brojLjudi,
@@ -170,7 +170,7 @@ export default {
         //kad korisnik stisne prijava onda se salje id backendu
         //!!!!tribalo bi jos poslat koji profil se prijavljuje??? znaci id korisnika i projekta??? not sure
         console.log("Prijavljujem usera: " + localStorage.getItem('userID'));
-        const response = await axios.post(`http://localhost:8080/api/projects/${this.projekt.id}/apply`,
+        const response = await axios.post(`https://voloconnect.onrender.com/api/projects/${this.projekt.id}/apply`,
             {
               userId: localStorage.getItem('userID')
             }
@@ -203,7 +203,7 @@ export default {
     async odjavaProjekt() {
       try {
         this.korisnickoIme = localStorage.getItem("username");
-        await axios.delete("http://localhost:8080/api/odjavaprojekta", {
+        await axios.delete("https://voloconnect.onrender.com/api/odjavaprojekta", {
           korisnik: this.korisnickoIme,
           id: this.projekt.id 
         });
@@ -220,7 +220,7 @@ export default {
       
       try {
         // dohvati popis prijava za projekt
-        const response = await axios.get(`http://localhost:8080/api/projects/${this.projectId}/signups`);
+        const response = await axios.get(`https://voloconnect.onrender.com/api/projects/${this.projectId}/signups`);
         
         // provjeri je li logirani korisnik prijavljen na projekt
         const korisnikPrijavljen = response.data.some(signup => signup.korisnickoIme === this.korisnickoIme);
@@ -248,7 +248,7 @@ export default {
 
     async dohvatiPrijave() {
       try {
-        const response = await axios.get(`http://localhost:8080/api/projects/${this.projekt.id}/applications`);
+        const response = await axios.get(`https://voloconnect.onrender.com/api/projects/${this.projekt.id}/applications`);
         console.log(response.data);
         this.applications = response.data;
 
@@ -259,7 +259,7 @@ export default {
 
     async odobriPrijavu(id) {
       try{
-        const response = await axios.post(`http://localhost:8080/api/projects/${this.projekt.id}/${id}/accept`);
+        const response = await axios.post(`https://voloconnect.onrender.com/api/projects/${this.projekt.id}/${id}/accept`);
         const applicationIndex = this.applications.findIndex(application => application.id === id);
         if (applicationIndex !== -1)
           this.applications[applicationIndex].status = 'accepted';
@@ -271,7 +271,7 @@ export default {
     },
     async odbaciPrijavu(id) {
       try{
-        const response = await axios.post(`http://localhost:8080/api/projects/${this.projekt.id}/${id}/decline`);
+        const response = await axios.post(`https://voloconnect.onrender.com/api/projects/${this.projekt.id}/${id}/decline`);
         const applicationIndex = this.applications.findIndex(application => application.id === id);
         if (applicationIndex !== -1) {
           this.applications[applicationIndex].status = 'declined';

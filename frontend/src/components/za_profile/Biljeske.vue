@@ -72,7 +72,7 @@ export default {
     fetchNotes() { // dohvaca biljeske
       console.log("pokušavam dohvatiti bilješke za: " + this.username);
       
-      axios.get(`http://localhost:8080/api/biljeske?username=${this.username}`)
+      axios.get(`https://voloconnect.onrender.com/api/biljeske?username=${this.username}`)
           .then(response => {
             this.notes = response.data.reverse();
           })
@@ -81,7 +81,7 @@ export default {
           });
     },
     createNote() { // stvara novu biljesku i sprema ju u bazu podataka
-      axios.post(`http://localhost:8080/api/biljeske/${this.username}`, 
+      axios.post(`https://voloconnect.onrender.com/api/biljeske/${this.username}`,
         this.newNote
       )
           .then(response => {
@@ -101,7 +101,7 @@ export default {
       if (this.editedNote.id !== null) { // ako se neka biljeska vec uređuje obavijestava se korisnika
         const confirmation = window.confirm("Već uređujete bilješku. Želite li spremiti promjene i nastaviti?");
         if (confirmation) {
-          axios.put(`http://localhost:8080/api/biljeske/${this.username}`, { // potvrdom se sprema stara biljeska i omogucuje uređivanje nove
+          axios.put(`https://voloconnect.onrender.com/api/biljeske/${this.username}`, { // potvrdom se sprema stara biljeska i omogucuje uređivanje nove
             id: note.id,
             content: this.editedNote.content
           })
@@ -117,7 +117,7 @@ export default {
       }
     },
     saveNote(id) { // Spremanje promjena nakon uređivanja
-      axios.put(`http://localhost:8080/api/biljeske/${id}`, {
+      axios.put(`https://voloconnect.onrender.com/api/biljeske/${id}`, {
         content: this.editedNote.content // šaljemo content kao objekat sa ključem 'content'
       })
         .then(() => {
@@ -131,7 +131,7 @@ export default {
     },
     async deleteNote(id) { // brisanje biljeske
       try {
-        await axios.delete(`http://localhost:8080/api/biljeske/${this.username}/${id}`); // id ide direktno u URL
+        await axios.delete(`https://voloconnect.onrender.com/api/biljeske/${this.username}/${id}`); // id ide direktno u URL
         this.notes = this.notes.filter(biljeska => biljeska.id !== id); // prikaz promjena
       } catch (error) {
         console.error('Error deleting note:', error);

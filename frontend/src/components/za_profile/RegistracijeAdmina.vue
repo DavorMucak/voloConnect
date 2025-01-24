@@ -49,12 +49,12 @@ export default {
     async odobriAdmina(username) {
       //const token = localStorage.getItem('token');
       console.log("Započinjem odobravanje admina.");
-      const response = await axios.post(`http://localhost:8080/api/user/approve-admins/${username}`);
+      const response = await axios.post(`https://voloconnect.onrender.com/api/user/approve-admins/${username}`);
       console.log(response.data);
     },
     async izbrisiAdminZahtjev(username) {
       console.log("Započinjem brisanje admina.");
-      const response = await axios.delete(`http://localhost:8080/api/user/approve-admins/${username}`);
+      const response = await axios.delete(`https://voloconnect.onrender.com/api/user/approve-admins/${username}`);
       console.log(response.data);
     }
   },
@@ -63,7 +63,7 @@ export default {
     try {
 
       //dohvat liste nevalidiranih admina s backenda
-      const response = await axios.get(`http://localhost:8080/api/user/approve-admins`);
+      const response = await axios.get(`https://voloconnect.onrender.com/api/user/approve-admins`);
       this.adminsWaiting = response.data;
     } catch (error) {
       this.error = error.response ? error.response.data : 'Ne mogu se dohvatiti korisnici.';

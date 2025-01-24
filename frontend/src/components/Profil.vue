@@ -123,7 +123,7 @@ export default {
     },
     async spremiPromjene() {
       try {
-        const response = await axios.put(`http://localhost:8080/api/user/${this.korisnik.username}`, {
+        const response = await axios.put(`https://voloconnect.onrender.com/api/user/${this.korisnik.username}`, {
           email: this.privremeniPodaci.email,
           name: this.privremeniPodaci.name,
           surname: this.privremeniPodaci.surname,
@@ -147,7 +147,7 @@ export default {
           this.korisnik.role = VueJwtDecode.decode(token).role;
           this.korisnik.username = VueJwtDecode.decode(token).sub;
 
-          const response = await axios.get(`http://localhost:8080/api/user/${this.korisnik.username}`);
+          const response = await axios.get(`https://voloconnect.onrender.com/api/user/${this.korisnik.username}`);
           console.log(response.data);
           
           Object.assign(this.korisnik, response.data);
@@ -171,7 +171,7 @@ export default {
       if (confirmation) {
         try {
           const token = localStorage.getItem('token');
-          const response = await axios.delete('http://localhost:8080/api/auth/delete-account');
+          const response = await axios.delete('https://voloconnect.onrender.com/api/auth/delete-account');
 
           alert(response.data.message);  // poruka (uspjeh)
 

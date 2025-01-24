@@ -97,7 +97,7 @@ export default {
       }
       try {
         // slanje POST requesta backendu
-        const response = await axios.post('http://localhost:8080/api/auth/register', {
+        const response = await axios.post('https://voloconnect.onrender.com/api/auth/register', {
           username: this.username,
           password: this.password,
           email: this.email,
@@ -147,7 +147,7 @@ export default {
         return;
       }
       try {
-        const response = await axios.post('http://localhost:8080/api/auth/verify', {
+        const response = await axios.post('https://voloconnect.onrender.com/api/auth/verify', {
           email: this.email,
           verificationCode: userCode,
         });
@@ -168,7 +168,7 @@ export default {
     },
     async resendCode() {
       try {
-        await axios.post('http://localhost:8080/api/auth/resend', null, {
+        await axios.post('https://voloconnect.onrender.com/api/auth/resend', null, {
           params: { email: this.email },
         });
         alert('Novi kod je poslan na vašu email adresu.');
