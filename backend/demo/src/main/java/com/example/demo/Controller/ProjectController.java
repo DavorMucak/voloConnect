@@ -6,6 +6,8 @@ import com.example.demo.model.MyUser;
 import com.example.demo.dto.ApplicationDto;
 import com.example.demo.model.Project;
 import com.example.demo.repository.ProjectRepository;
+import com.example.demo.repository.UserRepository;
+
 import com.example.demo.service.ProjectService;
 import com.example.demo.service.UserProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -110,7 +112,7 @@ public class ProjectController {
         System.out.println("Saljem prijave frontendu: " + applications);
         ArrayList<ApplicationDto> app = new ArrayList<ApplicationDto>();
         for(UserProject a : applications){
-            app.add(new ApplicationDto(a));
+            app.add(userProjectService.getApplicationDto(a));
         }
 
         return ResponseEntity.ok(app);

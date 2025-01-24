@@ -19,8 +19,8 @@
         <p v-else>Broj ljudi trazeno: {{ item.project.brojLjudi }}</p>
 
         <div v-if="currentUser.username === username && currentUser.role === 'volonter'"> <!-- volonter vidi status prijave na projekt -->
-          <p v-if="isProjectUpcoming(item.project) && item.status === 'accepted'">Prijava odobrena</p> <!-- statusPrijave ostaje 'prijavljen' nakon kraja projekta -->
-          <p v-else-if="isProjectUpcoming(item.project) && item.status === 'waiting'">Prijava poslana</p>
+          <p v-if="item.status === 'accepted'">Prijava odobrena</p> <!-- statusPrijave ostaje 'prijavljen' nakon kraja projekta -->
+          <p v-else-if="item.status === 'waiting'">Prijava poslana</p>
           <p v-if="item.status === 'declined'">Prijava odbijena</p> <!-- statusPrijave ostaje 'prijavljen' nakon kraja projekta -->
 
           <!-- Commented out reviews -->

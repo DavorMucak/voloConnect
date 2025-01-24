@@ -1,19 +1,4 @@
 <template>
-  <!-- kad se pritisne na ovo ide prikaz projekata na koje je korisnik prijavljen(volonter) ili cije je vlasnik (organizacija) -->
-  <div v-if="uloga !== 'admin'">
-    <router-link :to="`/moji-projekti/${korisnik.username}`"> <button>Moji projekti</button> </router-link>
-
-    <button @click="obrisiProfil">Obriši profil</button>
-
-    <!-- prikaz biljezaka i recenzija -->
-
-
-    <!-- ako je korisnik organizacija, ima opciju izrade novog projekta -->
-    <router-link v-if="uloga === 'organizacija'" to="/novi-projekt"> <button>Novi projekt</button> </router-link>
-
-  </div>
-
-
   <!-- prikaz podataka o korisniku -->
   <div>
     <h2>Podaci o korisniku</h2>
@@ -65,6 +50,19 @@
     <!-- <router-link :to="{ name: 'ListaProjekata', params: { username: korisnik.username } }"> <button>Moji projekti</button> </router-link> -->
 
     <button @click="obrisiProfil">Obriši profil</button>
+    <!-- prituzba botun 
+    <button v-if="!prituzbiranje" @click="prikaziFormu = true">Prijavite Pritužbu</button>
+    <div v-if="prikaziFormu">
+      <label for="username">Ime korisnika:</label>
+      <input type="text" id="username" v-model="prituzba.username" placeholder="Unesite ime korisnika" required />
+
+      <label for="opis">Opis problema:</label>
+      <textarea id="opis" v-model="prituzba.opis" placeholder="Unesite opis problema" required></textarea>
+
+      <button @click="submitComplaint">Pošaljite Pritužbu</button>
+      <button @click="cancelComplaint">Odustani</button>
+    </div>
+    -->
   </div>
 
   <!-- ako je korisnik admin, moze vidit i prituzbe i registracije -->

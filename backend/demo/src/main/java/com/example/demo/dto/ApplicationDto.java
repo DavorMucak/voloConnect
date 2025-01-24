@@ -1,8 +1,12 @@
 package com.example.demo.dto;
+
 import com.example.demo.model.UserProject;
+import com.example.demo.repository.UserRepository;
+import com.example.demo.repository.ProjectRepository;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
 
@@ -17,6 +21,12 @@ public class ApplicationDto {
     private String projectName;
     private LocalDateTime applicationDate;
     private String status;
+
+    @Autowired
+    UserRepository userRepository;
+
+    @Autowired
+    ProjectRepository projectRepository;
 
     public ApplicationDto(Long id, Long userId, String userName, Long projectId, String projectName, LocalDateTime applicationDate, String status) {
         this.id = id;
