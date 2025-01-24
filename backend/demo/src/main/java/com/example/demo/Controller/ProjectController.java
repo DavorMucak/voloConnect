@@ -52,6 +52,15 @@ public class ProjectController {
         return ResponseEntity.ok(projects);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Project> getProject(@PathVariable Long id) {
+        Optional<Project> project = projectRepository.findById(id);
+        if (project.isPresent()) {
+            return ResponseEntity.ok(project.get());
+        } else {
+            return null;
+        }
+    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteProject(@PathVariable Long id) {

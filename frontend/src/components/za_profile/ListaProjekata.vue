@@ -2,7 +2,7 @@
   <div v-if="projects.length">
     <div v-for="item in projects" :key="item.project?.id" class="project-box">
       <div v-if="!(isVolonteer === true && currentUser.username !== username)"> <!-- prikazuju se i projekti za koje volonter ceka odobrenje prijave -->
-        <router-link :to="`/projekt/${encodeURIComponent(item.project.imeProjekta)}`"> <!-- ime projekta je jedinstveno -->
+        <router-link :to="`/projekt/${item.project.id}`"> <!-- ime projekta je jedinstveno -->
           <p>{{ item.project.imeProjekta }}</p>
         </router-link>
         <div v-if="isVolonteer">

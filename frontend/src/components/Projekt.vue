@@ -1,20 +1,18 @@
 <template>
   <div  v-if="projekt" class="home-container">
     <h2>{{ formatiranoIme }}</h2>
-    <div v-if="error" class="error">{{ error }}</div>
-    <div v-if="projekt">
+    <div v-if="error" class="error">{{ error }}</div>      
+      <div v-if="projekt && !urediDetalje">
       <!-- prikaz detalja projekta -->
       <p>{{ projekt.opisProjekta }}</p>
-      <p><strong>Organizator:</strong> {{ projekt.ownerId }}</p>
       <p><strong>Broj ljudi:</strong> {{ projekt.brojLjudi }}</p>
-      <p><strong>Datum početka:</strong> {{ projekt.datumPolc }}</p>
+      <p><strong>Datum početka:</strong> {{ projekt.datumPoc }}</p>
       <p><strong>Datum kraja:</strong> {{ projekt.datumKraj }}</p>
       <p><strong>Vrsta aktivnosti:</strong> {{ projekt.vrstaAktivnosti }}</p>
-      <!-- !!!treba dodat jos organizaciju ciji je projekt -->
-      <!-- ako je korisnik volonter moze se prijaviti na projekt, ili odjaviti ako je vec prijavljen -->
+      <p><strong>Organizacija:</strong> {{ projekt.ownerId}}</p>
       <div v-if="uloga === 'volonter'">
         <button v-if="provjeriPrijavu()" @click="prijavaProjekt()">Prijavi se!</button>
-        <button v-else @click="odjavaProjekt()">Odjavi projekt</button>
+      <!--  <button v-else @click="odjavaProjekt()">Odjavi projekt</button>-->
       </div>
       <!-- !!!!ako je korisnik organizacija=> uredi podatke + vidi prijavljene ako je njihov projekt inace view only -->
       <div v-if="provjeriVlasnika()">
@@ -29,13 +27,40 @@
             </div>
           </div>
         </div>
-        <div v-else>
+      </div>
+      <div v-else>
           <p>Nema prijava.</p>
         </div>
-      </div>
     </div>
     <div v-else>
       <p>Nema projekata.</p>
+    </div>
+    <div v-if="provjeriVlasnika()">
+      <div v-if="uloga === 'organizacija' && jeLiMojProjekt()">
+          <button v-if="!urediDetalje" @click="pokreniUredivanje()">Promijeni detalje</button>
+        </div>
+        <div v-if="urediDetalje">
+          <div>
+            <label for="opisProjekta">Opis projekta:</label>
+            <textarea id="opisProjekta" v-model="privremeniPodaci.opisProjekta"></textarea>
+          </div>
+          <div>
+            <label for="brojLjudi">Broj ljudi:</label>
+            <input type="number" id="brojLjudi" v-model="privremeniPodaci.brojLjudi" />
+          </div>
+          <div>
+            <select id="vrstaAktivnosti" v-model="privremeniPodaci.vrstaAktivnosti">
+              <option value="Administrativni poslovi">Administrativni poslovi</option>
+              <option value="Fizički poslovi">Fizički poslovi</option>
+              <option value="Podučavanje">Podučavanje</option>
+              <option value="Kreativni poslovi">Kreativni poslovi</option>
+              <option value="Informatičke usluge">Informatičke usluge</option>
+              <option value="Ostalo">Ostalo</option>
+            </select>
+          </div>
+            <button @click="spremiPromjene">Spremi</button>
+            <button @click="prekiniUredivanje">Odustani</button>
+         </div>
     </div>
   </div>
 </template>
@@ -43,10 +68,11 @@
 
 <script>
 import axios from 'axios';
+import VueJwtDecode from 'vue-jwt-decode';
 
 export default {
   props: {
-    imeProjekta: {
+    projektId: {
       type: String,
       required: true,
     },
@@ -54,63 +80,59 @@ export default {
   data() {
     return {
       // privremeni projekti dok ne povezemo s backendon
-      projekti: [
-        {
-          projectId: 1,
-          imeProjekta: "izrada-web-aplikacije",
-          opisProjekta: "Razvoj interaktivne web aplikacije koristeći Vue.js.",
-          brojLjudi: 5,
-          datumPoc: "2024-01-15",
-          datumKraj: "2024-03-15",
-          vrstaAktivnosti: "Fizički poslovi"
-        },
-        {
-          projectId: 2,
-          imeProjekta: "analiza-podataka",
-          opisProjekta: "Projekt fokusiran na analizu podataka koristeći Python i Pandas.",
-          brojLjudi: 3,
-          datumPoc: "2024-02-01",
-          datumKraj: "2024-04-01",
-          vrstaAktivnosti: "Administrativni poslovi"
-        },
-        {
-          projectId: 3,
-          imeProjekta: "mobilna-aplikacija",
-          opisProjekta: "Razvoj mobilne aplikacije za Android i iOS platforme.",
-          brojLjudi: 6,
-          datumPoc: "2024-03-10",
-          datumKraj: "2024-06-10",
-          vrstaAktivnosti: "Podučavanje"
-        },
-      ],
-      projekt: null,
+      projekti: [],
+      projekt: {
+        imeProjekta: "",
+        opisProjekta: "",
+        brojLjudi: 0,
+        datumPoc: null,
+        datumKraj: null,
+        jeLiHitno: false,
+        ownerId: "",
+        vrstaAktivnosti: "",
+      },
       error: null,
-      uloga: '',
+      uloga: ' ',
+      korisnickoIme: ' ',
+      privremeniPodaci: {
+        imeProjekta: "",
+        opisProjekta: "",
+        brojLjudi: 0,
+        datumPoc: null,
+        datumKraj: null,
+        jeLiHitno: false,
+        ownerId: "",
+        vrstaAktivnosti: "",
+      },
+      urediDetalje: false,
       applications: [],
       application: null
-    };
+    };
   },
   computed: {
     //ime je formatirano radi slanja backendu pa ga vracamo na normalno
     formatiranoIme() {
-      return this.imeProjekta
+      return this.projekt.imeProjekta
           .replace(/-/g, ' ')
           .replace(/\b\w/g, char => char.toUpperCase());
     },
   },
   async created() {
     try {
+      await this.fetchKorisnik();
       //ovo odkomentirat kad se spaja s backendon:
-      const response = await axios.get('http://localhost:8080/api/projects');
-      this.projekti = response.data;      
+      const response = await axios.get(`http://localhost:8080/api/projects/${this.projektId}`);
+      this.projekt = response.data;      
       const token = localStorage.getItem("token");
 
       this.uloga=localStorage.getItem('role');
+      /*
       //pronalazi projekt tako da iz liste projekata nade onaj koji se poklapa s imenom projekta
       this.projekt = this.projekti.find(
-          (projekt) => projekt.imeProjekta === this.imeProjekta.replace(/\s+/g, '-').toLowerCase()
+          (projekt) => projekt.id === this.projektId
       );
-      console.log(this.projekt);
+      */
+      console.log("projekt: " + this.projekt);
       
       if (!this.projekt) {
         throw new Error("Project not found");
@@ -120,6 +142,32 @@ export default {
     }
   },
   methods: {
+    pokreniUredivanje() {
+      this.privremeniPodaci = { ...this.projekt };
+      console.log("Privremeni podaci za uređivanje:", this.privremeniPodaci);
+      this.urediDetalje = true;
+      console.log("urediDetalje postavljen na:", this.urediDetalje);
+    },
+    prekiniUredivanje() {
+      this.urediDetalje = false;
+    },
+    async spremiPromjene() {
+      try {
+        const response = await axios.put('http://localhost:8080/api/projects', {
+          imeProjekta: this.privremeniPodaci.imeProjekta.replace(/\s+/g, '-').toLowerCase(),
+          opisProjekta: this.privremeniPodaci.opisProjekta,
+          brojLjudi: this.privremeniPodaci.brojLjudi,
+          datumPoc: this.privremeniPodaci.datumPoc,
+          datumKraj: this.privremeniPodaci.datumKraj,
+          jeLiHitno: this.privremeniPodaci.jeLiHitno,
+          ownerId: this.korisnickoIme
+        });
+        this.projekt={ ...this.privremeniPodaci };
+        this.urediDetalje = false;
+      } catch (error) {
+        console.error('Greška pri spremanju promjena:', error);
+      }
+    },
     async prijavaProjekt() {
       try {
         //kad korisnik stisne prijava onda se salje id backendu
@@ -137,14 +185,61 @@ export default {
         );
       }
     },
-    async odjavaProjekt() {
-      //!!!kod za odjavu projekta
-    },
-    provjeriPrijavu(){
-      return true;
-      //!!!kod za prijavu projekta
-    },
+    async fetchKorisnik() {
+      try {
+        // dohvat podataka o prijavljenon korisniku
+        const token = localStorage.getItem("token");
+        if (token) {    //ako postoji token korisnik je prijavljen
 
+          //sprema username
+          this.korisnickoIme = VueJwtDecode.decode(token).sub;
+          this.uloga = VueJwtDecode.decode(token).role;
+          this.isLoggedIn = true;   // korisnik prijavljen
+        }
+
+      } catch (error) {
+        console.error('Greska u dohvavanju podataka:', error);
+        this.isLoggedIn = false;    // error -> korisnik nije prijavljen
+      }
+    },
+    /*
+    async odjavaProjekt() {
+      try {
+        this.korisnickoIme = localStorage.getItem("username");
+        await axios.delete("http://localhost:8080/api/odjavaprojekta", {
+          korisnik: this.korisnickoIme,
+          id: this.projekt.id 
+        });
+        alert("Uspješna odjava projekta!");
+        this.projekt.prijavljen = false;
+
+      } catch (error) {
+        console.error('Greška u odjavi projekta', error);
+        alert('Došlo je do greške pri odjavi projekta. Molimo pokušajte ponovno.');
+      }
+    },
+    */
+    async provjeriPrijavu(){
+      try {
+        // dohvati popis prijava za projekt
+        const response = await axios.get(`http://localhost:8080/api/projects/${this.projekt.projectId}/signups`);
+        
+        // provjeri je li logirani korisnik prijavljen na projekt
+        const korisnikPrijavljen = response.data.some(signup => signup.korisnickoIme === this.korisnickoIme);
+        return korisnikPrijavljen;
+      } catch (error) {
+        console.error('Greška pri provjeri prijave:', error);
+        return false; // ako dode do greske, pretpostavljamo da korisnik nije prijavljen
+      }
+    },
+    jeLiMojProjekt(){
+      console.log("Boolean misterij: " + this.korisnickoIme && this.projekt && this.projekt.ownerId === this.korisnickoIme);
+      console.log("Boolean misterij: " + this.korisnickoIme);
+      console.log("Boolean misterij 2: " + this.projekt.ownerId);
+      
+      
+      return this.korisnickoIme && this.projekt && this.projekt.ownerId === this.korisnickoIme;
+    },
     provjeriVlasnika() {
       const currentUserId = localStorage.getItem("userID");
       if (localStorage.getItem("role") !== 'organizacija' && currentUserId !== this.projekt.ownerId)

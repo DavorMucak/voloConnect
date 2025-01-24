@@ -26,7 +26,7 @@
       <ul>
         <li v-for="project in filtriraniProjekti" :key="project.id">
           <!-- prikaz projekata, kad se stisne ode na stranicu projekta -->
-          <router-link :to="{ name: 'Projekt', params: { imeProjekta: project.imeProjekta } }">
+          <router-link :to="{ name: 'Projekt', params: { projektId: project.id } }">
             <h3> {{formatiranoIme(project.imeProjekta)}}</h3>
             <p><strong>Broj ljudi:</strong> {{ project.brojLjudi }}</p>
             <p><strong>Datum početka:</strong> {{ project.datumPoc }}</p>
