@@ -2,6 +2,9 @@ package com.example.demo.dto;
 
 import com.example.demo.model.MyUser;
 
+//dto = data to object
+//pomocne klase za formatiranje i slanje podataka na front
+
 public class UserDTO {
     private Long id; // Pretpostavljam da imaš ID
     private String username;

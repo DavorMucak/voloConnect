@@ -1,14 +1,14 @@
 package com.example.demo.dto;
-
 import com.example.demo.model.UserProject;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.repository.ProjectRepository;
-
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import java.time.LocalDateTime;
+
+//dto = data to object
+//pomocne klase za formatiranje i slanje podataka na front
 
 @Getter
 @Setter

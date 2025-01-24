@@ -23,6 +23,8 @@ import java.util.Map;
 import java.util.Map;
 import java.util.Optional;
 
+//Controller zahtjeva za projekte i prijave na projekte
+
 @RestController
 @CrossOrigin
 @RequestMapping("/api/projects")
@@ -53,6 +55,7 @@ public class ProjectController {
         return ResponseEntity.ok(projects);
     }
 
+    //dohvati podatke o projektu preko id-a
     @GetMapping("/{id}")
     public ResponseEntity<Project> getProject(@PathVariable Long id) {
         Optional<Project> project = projectRepository.findById(id);
@@ -63,6 +66,7 @@ public class ProjectController {
         }
     }
 
+    //izbriši projekt preko id-a
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteProject(@PathVariable Long id) {
         Optional<Project> project = projectRepository.findById(id);
@@ -74,6 +78,7 @@ public class ProjectController {
         }
     }
 
+    //dohvati projekte koje je objavio user username
     @GetMapping("/owner/{username}")
     public ResponseEntity<List<Map<String, Object>>> getProjectsByOwner(
             @PathVariable String username
@@ -87,6 +92,7 @@ public class ProjectController {
         return ResponseEntity.ok(projectsWithStatus);
     }
 
+    //dohvati projekte na koje je volonter prijavljen / bio je prijavljen
     @GetMapping("/owner/{username}/withstatus")
     public ResponseEntity<List<Map<String, Object>>> getVolunteerProjects(@PathVariable String username) {
         List<Map<String, Object>> projectStatuses = userProjectService.getProjectsWithStatus(username).entrySet()
@@ -98,7 +104,7 @@ public class ProjectController {
         return ResponseEntity.ok(projectStatuses);
     }
 
-
+    //prijavi se na projekt - stvori prijavu
     @PostMapping("/{projectId}/apply")
     public ResponseEntity<String> applyToProject(
             @PathVariable Long projectId,
@@ -115,6 +121,7 @@ public class ProjectController {
         }
     }
 
+    //dohvati sve prijave projekta preko projektIda
     @GetMapping("/{projectId}/applications")
     public ResponseEntity<List<ApplicationDto>> getAllApplications(
             @PathVariable Long projectId
@@ -129,6 +136,7 @@ public class ProjectController {
         return ResponseEntity.ok(app);
     }
 
+    //organizator odobrava prijavu volontera na projekt s projektId
     @PostMapping("/{projectId}/{applicationId}/accept")
     public ResponseEntity<String> acceptApplication(
             @PathVariable Long projectId,
@@ -142,12 +150,14 @@ public class ProjectController {
         }
     }
 
+    //uredi podatke o projektu
     @PutMapping
     public ResponseEntity<Project> updateProject(@RequestBody ProjectUpdateDTO projectDTO) {
         Project updatedProject = projectService.updateProject(projectDTO);
         return ResponseEntity.ok(updatedProject);
     }
 
+    //organizator odbija prijavu na projekt
     @PostMapping("/{projectId}/{applicationId}/decline")
     public ResponseEntity<String> declineApplication(
             @PathVariable Long projectId,
