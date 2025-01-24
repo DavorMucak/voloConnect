@@ -53,39 +53,7 @@ export default {
   },
   data() {
     return {
-      // privremeni projekti dok ne povezemo s backendon
-      projekti: [
-        {
-          projectId: 1,
-          imeProjekta: "izrada-web-aplikacije",
-          opisProjekta: "Razvoj interaktivne web aplikacije koristeći Vue.js.",
-          brojLjudi: 5,
-          datumPoc: "2024-01-15",
-          datumKraj: "2024-03-15",
-          vrstaAktivnosti: "Fizički poslovi",
-          korisnickoIme: "blabla"
-        },
-        {
-          projectId: 2,
-          imeProjekta: "analiza-podataka",
-          opisProjekta: "Projekt fokusiran na analizu podataka koristeći Python i Pandas.",
-          brojLjudi: 3,
-          datumPoc: "2024-02-01",
-          datumKraj: "2024-04-01",
-          vrstaAktivnosti: "Administrativni poslovi",
-          korisnickoIme: "kjndjkvn"
-        },
-        {
-          projectId: 3,
-          imeProjekta: "mobilna-aplikacija",
-          opisProjekta: "Razvoj mobilne aplikacije za Android i iOS platforme.",
-          brojLjudi: 6,
-          datumPoc: "2024-03-10",
-          datumKraj: "2024-06-10",
-          vrstaAktivnosti: "Podučavanje",
-          korisnickoIme: "voidjvod"
-        },
-      ],
+      projekti: [],
       projekt: null,
       error: null,
       uloga: 'organizacija',
