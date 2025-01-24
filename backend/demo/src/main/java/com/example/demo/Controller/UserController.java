@@ -7,6 +7,7 @@ import com.example.demo.repository.UserRepository;
 import com.example.demo.service.ProjectService;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.List;
 
@@ -38,6 +40,43 @@ public class UserController {
     public ResponseEntity<List<MyUser>> getUnvalidatedAdmins() {
         List<MyUser> users = userService.getUnvalidatedAdmins();
         return ResponseEntity.ok(users);
+    }
+
+    @PutMapping("/{username}")
+    public ResponseEntity<?> updateUser(
+            @PathVariable String username,
+            @RequestBody Map<String, String> updatedDetails) {
+        try {
+            // Pronađi korisnika po korisničkom imenu
+            Optional<MyUser> optionalUser = userRepository.findByUsername(username);
+
+            if (optionalUser.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Korisnik nije pronađen.");
+            }
+
+            MyUser user = optionalUser.get();
+
+            // Ažuriraj podatke korisnika na temelju dolaznih podataka
+            if (updatedDetails.containsKey("email")) {
+                user.setEmail(updatedDetails.get("email"));
+            }
+            if (updatedDetails.containsKey("name")) {
+                user.setName(updatedDetails.get("name"));
+            }
+            if (updatedDetails.containsKey("surname")) {
+                user.setSurname(updatedDetails.get("surname"));
+            }
+            if (updatedDetails.containsKey("phonenum")) {
+                user.setPhonenum(updatedDetails.get("phonenum"));
+            }
+
+            // Spremi promjene u bazu podataka
+            userRepository.save(user);
+
+            return ResponseEntity.ok("Podaci korisnika uspješno ažurirani.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Dogodila se greška prilikom ažuriranja korisnika.");
+        }
     }
 
     @PostMapping("/approve-admins/{username}")
