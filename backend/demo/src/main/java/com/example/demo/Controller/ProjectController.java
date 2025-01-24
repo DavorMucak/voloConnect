@@ -3,7 +3,7 @@ import java.util.Optional;
 
 import com.example.demo.model.UserProject;
 import com.example.demo.model.MyUser;
-
+import com.example.demo.dto.ApplicationDto;
 import com.example.demo.model.Project;
 import com.example.demo.repository.ProjectRepository;
 import com.example.demo.service.ProjectService;
@@ -103,12 +103,17 @@ public class ProjectController {
     }
 
     @GetMapping("/{projectId}/applications")
-    public ResponseEntity<List<UserProject>> getAllApplications(
+    public ResponseEntity<List<ApplicationDto>> getAllApplications(
             @PathVariable Long projectId
     ) {
         List<UserProject> applications = userProjectService.getAllApplications(projectId);
         System.out.println("Saljem prijave frontendu: " + applications);
-        return ResponseEntity.ok(applications);
+        ArrayList<ApplicationDto> app = new ArrayList<ApplicationDto>();
+        for(UserProject a : applications){
+            app.add(new ApplicationDto(a));
+        }
+
+        return ResponseEntity.ok(app);
     }
 
     @PostMapping("/{projectId}/{applicationId}/accept")
