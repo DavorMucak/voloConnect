@@ -71,7 +71,6 @@ export default {
       showCode: false,
       digits: Array(6).fill(""),    //polje za displayanje znamenki koda
       userCode: "",
-      expectedCode: "123456",   //123546 radi testiranja
     };
   },
   methods: {
@@ -79,7 +78,6 @@ export default {
       // resetiranje error i success poruke
       this.error = '';
       this.success = '';
-      this.showCode = true;   //showa se odmah radi testiranja, inace treba biti dolje
 
       // provjera jesu li svi podaci uneseni
       if (this.selected === 'organizacija' && (!this.username || !this.email || !this.password)) {

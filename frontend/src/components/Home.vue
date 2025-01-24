@@ -48,36 +48,7 @@ import apiClient from '@/apiClient';
 export default {
   data() {
     return {
-      // ovo su privremeni projekti samo za probu dok ne spojimo s backendon
-      projects: [
-        {
-          id:1,
-          imeProjekta: 'izrada-web-aplikacije',
-          opisProjekta: 'Razvoj interaktivne web aplikacije koristeći Vue.js.',
-          brojLjudi: 5,
-          datumPoc: '2024-01-15',
-          datumKraj: '2024-03-15',
-          vrstaAktivnosti: "Fizički poslovi"
-        },
-        {
-          id:2,
-          imeProjekta: 'analiza-podataka',
-          opisProjekta: 'Projekt fokusiran na analizu podataka koristeći Python i Pandas.',
-          brojLjudi: 3,
-          datumPoc: '2024-02-01',
-          datumKraj: '2024-04-01',
-          vrstaAktivnosti: "Administrativni poslovi"
-        },
-        {
-          id:3,
-          imeProjekta: 'mobilna-aplikacija',
-          opisProjekta: 'Razvoj mobilne aplikacije za Android i iOS platforme.',
-          brojLjudi: 6,
-          datumPoc: '2024-03-10',
-          datumKraj: '2024-06-10',
-          vrstaAktivnosti: "Podučavanje"
-        },
-      ],
+      projects: [],
       filtriraniProjekti: [],
       filterDatumKraja: '',
       filterDatumPocetka: '',
