@@ -1,7 +1,7 @@
 <template>
   <div>
     <h2>Iskustva i ciljevi</h2>
-    <div v-if="currentUser === username">
+    <div v-if="currentUser.username === username">
       <button @click="showNoteForm = true">Nova bilješka</button> <!-- volonter može dodavat biljeske na vlastiti profil -->
       <div v-if="showNoteForm" class="new-biljeska-form">
         <textarea v-model="newNote" placeholder="Napišite nešto o svojim iskustvima i ciljevima"></textarea>
@@ -11,12 +11,12 @@
 
     <div v-if="notes.length">
       <div v-for="note in notes" :key="note.id" class="biljeska">
-        <div v-if="note.id === editNote.id"> <!-- editNote je biljeska koju uređujemo, ne moze se uređivati vise biljeski odjednom -->
-          <textarea v-model="editNote.content"></textarea>
+        <div v-if="note.id === editedNote.id"> <!-- editedNote je biljeska koju uređujemo, ne moze se uređivati vise biljeski odjednom -->
+          <textarea v-model="editedNote.content"></textarea>
           <button @click="saveNote(note.id)">Spremi promjene</button>
         </div>
         <div v-else>
-          <p>{{ note.content }}</p>
+          <p>{{ note.content}}</p>
           <button v-if="currentUser.username === username" @click="editNote(note)">Uredi</button> <!-- volonter moze i naknadno urediti objavljene biljeske -->
           <button v-if="currentUser.username === username ||
             currentUser.role === 'admin'" @click="deleteNote(note.id)">Izbriši</button> <!-- volonter cije su biljeske i admini ih mogu brisati -->
@@ -33,6 +33,7 @@
 
 import apiClient from '@/apiClient';
 import VueJwtDecode from 'vue-jwt-decode';
+import axios from 'axios';
 
 export default {
   name: 'Biljeske',
@@ -48,7 +49,7 @@ export default {
       currentUser: {username: '', role: ''}, // trenutni korisnik
       showNoteForm: false, // vidljivost formulara za novu biljesku
       newNote: '', // sadrzaj nove biljeske
-      editNote: {content: '', id: null} // biljeska koja se uređuje
+      editedNote: {content: '', id: null} // biljeska koja se uređuje
     };
   },
   created() {
@@ -69,7 +70,9 @@ export default {
       }
     },
     fetchNotes() { // dohvaca biljeske
-      apiClient.get(`http://localhost:8080/api/biljeske?username=${this.username}`)
+      console.log("pokušavam dohvatiti bilješke za: " + this.username);
+      
+      axios.get(`http://localhost:8080/api/biljeske?username=${this.username}`)
           .then(response => {
             this.notes = response.data.reverse();
           })
@@ -78,9 +81,9 @@ export default {
           });
     },
     createNote() { // stvara novu biljesku i sprema ju u bazu podataka
-      apiClient.post(`http://localhost:8080/api/biljeske/${this.username}`, {
-        sadrzaj: this.newNote
-      })
+      axios.post(`http://localhost:8080/api/biljeske/${this.username}`, 
+        this.newNote
+      )
           .then(response => {
             const note = {
               id: response.data.id, // apiClient request vraca id nove biljeske
@@ -95,48 +98,44 @@ export default {
           });
     },
     editNote(note) { // omogucuje uređivanje biljeske
-      if (this.editNote.id !== null) { // ako se neka biljeska vec uređuje obavijestava se korisnika
+      if (this.editedNote.id !== null) { // ako se neka biljeska vec uređuje obavijestava se korisnika
         const confirmation = window.confirm("Već uređujete bilješku. Želite li spremiti promjene i nastaviti?");
         if (confirmation) {
-          apiClient.put(`http://localhost:8080/api/biljeske/${this.username}`, { // potvrdom se sprema stara biljeska i omogucuje uređivanje nove
+          axios.put(`http://localhost:8080/api/biljeske/${this.username}`, { // potvrdom se sprema stara biljeska i omogucuje uređivanje nove
             id: note.id,
-            sadrzaj: this.editNote.content
+            content: this.editedNote.content
           })
               .then(() => {
-                editNote = {content: note.content, id: note.id};
+                this.editedNote = {content: note.content, id: note.id};
               })
               .catch(error => {
                 console.error('Error editing note:', error);
               });
         }
       } else {
-        editNote = {content: note.content, id: note.id};
+        this.editedNote = {content: note.content, id: note.id};
       }
     },
-    saveNote(id) { // klasicno spremanje promjena nakon uređivanja
-      apiClient.put(`http://localhost:8080/api/biljeske/${this.username}`, {
-        id: id,
-        sadrzaj: this.editNote.content
+    saveNote(id) { // Spremanje promjena nakon uređivanja
+      axios.put(`http://localhost:8080/api/biljeske/${id}`, {
+        content: this.editedNote.content // šaljemo content kao objekat sa ključem 'content'
       })
-          .then(() => {
-            const index = this.notes.findIndex(note => note.id === id);
-            this.notes[index].content = editNote.content; // prikaz promjena
-            this.editNote = {content: '', id: null};
-          })
-          .catch(error => {
-            console.error('Error editing note:', error);
-          });
+        .then(() => {
+          const index = this.notes.findIndex(note => note.id === id);
+          this.notes[index].content = this.editedNote.content; // ažuriraj sadržaj bilješke
+          this.editedNote = {content: '', id: null}; // resetiranje editNote
+        })
+        .catch(error => {
+          console.error('Error editing note:', error);
+        });
     },
     async deleteNote(id) { // brisanje biljeske
-      apiClient.delete(`http://localhost:8080/api/biljeske/${this.username}`, {
-        id: id
-      })
-          .then(() => {
-            this.notes = this.notes.filter(biljeska => biljeska.id !== id); // prikaz promjena
-          })
-          .catch(error => {
-            console.error('Error deleting note:', error);
-          });
+      try {
+        await axios.delete(`http://localhost:8080/api/biljeske/${this.username}/${id}`); // id ide direktno u URL
+        this.notes = this.notes.filter(biljeska => biljeska.id !== id); // prikaz promjena
+      } catch (error) {
+        console.error('Error deleting note:', error);
+      }
     }
   }
 };

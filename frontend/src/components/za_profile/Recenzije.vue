@@ -44,6 +44,7 @@
 <script>
 import axios from 'axios';
 import apiClient from '@/apiClient';
+import VueJwtDecode from 'vue-jwt-decode';
 
 export default {
   name: 'Recenzije',
@@ -82,7 +83,7 @@ export default {
       }
     },
     fetchReviews() { // dohvaca recenzije
-      apiClient.get(`http://localhost:8080/api/recenzije/${this.username}`)
+      axios.get(`http://localhost:8080/api/recenzije/${this.username}`)
         .then(response => {
           this.reviews = response.data;
         })

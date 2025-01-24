@@ -17,6 +17,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.lang.Long;
 import java.util.Map;
+import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @CrossOrigin
@@ -46,6 +48,18 @@ public class ProjectController {
     public ResponseEntity<List<Project>> getAllProjects() {
         List<Project> projects = projectService.getAllProjects();
         return ResponseEntity.ok(projects);
+    }
+
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteProject(@PathVariable Long id) {
+        Optional<Project> project = projectRepository.findById(id);
+        if (project.isPresent()) {
+            projectRepository.delete(project.get());
+            return ResponseEntity.ok(Map.of("message", "Projekt uspješno obrisan."));
+        } else {
+            return ResponseEntity.status(404).body("Projekt nije pronađen.");
+        }
     }
 
     @GetMapping("/owner/{username}")

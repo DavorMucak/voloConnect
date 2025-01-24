@@ -6,9 +6,7 @@
     <button @click="obrisiProfil">Obriši profil</button>
 
     <!-- prikaz biljezaka i recenzija -->
-    <Biljeske />
 
-    <Recenzije />
 
     <!-- ako je korisnik organizacija, ima opciju izrade novog projekta -->
     <router-link v-if="uloga === 'organizacija'" to="/novi-projekt"> <button>Novi projekt</button> </router-link>
@@ -147,11 +145,7 @@ export default {
           
           Object.assign(this.korisnik, response.data);
         }
-        this.korisnik.role = 'volonter';
-        this.korisnik.name = "netko"
-        this.korisnik.surname = "nesto"
-        this.korisnik.phonenum = "dknsdkjsndfkjdn"
-        this.korisnik.email = "njmsdkvjnd"
+
 
       } catch (error) {
         console.error('Greska u dohvavanju podataka:', error);

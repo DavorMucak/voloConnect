@@ -58,6 +58,7 @@ public class SecurityConfig{
                         .requestMatchers("/api/projects/owner/**").permitAll()
                         .requestMatchers("api/user/approve-admins/**").permitAll()
                         .requestMatchers("projekt/**").permitAll()
+                        .requestMatchers("api/biljeske/**").permitAll()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .httpBasic(Customizer.withDefaults())
