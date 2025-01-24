@@ -5,10 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="51dfa50d-1beb-4e99-9bfd-706792d077c5" name="Changes" comment="Admin new user validation in progress">
-      <change beforePath="$PROJECT_DIR$/.idea/modules/demo.main.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/demo.main.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules/demo.test.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/demo.test.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/Controller/NoteController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/dto/NoteDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/model/Note.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/repository/NoteRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/service/NoteService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/Controller/ProjectController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/Controller/ProjectController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/model/MyUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/model/MyUser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/security/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/security/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/service/UserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/Profil.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Profil.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/za_profile/Biljeske.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/za_profile/Biljeske.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/za_profile/Recenzije.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/za_profile/Recenzije.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -258,7 +266,7 @@
       <workItem from="1737114907012" duration="12016000" />
       <workItem from="1737375806926" duration="22836000" />
       <workItem from="1737538766178" duration="12785000" />
-      <workItem from="1737667714344" duration="1026000" />
+      <workItem from="1737667714344" duration="17177000" />
     </task>
     <task id="LOCAL−00001" summary="Razvoj OAuth2.0 za prijavu preko Googlea">
       <option name="closed" value="true" />
