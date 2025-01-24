@@ -92,6 +92,12 @@ export default {
         return;
       }
 
+      const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{6,}$/;
+      if (!passwordRegex.test(this.password)) {
+        this.error = 'Lozinka mora imati najmanje 6 znakova, uključujući jedno veliko slovo i jednu znamenku.';
+        return;
+      }
+
       try {
         // slanje POST requesta backendu
         const response = await axios.post('http://localhost:8080/api/auth/register', {
