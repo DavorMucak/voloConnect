@@ -1,28 +1,6 @@
 <template>
-  <!-- kad se pritisne na ovo ide prikaz projekata na koje je korisnik prijavljen(volonter) ili cije je vlasnik (organizacija) -->
-  <router-link v-if="uloga !== 'admin'" to="/moji-projekti"> <button>Moji projekti</button> </router-link>
-
-  <button @click="obrisiProfil">Obriši profil</button>
-
-  <!-- prikaz biljezaka i recenzija -->
-  <Biljeske />
-
-  <Recenzije />
-
-  <!-- ako je korisnik organizacija, ima opciju izrade novog projekta -->
-  <router-link v-if="uloga === 'organizacija'" to="/novi-projekt"> <button>Novi projekt</button> </router-link>
-
-  <!-- ako je korisnik admin, moze vidit i prituzbe i registracije -->
-  <div v-if="uloga === 'admin'">
-    <Prituzbe />
-    <Registracije />
-  </div>
-
-
-
-
   <!-- prikaz podataka o korisniku -->
-  <div>
+  <div v-if="!urediDetalje">
     <h2>Podaci o korisniku</h2>
     <p><strong>Korisničko ime:</strong> {{ korisnik.username }}</p>
     <p><strong>Email:</strong> {{ korisnik.email }}</p>
@@ -33,8 +11,65 @@
   </div>
   <!-- ako je ovo profil prijavljenog korisnika moze prominit detalje -->
   <div v-if="jeLiMojProfil()">
-    <!-- !!!napravit promjenu detalja -->
-    <p>promjeni detalje</p>
+    <button v-if="!urediDetalje" @click="pokreniUredivanje">Promijeni detalje</button>
+  
+    <div v-if="urediDetalje">
+      <div>
+        <label>Email:</label>
+        <input v-model="privremeniPodaci.email" />
+      </div>
+      <div>
+        <label>Ime:</label>
+        <input v-model="privremeniPodaci.name" />
+      </div>
+      <div>
+        <label>Prezime:</label>
+        <input v-model="privremeniPodaci.surname" />
+      </div>
+    <div>
+      <label>Broj telefona:</label>
+      <input v-model="privremeniPodaci.phonenum" />
+    </div>
+      <button @click="spremiPromjene">Spremi</button>
+      <button @click="prekiniUredivanje">Odustani</button>
+    </div>
+  </div>
+  <!-- kad se pritisne na ovo ide prikaz projekata na koje je korisnik prijavljen(volonter) ili cije je vlasnik (organizacija) -->
+  <div v-if="uloga !== 'admin'">
+
+    <!-- prikaz biljezaka i recenzija -->
+    <div v-if="uloga === 'volonter'">
+      <Biljeske :username="korisnik.username"/>
+    </div>
+
+    <Recenzije :username="korisnik.username"/>
+
+    <!-- ako je korisnik organizacija, ima opciju izrade novog projekta -->
+    <router-link v-if="uloga === 'organizacija'" to="/novi-projekt"> <button>Novi projekt</button> </router-link>
+
+    <!-- <router-link :to="{ name: 'ListaProjekata', params: { username: korisnik.username } }"> <button>Moji projekti</button> </router-link> -->
+
+    <button @click="obrisiProfil">Obriši profil</button>
+    <!-- prituzba botun -->
+    <button v-if="!prituzbiranje" @click="prikaziFormu = true">Prijavite Pritužbu</button>
+    <div v-if="prikaziFormu">
+      <label for="username">Ime korisnika:</label>
+      <input type="text" id="username" v-model="prituzba.username" placeholder="Unesite ime korisnika" required />
+
+      <label for="opis">Opis problema:</label>
+      <textarea id="opis" v-model="prituzba.opis" placeholder="Unesite opis problema" required></textarea>
+
+      <button @click="submitComplaint">Pošaljite Pritužbu</button>
+      <button @click="cancelComplaint">Odustani</button>
+    </div>
+
+  </div>
+
+
+  <!-- ako je korisnik admin, moze vidit i prituzbe i registracije -->
+  <div v-if="uloga === 'admin'">
+    <Prituzbe />
+    <RegistracijeAdmina />
   </div>
 </template>
 
@@ -64,33 +99,82 @@ export default {
         phonenum: '',
         role: ["volonter", "organizacija", "admin"],
       },
+      privremeniPodaci: {},
       uloga: '',
       korisnickoIme: ' ',
+      urediDetalje: false,
+      prikaziFormu: false,
+      prituzba: {
+        username: '', 
+        opis: ''
+      },
     };
   },
   methods: {
+    cancelComplaint() {
+      this.prikaziFormu = false;
+      this.prituzba.username= '';
+      this.prituzba.opis = '';
+    },
+    async submitComplaint() {
+      if (!this.prituzba.username || !this.prituzba.opis) {
+        alert('Molimo popunite sve podatke!');
+        return;
+      }
+      const complaint= {
+        plaintiffUsername: this.korisnickoIme, 
+        defendantUsername: this.prituzba.username,
+        description: this.prituzba.opis,
+      };
+      apiClient.post('http://localhost:8080/api/prituzbe', complaint)
+        .then(response => {
+          alert('Complaint submitted successfully!');
+          this.cancelComplaint();
+        })
+        .catch(error => {
+          console.error('Greska pri slanju prituzbe:', error);
+          alert('Greska pri slanju prituzbe.');
+        });
+      
+    },
+    pokreniUredivanje() {
+      this.privremeniPodaci = { ...this.korisnik };
+      this.urediDetalje = true;
+    },
+    prekiniUredivanje() {
+      this.urediDetalje = false;
+    },
+    async spremiPromjene() {
+      try {
+        const response = await apiClient.put(`http://localhost:8080/api/user/${this.korisnik.username}`, {
+          email: this.privremeniPodaci.email,
+          name: this.privremeniPodaci.name,
+          surname: this.privremeniPodaci.surname,
+          phonenum: this.privremeniPodaci.phonenum,
+        });
+        this.korisnik={ ...this.privremeniPodaci };
+        this.urediDetalje = false;
+      } catch (error) {
+        console.error('Greška pri spremanju promjena:', error);
+      }
+    },
     async fetchKorisnik() {
       try {
         // dohvat podataka o prijavljenon korisniku
         const token = localStorage.getItem("token");
-        const response = await axios.get("http://localhost:8080/api/auth/users", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        this.uloga = response.data.role
-        this.korisnickoIme = response.data.username
-        //!!!!triba dohvatit podatke o useru na kojoj se stranici nalazi
-        //!!!ako se prijavljeni korisnik poklapa s time onda je drugacija stranica
+        if (token) {    //ako postoji token korisnik je prijavljen
+          
+          //sprema username
+          this.korisnickoIme = VueJwtDecode.decode(token).sub;
+          this.uloga = VueJwtDecode.decode(token).role;
+          this.korisnik.role = VueJwtDecode.decode(token).role;
+          this.korisnik.username = VueJwtDecode.decode(token).sub;
 
-        //!!!usporedi username iz headera sa usernameon prijavljenog korisnika
-
-
-        /* this.korisnik.username = user.username;
-        this.korisnik.password = user.password;
-        this.korisnik.email = user.email;
-        this.korisnik.name = user.name;
-        this.korisnik.surname = user.surname;
-        this.korisnik.phonenum = user.phonenum;
-        this.korisnik.role = user.role; */
+          const response = await apiClient.get(`http://localhost:8080/api/user/${this.korisnik.username}`);
+          console.log(response.data);
+          
+          Object.assign(this.korisnik, response.data);
+        }
 
       } catch (error) {
         console.error('Greska u dohvavanju podataka:', error);
@@ -116,6 +200,8 @@ export default {
           alert(response.data.message);  // poruka (uspjeh)
 
           localStorage.removeItem('token');
+          localStorage.removeItem('role');
+          localStorage.removeItem('userID');
           this.isLoggedIn = false;  // vise nije ulogiran
           this.$router.push('/login'); // redirectaj na home
 
