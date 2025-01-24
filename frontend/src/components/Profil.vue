@@ -37,6 +37,8 @@
   <!-- kad se pritisne na ovo ide prikaz projekata na koje je korisnik prijavljen(volonter) ili cije je vlasnik (organizacija) -->
   <div v-if="uloga !== 'admin'">
 
+    <router-link :to="`/moji-projekti/${korisnik.username}`"> <button>Moji projekti</button> </router-link>
+
     <!-- prikaz biljezaka i recenzija -->
     <div v-if="uloga === 'volonter'">
       <Biljeske :username="korisnik.username"/>
