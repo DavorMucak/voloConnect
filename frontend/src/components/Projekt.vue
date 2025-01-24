@@ -11,13 +11,13 @@
       <p><strong>Vrsta aktivnosti:</strong> {{ projekt.vrstaAktivnosti }}</p>
       <p><strong>Organizacija:</strong> {{ projekt.ownerId}}</p>
       <div v-if="uloga === 'volonter'">
-        <button v-if="provjeriPrijavu()" @click="prijavaProjekt()">Prijavi se!</button>
+        <button @click="prijavaProjekt()">Prijavi se!</button>
       <!--  <button v-else @click="odjavaProjekt()">Odjavi projekt</button>-->
       </div>
       <!-- !!!!ako je korisnik organizacija=> uredi podatke + vidi prijavljene ako je njihov projekt inace view only -->
       <div v-if="provjeriVlasnika()">
         <button @click="dohvatiPrijave()">Dohvati Prijave</button>
-        <div v-if="applications.length">
+        <div v-if="applications.length" class="application-box">
           <div v-for="application in applications" :key="application.id" class="prijava">
             <div v-if="!(application.status === 'declined')">
               <router-link :to="`/profil/${application.userName}`">{{ application.userName }}</router-link>
@@ -28,12 +28,9 @@
           </div>
         </div>
       </div>
-      <div v-else>
-          <p>Nema prijava.</p>
-        </div>
     </div>
     <div v-else>
-      <p>Nema projekata.</p>
+      <p>Nema prijava.</p>
     </div>
     <div v-if="provjeriVlasnika()">
       <div v-if="uloga === 'organizacija' && jeLiMojProjekt()">
@@ -219,19 +216,21 @@ export default {
       }
     },
     */
-    async provjeriPrijavu(){
+    /*async provjeriPrijavu(){
+      
       try {
         // dohvati popis prijava za projekt
-        const response = await axios.get(`http://localhost:8080/api/projects/${this.projekt.projectId}/signups`);
+        const response = await axios.get(`http://localhost:8080/api/projects/${this.projectId}/signups`);
         
         // provjeri je li logirani korisnik prijavljen na projekt
         const korisnikPrijavljen = response.data.some(signup => signup.korisnickoIme === this.korisnickoIme);
+        console.log(korisnikPrijavljen + "korisnik prijavljen");
         return korisnikPrijavljen;
       } catch (error) {
         console.error('Greška pri provjeri prijave:', error);
         return false; // ako dode do greske, pretpostavljamo da korisnik nije prijavljen
       }
-    },
+    },*/
     jeLiMojProjekt(){
       console.log("Boolean misterij: " + this.korisnickoIme && this.projekt && this.projekt.ownerId === this.korisnickoIme);
       console.log("Boolean misterij: " + this.korisnickoIme);
@@ -288,3 +287,49 @@ export default {
 </script>
 <script setup lang="ts">
 </script>
+
+<style scoped>
+.application-box {
+  border: 1px solid black;
+  padding: 10px;
+  margin: 10px;
+  background-color: #e5e2a2;
+  border-radius: 8px;
+  text-align: center;
+  font-weight: bold;
+}
+
+button {
+  padding: 7px;
+  margin-left: 7px;
+  margin-top: 7px;
+  margin-bottom: 30px;
+  background-color: #aeae53;
+  color: black;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #3a6b2d;
+}
+
+textarea {
+  width: 90%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid black;
+  border-radius: 4px;
+  background-color: #f6f4d2;
+}
+
+input[type="number"] {
+  width: 90%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid black;
+  border-radius: 4px;
+  background-color: #f6f4d2;
+}
+</style>

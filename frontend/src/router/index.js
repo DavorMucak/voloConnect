@@ -33,7 +33,7 @@ const routes = [
         component: NoviProjekt
     },
     {
-        path: '/projekt/:imeProjekta',
+        path: '/projekt/:projektId',
         name: 'Projekt',
         component: Projekt,
         props:true

@@ -5,13 +5,25 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="51dfa50d-1beb-4e99-9bfd-706792d077c5" name="Changes" comment="Admin new user validation in progress">
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_16_1_2025__23_47_[Changes]/shelved.patch" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_16_1_2025__23_47__Changes_.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_16_1_2025__23_41_[Changes]/shelved.patch" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_16_1_2025__23_41__Changes_.xml" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/dto/ProjectUpdateDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/5aa8b4da-889d-40e5-8488-8bcaf0a18fab.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/5aa8b4da-889d-40e5-8488-8bcaf0a18fab.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/5aa8b4da-889d-40e5-8488-8bcaf0a18fab/storage_v2/_src_/database/demo.4_0uAA.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/5aa8b4da-889d-40e5-8488-8bcaf0a18fab/storage_v2/_src_/database/demo.4_0uAA/schema/public.abK9xQ.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_auth0_java_jwt_4_4_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/demo.main.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/demo.main.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules/demo.test.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/demo.test.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/Controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/Controller/UserController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/Profil.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Profil.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/Controller/ProjectController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/Controller/ProjectController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/repository/NoteRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/repository/NoteRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/repository/ProjectRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/repository/ProjectRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/service/ProjectService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/service/ProjectService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/service/UserProjectService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/demo/src/main/java/com/example/demo/service/UserProjectService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/demo/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/demo/src/main/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/Projekt.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Projekt.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/za_profile/ListaProjekata.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/za_profile/ListaProjekata.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/router/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/router/index.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -97,7 +109,7 @@
     &quot;Spring Boot.DemoApplication.executor&quot;: &quot;Run&quot;,
     &quot;git-widget-placeholder&quot;: &quot;dev&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Dalibor/Desktop/dora/voloConnect&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Dalibor/Desktop/dora4/voloConnect&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -263,6 +275,8 @@
       <workItem from="1737538766178" duration="12785000" />
       <workItem from="1737667714344" duration="17177000" />
       <workItem from="1737710038884" duration="763000" />
+      <workItem from="1737743014469" duration="998000" />
+      <workItem from="1737744061997" duration="2798000" />
     </task>
     <task id="LOCAL−00001" summary="Razvoj OAuth2.0 za prijavu preko Googlea">
       <option name="closed" value="true" />

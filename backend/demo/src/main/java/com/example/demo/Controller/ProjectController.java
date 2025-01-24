@@ -1,6 +1,7 @@
 package com.example.demo.Controller;
 import java.util.Optional;
 
+import com.example.demo.dto.ProjectUpdateDTO;
 import com.example.demo.model.UserProject;
 import com.example.demo.model.MyUser;
 import com.example.demo.dto.ApplicationDto;
@@ -105,6 +106,7 @@ public class ProjectController {
     {
 
         Long userId = Long.valueOf(requestBody.get("userId").toString());
+
         boolean success = userProjectService.applyToProject(userId, projectId);
         if (success) {
             return ResponseEntity.ok("Successfully applied to the project!");
@@ -138,6 +140,12 @@ public class ProjectController {
         } else {
             return ResponseEntity.badRequest().body("Failed to accept the application.");
         }
+    }
+
+    @PutMapping
+    public ResponseEntity<Project> updateProject(@RequestBody ProjectUpdateDTO projectDTO) {
+        Project updatedProject = projectService.updateProject(projectDTO);
+        return ResponseEntity.ok(updatedProject);
     }
 
     @PostMapping("/{projectId}/{applicationId}/decline")
