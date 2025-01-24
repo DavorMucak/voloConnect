@@ -164,13 +164,14 @@ export default {
         const token = localStorage.getItem("token");
         if (token) {    //ako postoji token korisnik je prijavljen
           
-          //sprema username
+          //sprema username i ulogu
           this.korisnickoIme = VueJwtDecode.decode(token).sub;
           this.uloga = VueJwtDecode.decode(token).role;
-          this.korisnik.role = VueJwtDecode.decode(token).role;
-          this.korisnik.username = VueJwtDecode.decode(token).sub;
 
-          const response = await apiClient.get(`http://localhost:8080/api/user/${this.korisnik.username}`);
+          const korisnickoImeParam = this.$route.params.username;
+
+          const response = await apiClient.get(`http://localhost:8080/api/user/${korisnickoImeParam}`);
+
           console.log(response.data);
           
           Object.assign(this.korisnik, response.data);
