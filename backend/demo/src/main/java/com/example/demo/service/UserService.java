@@ -1,6 +1,5 @@
 package com.example.demo.service;
 
-
 import com.example.demo.dto.UserLoginDto;
 import com.example.demo.dto.UserRegistrationDto;
 import com.example.demo.dto.VerifyUserDto;
@@ -171,7 +170,6 @@ public class UserService {
         return String.valueOf(code);
     }
 
-    //mozda nije najelegantnije rjesenje ali je najbolje kojeg sam se mogla sjetiti sad
     public List<MyUser> getUnvalidatedAdmins() {
         List<MyUser> allUsers = userRepository.findAll();
         List<MyUser> unvalidatedUsers = new ArrayList<>();
