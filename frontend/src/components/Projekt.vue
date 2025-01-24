@@ -20,7 +20,7 @@
       <div v-if="provjeriVlasnika()">
         <button @click="dohvatiPrijave()">Dohvati Prijave</button>
           <div v-if="applications.length">
-            <div v-for="application in applications" :key="prijava.id" class="prijava">
+            <div v-for="application in applications" :key="application.id" class="prijava">
               <button>PROFIL</button>
               <p>podaci o prijavi</p>
               <button @click="odobriPrijavu()">Odobri prijavu</button> <button @click="odbaciPrijavu()">Odbaci prijavu</button>
@@ -159,7 +159,7 @@ export default {
 
     async odobriPrijavu() {
       try{
-        const response = await axios.post(`http://localhost:8080/api/projects/${this.projekt.id}/${application.id}/accept`);
+        const response = await axios.post(`http://localhost:8080/api/projects/${this.projekt.id}/${this.application.id}/accept`);
 
         alert("Uspješno odobrena prijava!");
       } catch (error) {
