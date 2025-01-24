@@ -1,0 +1,390 @@
+Index: backend/demo/src/main/resources/application.yml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>server:\n  error:\n    include-message: always\n    include-binding-errors: always\n\nspring:\n  web:\n    resources:\n      static-locations: classpath:/static/\n      chain:\n        cache: false\n  datasource:\n    password: simulatoR\n    url: jdbc:postgresql://localhost:5433/demo\n    username: postgres\n  jpa:\n    hibernate:\n      ddl-auto: update\n    properties:\n      hibernate:\n        dialect: org.hibernate.dialect.PostgreSQLDialect\n        format_sql: true\n    show-sql: true\n\n    spring:\n      servlet:\n        multipart:\n          max-file-size: 10MB\n          max-request-size: 10MB\n
+===================================================================
+diff --git a/backend/demo/src/main/resources/application.yml b/backend/demo/src/main/resources/application.yml
+--- a/backend/demo/src/main/resources/application.yml	(revision 4e6ed43bd3813aeaa238fbe659f6e3860c5d7d61)
++++ b/backend/demo/src/main/resources/application.yml	(date 1734356150108)
+@@ -10,7 +10,7 @@
+       chain:
+         cache: false
+   datasource:
+-    password: simulatoR
++    password: bazepodataka
+     url: jdbc:postgresql://localhost:5433/demo
+     username: postgres
+   jpa:
+Index: backend/demo/src/main/java/com/example/demo/service/JWTService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.demo.service;\n\nimport io.jsonwebtoken.Claims;\nimport io.jsonwebtoken.Jwts;\nimport io.jsonwebtoken.SignatureAlgorithm;\nimport io.jsonwebtoken.security.Keys;\nimport org.springframework.security.core.userdetails.UserDetails;\nimport org.springframework.stereotype.Service;\n\nimport javax.crypto.SecretKey;\nimport java.util.Base64;\nimport java.util.Date;\nimport java.util.HashMap;\nimport java.util.Map;\nimport java.util.function.Function;\n\n@Service\npublic class JWTService {\n\n    private final String secretkey;\n    private static final long EXPIRATION_TIME = 30 * 60 * 60 * 1000; // 30 hours\n\n    public JWTService() {\n        this.secretkey = Base64.getEncoder().encodeToString(Keys.secretKeyFor(SignatureAlgorithm.HS256).getEncoded());\n    }\n\n    public String generateToken(String username) {\n        Map<String, Object> claims = new HashMap<>();\n        return Jwts.builder()\n                .setClaims(claims)\n                .setSubject(username)\n                .setIssuedAt(new Date(System.currentTimeMillis()))\n                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))\n                .signWith(getKey(), SignatureAlgorithm.HS256)\n                .compact();\n    }\n\n    public String extractUserName(String token) {\n        return extractClaim(token, Claims::getSubject);\n    }\n\n    public boolean validateToken(String token, UserDetails userDetails) {\n        final String username = extractUserName(token);\n        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));\n    }\n\n    private boolean isTokenExpired(String token) {\n        return extractExpiration(token).before(new Date());\n    }\n\n    private Date extractExpiration(String token) {\n        return extractClaim(token, Claims::getExpiration);\n    }\n\n    private <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {\n        final Claims claims = extractAllClaims(token);\n        return claimsResolver.apply(claims);\n    }\n\n    private Claims extractAllClaims(String token) {\n        return Jwts.parserBuilder()\n                .setSigningKey(getKey())\n                .build()\n                .parseClaimsJws(token)\n                .getBody();\n    }\n\n    private SecretKey getKey() {\n        byte[] keyBytes = Base64.getDecoder().decode(secretkey);\n        return Keys.hmacShaKeyFor(keyBytes);\n    }\n}\n
+===================================================================
+diff --git a/backend/demo/src/main/java/com/example/demo/service/JWTService.java b/backend/demo/src/main/java/com/example/demo/service/JWTService.java
+--- a/backend/demo/src/main/java/com/example/demo/service/JWTService.java	(revision 4e6ed43bd3813aeaa238fbe659f6e3860c5d7d61)
++++ b/backend/demo/src/main/java/com/example/demo/service/JWTService.java	(date 1734447769954)
+@@ -24,6 +24,7 @@
+         this.secretkey = Base64.getEncoder().encodeToString(Keys.secretKeyFor(SignatureAlgorithm.HS256).getEncoded());
+     }
+ 
++    //generiranje tokena
+     public String generateToken(String username) {
+         Map<String, Object> claims = new HashMap<>();
+         return Jwts.builder()
+@@ -35,28 +36,34 @@
+                 .compact();
+     }
+ 
++    //iščitava username iz tokena
+     public String extractUserName(String token) {
+         return extractClaim(token, Claims::getSubject);
+     }
+ 
++    //token je validan ako nije istekao i postoji user s istim usernameom u bazi
+     public boolean validateToken(String token, UserDetails userDetails) {
+         final String username = extractUserName(token);
+         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+     }
+ 
++    //provjera je li token istekao
+     private boolean isTokenExpired(String token) {
+         return extractExpiration(token).before(new Date());
+     }
+ 
++    //iščitaj vrijeme isteka tokena
+     private Date extractExpiration(String token) {
+         return extractClaim(token, Claims::getExpiration);
+     }
+ 
++    //iščitava claimse iz tokena
+     private <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+         final Claims claims = extractAllClaims(token);
+         return claimsResolver.apply(claims);
+     }
+ 
++    //?
+     private Claims extractAllClaims(String token) {
+         return Jwts.parserBuilder()
+                 .setSigningKey(getKey())
+@@ -65,6 +72,7 @@
+                 .getBody();
+     }
+ 
++    //dekodiranje
+     private SecretKey getKey() {
+         byte[] keyBytes = Base64.getDecoder().decode(secretkey);
+         return Keys.hmacShaKeyFor(keyBytes);
+Index: backend/demo/src/main/java/com/example/demo/security/SecurityConfig.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.demo.security;\n\nimport com.example.demo.service.UserService;\nimport org.springframework.beans.factory.annotation.Autowired;\nimport org.springframework.context.annotation.Bean;\nimport org.springframework.context.annotation.Configuration;\nimport org.springframework.http.HttpMethod;\nimport org.springframework.security.authentication.AuthenticationManager;\nimport org.springframework.security.authentication.AuthenticationProvider;\nimport org.springframework.security.authentication.dao.DaoAuthenticationProvider;\nimport org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;\nimport org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;\nimport org.springframework.security.config.annotation.web.builders.HttpSecurity;\nimport org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;\nimport org.springframework.security.core.userdetails.UserDetailsService;\nimport org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;\nimport org.springframework.security.crypto.password.PasswordEncoder;\nimport org.springframework.security.web.SecurityFilterChain;\nimport org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;\n\n@Configuration\n@EnableWebSecurity\npublic class SecurityConfig {\n\n    @Autowired\n    private UserDetailsService userDetailsService;\n\n    @Autowired\n    private JwtFilter jwtFilter;\n\n\n    @Bean\n    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {\n        return httpSecurity\n                .authorizeRequests(authz -> authz\n                        .requestMatchers(\"/login\", \"/register\").permitAll()\n                        .requestMatchers(\"/api/auth/register\").permitAll()\n                        .requestMatchers(\"/api/auth/login\").permitAll()\n                        .anyRequest().authenticated()\n\n                )\n                .csrf().disable()\n                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)\n                .build();\n    }\n\n    @Bean\n    public AuthenticationProvider authenticationProvider() {\n        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();\n        provider.setPasswordEncoder(new BCryptPasswordEncoder(12));\n        provider.setUserDetailsService(userDetailsService);\n\n\n        return provider;\n    }\n\n    @Bean\n    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {\n        return config.getAuthenticationManager();\n\n    }\n\n\n    @Bean\n    public PasswordEncoder passwordEncoder() {\n        return new BCryptPasswordEncoder();\n    }\n\n}\n\n\n
+===================================================================
+diff --git a/backend/demo/src/main/java/com/example/demo/security/SecurityConfig.java b/backend/demo/src/main/java/com/example/demo/security/SecurityConfig.java
+--- a/backend/demo/src/main/java/com/example/demo/security/SecurityConfig.java	(revision 4e6ed43bd3813aeaa238fbe659f6e3860c5d7d61)
++++ b/backend/demo/src/main/java/com/example/demo/security/SecurityConfig.java	(date 1734546997993)
+@@ -8,15 +8,22 @@
+ import org.springframework.security.authentication.AuthenticationManager;
+ import org.springframework.security.authentication.AuthenticationProvider;
+ import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
++import org.springframework.security.config.Customizer;
+ import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+ import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+ import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
++import org.springframework.security.config.http.SessionCreationPolicy;
+ import org.springframework.security.core.userdetails.UserDetailsService;
+ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+ import org.springframework.security.crypto.password.PasswordEncoder;
++import org.springframework.security.oauth2.client.registration.ClientRegistration;
++import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
++import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
++import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
+ import org.springframework.security.web.SecurityFilterChain;
+ import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
++import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+ 
+ @Configuration
+ @EnableWebSecurity
+@@ -36,10 +43,17 @@
+                         .requestMatchers("/login", "/register").permitAll()
+                         .requestMatchers("/api/auth/register").permitAll()
+                         .requestMatchers("/api/auth/login").permitAll()
++                        .requestMatchers("/api/projects").permitAll()
+                         .anyRequest().authenticated()
+-
+                 )
+-                .csrf().disable()
++                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
++                .httpBasic(Customizer.withDefaults())
++                .oauth2Login(oAuth2 -> oAuth2
++                        .loginPage("api/auth/login")
++                        .defaultSuccessUrl("/api/projects")
++                        .userInfoEndpoint(userInfo -> userInfo.userService(new DefaultOAuth2UserService()))
++                )
++                .csrf(AbstractHttpConfigurer::disable)
+                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                 .build();
+     }
+@@ -66,6 +80,27 @@
+         return new BCryptPasswordEncoder();
+     }
+ 
++    @Bean
++    public JwtFilter JwtAuthFilter(){
++        return new JwtFilter();
++    }
++
++    @Bean
++    public ClientRegistrationRepository clientRegistrationRepository() {
++        ClientRegistration googleRegistration = ClientRegistration.withRegistrationId("google")
++                .clientId("your-client-id")
++                .clientSecret("your-client-secret")
++                .scope("profile", "email")
++                .authorizationUri("https://accounts.google.com/o/oauth2/auth")
++                .tokenUri("https://oauth2.googleapis.com/token")
++                .userInfoUri("https://openidconnect.googleapis.com/v1/userinfo")
++                .redirectUri("{baseUrl}/login/oauth2/code/{registrationId}")
++                .clientName("Google")
++                .build();
++
++        return new InMemoryClientRegistrationRepository(googleRegistration);
++    }
++
+ }
+ 
+ 
+Index: backend/demo/src/main/java/com/example/demo/security/JwtFilter.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.demo.security;\n\nimport com.example.demo.service.JWTService;\nimport org.springframework.context.ApplicationContext;\n\nimport com.example.demo.service.MyUserDetailsService;\nimport jakarta.servlet.FilterChain;\nimport jakarta.servlet.ServletException;\nimport jakarta.servlet.http.HttpServletRequest;\nimport jakarta.servlet.http.HttpServletResponse;\nimport org.springframework.beans.factory.annotation.Autowired;\nimport org.springframework.security.authentication.UsernamePasswordAuthenticationToken;\nimport org.springframework.security.core.context.SecurityContextHolder;\nimport org.springframework.security.core.userdetails.UserDetails;\nimport org.springframework.security.web.authentication.WebAuthenticationDetailsSource;\nimport org.springframework.stereotype.Component;\nimport org.springframework.web.filter.OncePerRequestFilter;\n\nimport java.io.IOException;\n\n@Component\npublic class JwtFilter extends OncePerRequestFilter {\n\n    @Autowired\n    private JWTService jwtService;\n\n    @Autowired\n    ApplicationContext context;\n\n    @Override\n    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {\n        String authHeader = request.getHeader(\"Authorization\");\n        String token = null;\n        String username = null;\n\n        if (authHeader != null && authHeader.startsWith(\"Bearer \")) {\n            token = authHeader.substring(7);\n            username = jwtService.extractUserName(token);\n        }\n\n        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {\n            UserDetails userDetails = context.getBean(MyUserDetailsService.class).loadUserByUsername(username);\n            if (jwtService.validateToken(token, userDetails)) {\n                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());\n                authToken.setDetails(new WebAuthenticationDetailsSource()\n                        .buildDetails(request));\n                SecurityContextHolder.getContext().setAuthentication(authToken);\n            }\n        }\n\n        filterChain.doFilter(request, response);\n    }\n}\n
+===================================================================
+diff --git a/backend/demo/src/main/java/com/example/demo/security/JwtFilter.java b/backend/demo/src/main/java/com/example/demo/security/JwtFilter.java
+--- a/backend/demo/src/main/java/com/example/demo/security/JwtFilter.java	(revision 4e6ed43bd3813aeaa238fbe659f6e3860c5d7d61)
++++ b/backend/demo/src/main/java/com/example/demo/security/JwtFilter.java	(date 1734546071312)
+@@ -1,5 +1,6 @@
+ package com.example.demo.security;
+ 
++import com.example.demo.service.CustomOAuth2UserService;
+ import com.example.demo.service.JWTService;
+ import org.springframework.context.ApplicationContext;
+ 
+@@ -12,11 +13,13 @@
+ import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+ import org.springframework.security.core.context.SecurityContextHolder;
+ import org.springframework.security.core.userdetails.UserDetails;
++import org.springframework.security.oauth2.core.user.OAuth2User;
+ import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+ import org.springframework.stereotype.Component;
+ import org.springframework.web.filter.OncePerRequestFilter;
+ 
+ import java.io.IOException;
++import java.security.GeneralSecurityException;
+ 
+ @Component
+ public class JwtFilter extends OncePerRequestFilter {
+@@ -27,6 +30,12 @@
+     @Autowired
+     ApplicationContext context;
+ 
++    @Autowired
++    private MyUserDetailsService userDetailService;
++
++    @Autowired
++    private CustomOAuth2UserService customOAuth2UserService;
++
+     @Override
+     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+         String authHeader = request.getHeader("Authorization");
+@@ -38,6 +47,43 @@
+             username = jwtService.extractUserName(token);
+         }
+ 
++        if (token != null && !token.isEmpty()) {
++            try {
++                if(isJwtToken(token) && !isOAuth2Token(token)){
++                    handleJwtToken(token, request);
++                } else if (isOAuth2Token(token)){
++                    handleOAuth2Token(token, request);
++                }
++            } catch (GeneralSecurityException e) {
++                if (isJwtToken(token)) {
++                    handleJwtToken(token, request);
++                } else {
++                    throw new RuntimeException(e);
++                }
++            }
++        }
++        filterChain.doFilter(request, response);
++
++
++
++        filterChain.doFilter(request, response);
++    }
++
++    //Google ID token pocinje znakovima eyJ i mora sadržavati točku
++    private boolean isOAuth2Token(String token) {
++        return token.startsWith("eyJ") && token.contains(".");
++    }
++
++    //jwt token mora imati 3 dijela
++    private boolean isJwtToken(String token) {
++        if (token.split("\\.").length == 3) {
++            return true;
++        }
++        return false;
++    }
++
++    private void handleJwtToken(String token, HttpServletRequest request) {
++        String username = jwtService.extractUserName(token);
+         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+             UserDetails userDetails = context.getBean(MyUserDetailsService.class).loadUserByUsername(username);
+             if (jwtService.validateToken(token, userDetails)) {
+@@ -47,7 +93,17 @@
+                 SecurityContextHolder.getContext().setAuthentication(authToken);
+             }
+         }
++    }
+ 
+-        filterChain.doFilter(request, response);
++    private void handleOAuth2Token(String token, HttpServletRequest request) throws GeneralSecurityException, IOException {
++        OAuth2User oAuth2User = customOAuth2UserService.verifyOAuth2Token(token);
++        if(oAuth2User != null && SecurityContextHolder.getContext().getAuthentication() == null){
++            UsernamePasswordAuthenticationToken oAuth2Token = new UsernamePasswordAuthenticationToken(oAuth2User, null, oAuth2User.getAuthorities());
++            oAuth2Token.setDetails(new WebAuthenticationDetailsSource()
++                    .buildDetails(request));
++            SecurityContextHolder.getContext().setAuthentication(oAuth2Token);
++        } else {
++            throw new GeneralSecurityException("OAuth2 Google token verification failed");
++        }
+     }
+ }
+Index: backend/demo/src/main/java/com/example/demo/service/UserService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.demo.service;\n\n\nimport com.example.demo.dto.UserLoginDto;\nimport com.example.demo.dto.UserRegistrationDto;\nimport com.example.demo.model.MyUser;\nimport com.example.demo.repository.UserRepository;\nimport org.springframework.beans.factory.annotation.Autowired;\nimport org.springframework.security.authentication.AuthenticationManager;\nimport org.springframework.security.authentication.UsernamePasswordAuthenticationToken;\nimport org.springframework.security.core.Authentication;\nimport org.springframework.security.core.userdetails.User;\nimport org.springframework.security.core.userdetails.UserDetails;\nimport org.springframework.security.core.userdetails.UserDetailsService;\nimport org.springframework.security.core.userdetails.UsernameNotFoundException;\nimport org.springframework.security.crypto.password.PasswordEncoder;\nimport org.springframework.stereotype.Service;\n\nimport java.util.Optional;\n\n@Service\npublic class UserService {\n\n    @Autowired\n    private JWTService jwtService;\n\n    @Autowired\n    AuthenticationManager authM;\n\n    private final UserRepository userRepository;\n    private final PasswordEncoder passwordEncoder;\n\n    @Autowired\n    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {\n        this.userRepository = userRepository;\n        this.passwordEncoder = passwordEncoder;\n    }\n\n    public String authenticate(UserLoginDto userLoginDto) {\n        Authentication authentication = authM.authenticate(new UsernamePasswordAuthenticationToken(userLoginDto.getUsername(), userLoginDto.getPassword()));\n        Optional<MyUser> userOpt = userRepository.findByUsername(userLoginDto.getUsername());\n        if (userOpt.isPresent()) {\n            if (authentication.isAuthenticated()){\n                return jwtService.generateToken(userOpt.get().getUsername());\n            } else {\n                return \"fail\";\n            }\n        }\n        return \"fail\";\n    }\n\n\n\n    public String register(UserRegistrationDto userDto) {\n        if (userRepository.existsByUsername(userDto.getUsername())) {\n            return \"Korisničko ime je već zauzeto.\";\n        }\n\n        if (userRepository.existsByEmail(userDto.getEmail())) {\n            return \"Email je već registriran.\";\n        }\n\n        MyUser user = new MyUser();\n        user.setUsername(userDto.getUsername());\n        user.setPassword(passwordEncoder.encode(userDto.getPassword())); // šifriranje lozinke\n        user.setEmail(userDto.getEmail());\n        user.setName(userDto.getName());\n        user.setSurname(userDto.getSurname());\n        user.setPhonenum(userDto.getPhonenum());\n        user.setRole(userDto.getRole());\n\n        System.out.println(\"Saving user to database...\");\n        userRepository.save(user);\n        return \"Uspješna registracija!\";\n    }\n}\n\n
+===================================================================
+diff --git a/backend/demo/src/main/java/com/example/demo/service/UserService.java b/backend/demo/src/main/java/com/example/demo/service/UserService.java
+--- a/backend/demo/src/main/java/com/example/demo/service/UserService.java	(revision 4e6ed43bd3813aeaa238fbe659f6e3860c5d7d61)
++++ b/backend/demo/src/main/java/com/example/demo/service/UserService.java	(date 1734453874949)
+@@ -49,8 +49,6 @@
+         return "fail";
+     }
+ 
+-
+-
+     public String register(UserRegistrationDto userDto) {
+         if (userRepository.existsByUsername(userDto.getUsername())) {
+             return "Korisničko ime je već zauzeto.";
+@@ -62,12 +60,17 @@
+ 
+         MyUser user = new MyUser();
+         user.setUsername(userDto.getUsername());
+-        user.setPassword(passwordEncoder.encode(userDto.getPassword())); // šifriranje lozinke
++        if(userDto.getPassword() != null)
++            user.setPassword(passwordEncoder.encode(userDto.getPassword())); // šifriranje lozinke
+         user.setEmail(userDto.getEmail());
+-        user.setName(userDto.getName());
+-        user.setSurname(userDto.getSurname());
+-        user.setPhonenum(userDto.getPhonenum());
+-        user.setRole(userDto.getRole());
++        if(userDto.getName() != null)
++            user.setName(userDto.getName());
++        if(userDto.getSurname() != null)
++            user.setSurname(userDto.getSurname());
++        if(userDto.getPhonenum() != null)
++            user.setPhonenum(userDto.getPhonenum());
++        if(userDto.getRole() != null)
++            user.setRole(userDto.getRole());
+ 
+         System.out.println("Saving user to database...");
+         userRepository.save(user);
+Index: backend/demo/build.gradle
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>plugins {\n\tid 'java'\n\tid 'org.springframework.boot' version '3.3.5'\n\tid 'io.spring.dependency-management' version '1.1.6'\n}\n\ngroup = 'com.example'\nversion = '0.0.1-SNAPSHOT'\n\njava {\n\ttoolchain {\n\t\tlanguageVersion = JavaLanguageVersion.of(17)\n\t}\n}\n\nconfigurations {\n\tcompileOnly {\n\t\textendsFrom annotationProcessor\n\t}\n}\n\nrepositories {\n\tmavenCentral()\n}\n\ndependencies {\n\timplementation 'org.springframework.boot:spring-boot-starter-data-jpa'\n\timplementation 'org.springframework.boot:spring-boot-starter-mail'\n\timplementation 'org.springframework.boot:spring-boot-starter-security'\n\timplementation 'org.springframework.boot:spring-boot-starter-web'\n\timplementation 'org.springframework.boot:spring-boot-starter-data-rest'\n\timplementation 'io.jsonwebtoken:jjwt-api:0.11.5'\n\truntimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'\n\truntimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'\n\tcompileOnly 'org.projectlombok:lombok'\n\tdevelopmentOnly 'org.springframework.boot:spring-boot-devtools'\n\truntimeOnly 'org.postgresql:postgresql'\n\tannotationProcessor 'org.projectlombok:lombok'\n\ttestImplementation 'org.springframework.boot:spring-boot-starter-test'\n\ttestImplementation 'org.springframework.security:spring-security-test'\n\ttestRuntimeOnly 'org.junit.platform:junit-platform-launcher'\n}\n\ntasks.named('test') {\n\tuseJUnitPlatform()\n}\n
+===================================================================
+diff --git a/backend/demo/build.gradle b/backend/demo/build.gradle
+--- a/backend/demo/build.gradle	(revision 4e6ed43bd3813aeaa238fbe659f6e3860c5d7d61)
++++ b/backend/demo/build.gradle	(date 1734452001933)
+@@ -29,6 +29,13 @@
+ 	implementation 'org.springframework.boot:spring-boot-starter-security'
+ 	implementation 'org.springframework.boot:spring-boot-starter-web'
+ 	implementation 'org.springframework.boot:spring-boot-starter-data-rest'
++	implementation 'org.springframework.boot:spring-boot-starter-validation'
++	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
++	implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
++	implementation 'com.google.api-client:google-api-client:2.7.1'
++	implementation 'com.google.http-client:google-http-client-gson:1.45.3'
++	implementation 'com.google.oauth-client:google-oauth-client:1.37.0'
++	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+ 	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+ 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+ 	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+Index: frontend/src/components/Login.vue
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><template>\n    <div class=\"container\">\n        <h2>Login</h2>\n\n        <form @submit.prevent=\"login\">\n            <!-- forma za unos podataka -->\n            <select v-model=\"selected\" class=\"selection\">\n                <option disabled value=\"\">uloga</option>\n                <option v-for=\"option in options\" :key=\"option\" :value=\"option\">\n                    {{ option }}\n                </option>\n            </select>\n\n            <p v-if=\"selected == 'admin' || selected == 'volonter'\">\n                <input type=\"text\" v-model=\"username\" placeholder=\"korisničko ime\"/>\n                <input type=\"password\" v-model=\"password\" placeholder=\"lozinka\" />\n            </p>\n\n            <p v-if=\"selected == 'organizacija'\">\n                <input type=\"text\" v-model=\"username\" placeholder=\"ime organizacije\" />\n                <input type=\"password\" v-model=\"password\" placeholder=\"lozinka\" />\n            </p>\n\n            <button type=\"submit\">Prijava</button>\n            <p class=\"error\" v-if=\"error\">{{ error }}</p>\n        </form>\n\n    </div>\n\n    <div v-if=\"!isLoggedIn\" class=\"container\">\n        <button @click=\"googleLogin\">Prijavi se Google profilom</button>\n    </div>\n\n    <div v-if=\"isLoggedIn\" class=\"hidden\">\n        <p>Bok, <span id=\"user-name\">{{ userName }}</span>!</p>\n        <button @click=\"googleLogout\">logout</button>\n    </div>\n\n</template>\n\n\n<script>\nimport axios from 'axios';\nimport { account } from '../appwrite';      //importanje appwrite account objekta\n\nexport default {\n    data() {\n        return {\n            username: '',       //username za obicni login\n            password: '',\n            error: '',\n            selected: '',       //odabir uloge\n            options: [\"volonter\", \"organizacija\", \"admin\"],\n            isLoggedIn: false,\n            userName: '',       //username za google login\n            account: account,       //instanca appwrite objekta\n        };\n    },\n    methods: {\n        async login() {       //login preko unosa podataka\n            this.error = '';  //resetira error poruke na default(blank)\n\n            if (!this.username || !this.password || !this.selected) {\n                this.error = 'Molimo unesite ime i lozinku.';\n                return;\n            }\n\n            try {   // saljem post request za login backendu\n                const response = await axios.post('http://localhost:8080/api/auth/login', {\n                    username: this.username,\n                    password: this.password\n                });\n\n                // spremanje tokena kojeg dobijemo u localStorage\n                localStorage.setItem('token', response.data.token);\n                alert('Uspješna prijava');\n                this.isLoggedIn = true;\n                this.$router.push('/');\n\n            } catch (error) {\n                console.error('greška u prijavi', error);\n            }\n        },\n\n        async googleLogin() {       //login preko googlea\n            try {\n                await this.account.createOAuth2Session(     //stvaranje google oauth sessiona\n                    'google',       //oauth provider\n                    'http://localhost:5173/login',        //link na koji se redirecta nakon autorizacije\n                    'http://localhost:5173/fail'    //ne postoji trenutno\n                );\n\n                const user = await this.getUser();      //dobavi podatke o korisniku nakon google logina\n\n                const response = await axios.post('http://localhost:8080/api/auth/google-login', {      //backend server za handlanje autha\n                    name: user.name,    // podatci koje uzimamo od google prijave\n                    email: user.email\n                });\n\n                // spremanje tokena kojeg dobijemo u localStorage\n                localStorage.setItem('token', response.data.token);\n                alert('Uspješna prijava');\n                this.isLoggedIn = true;\n\n                //redirectanje na /login ali s podatcima o korisniku u queryju\n                this.$router.push({ path: '/login', query: { name: user.name, email: user.email } });\n\n            } catch (error) {\n                console.error('greška u prijavi', error);\n            }\n        },\n\n        async getUser() {\n            try {\n                const user = await this.account.get();      //dobavi podatke prijavljenog korisnika\n                this.userName = user.name; // updateaj podataka o korisniku i otvori prozor prijave\n                this.isLoggedIn = true;     //postavi login state (korisnik prijavljen)\n                return user;\n            } catch (error) {\n                console.error('greška pri dohvaćanju korisnika', error);\n                this.isLoggedIn = false;\n            }\n        },\n        googleLogout() {\n            this.isLoggedIn = false;\n            this.userName = ''; // isprazni informacije o korisniku (spremno za novog)\n            this.account.deleteSession('current');      //brisane sessiona\n        },\n\n        mounted() {         // appwrite sam stvara session, mounted interacta s third-party bibliotekama\n            if (this.$route.query.name && this.$route.query.email) {\n                this.userName = this.$route.query.name;\n                this.username = this.$route.query.email;\n                this.isLoggedIn = true;\n            }    //zelimo da se u formi automatski napune podatci ispunjeni u google prijavi                     \n        },\n    },\n};\n</script>\n
+===================================================================
+diff --git a/frontend/src/components/Login.vue b/frontend/src/components/Login.vue
+--- a/frontend/src/components/Login.vue	(revision 4e6ed43bd3813aeaa238fbe659f6e3860c5d7d61)
++++ b/frontend/src/components/Login.vue	(date 1734382327407)
+@@ -41,7 +41,7 @@
+ 
+ <script>
+ import axios from 'axios';
+-import { account } from '../appwrite';      //importanje appwrite account objekta
++//import { account } from '../appwrite';      //importanje appwrite account objekta
+ 
+ export default {
+     data() {
+@@ -52,8 +52,8 @@
+             selected: '',       //odabir uloge
+             options: ["volonter", "organizacija", "admin"],
+             isLoggedIn: false,
+-            userName: '',       //username za google login
+-            account: account,       //instanca appwrite objekta
++            userName: ''//,       //username za google login
++            //account: account,       //instanca appwrite objekta
+         };
+     },
+     methods: {
+@@ -112,7 +112,7 @@
+ 
+         async getUser() {
+             try {
+-                const user = await this.account.get();      //dobavi podatke prijavljenog korisnika
++                //const user = await this.account.get();      //dobavi podatke prijavljenog korisnika
+                 this.userName = user.name; // updateaj podataka o korisniku i otvori prozor prijave
+                 this.isLoggedIn = true;     //postavi login state (korisnik prijavljen)
+                 return user;
+@@ -124,7 +124,7 @@
+         googleLogout() {
+             this.isLoggedIn = false;
+             this.userName = ''; // isprazni informacije o korisniku (spremno za novog)
+-            this.account.deleteSession('current');      //brisane sessiona
++            //this.account.deleteSession('current');      //brisane sessiona
+         },
+ 
+         mounted() {         // appwrite sam stvara session, mounted interacta s third-party bibliotekama
+Index: frontend/src/appwrite.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import { Client, Account } from 'appwrite';\nconst client = new Client();\nclient.setProject('673237a1001caeb141b9');\nclient.setEndpoint('https://cloud.appwrite.io/v1');\n\nconst account = new Account(client)\nexport {account, client};
+===================================================================
+diff --git a/frontend/src/appwrite.js b/frontend/src/appwrite.js
+--- a/frontend/src/appwrite.js	(revision 4e6ed43bd3813aeaa238fbe659f6e3860c5d7d61)
++++ b/frontend/src/appwrite.js	(date 1734382327390)
+@@ -1,7 +1,10 @@
++/*
+ import { Client, Account } from 'appwrite';
+ const client = new Client();
+ client.setProject('673237a1001caeb141b9');
+ client.setEndpoint('https://cloud.appwrite.io/v1');
+ 
+ const account = new Account(client)
+-export {account, client};
+\ No newline at end of file
++export {account, client};
++
++ */
+\ No newline at end of file

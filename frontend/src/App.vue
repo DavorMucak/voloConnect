@@ -68,10 +68,10 @@ export default {
       }
     },
     created() {
-        console.log('Aplikacija se pokreće, brišem token...');
-        localStorage.removeItem('token');
-        localStorage.removeItem('username'); // Ako koristiš username, možeš i njega izbrisati
-        localStorage.removeItem('role'); // Ako koristiš role, i to izbriši
+      console.log('Aplikacija se pokreće, brišem token...');
+      localStorage.removeItem('token');
+      localStorage.removeItem('username'); // Ako koristiš username, možeš i njega izbrisati
+      localStorage.removeItem('role'); // Ako koristiš role, i to izbriši
     },
     logout() {
       const confirmed = window.confirm("Jeste li sigurni da se želite odjaviti?");    //provjera

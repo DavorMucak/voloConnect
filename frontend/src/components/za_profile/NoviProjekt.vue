@@ -98,7 +98,7 @@ export default {
         console.log(this.ownerId);
         
         const response = await axios.post('http://localhost:8080/api/projects', {
-          imeProjekta: this.imeProjekta,
+          imeProjekta: this.imeProjekta.replace(/\s+/g, '-').toLowerCase(),
           opisProjekta: this.opisProjekta,
           brojLjudi: this.brojLjudi,
           datumPoc: this.datumPoc,

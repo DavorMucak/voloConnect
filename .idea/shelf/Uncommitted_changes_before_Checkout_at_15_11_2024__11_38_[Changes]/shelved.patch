@@ -1,0 +1,17 @@
+Index: IzvorniKod/backend/demo/src/main/resources/application.yml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>server:\n  error:\n    include-message: always\n    include-binding-errors: always\n\nspring:\n  web:\n    resources:\n      static-locations: classpath:/static/\n      chain:\n        cache: false\n  datasource:\n    password: simulatoR\n    url: jdbc:postgresql://localhost:5433/demo\n    username: postgres\n  jpa:\n    hibernate:\n      ddl-auto: update\n    properties:\n      hibernate:\n        dialect: org.hibernate.dialect.PostgreSQLDialect\n        format_sql: true\n    show-sql: true\n\n    spring:\n      servlet:\n        multipart:\n          max-file-size: 10MB\n          max-request-size: 10MB\n
+===================================================================
+diff --git a/IzvorniKod/backend/demo/src/main/resources/application.yml b/IzvorniKod/backend/demo/src/main/resources/application.yml
+--- a/IzvorniKod/backend/demo/src/main/resources/application.yml	(revision 19f765f817ed0f2c603ee2ba780c8ebfaad84d99)
++++ b/IzvorniKod/backend/demo/src/main/resources/application.yml	(date 1731666197937)
+@@ -10,7 +10,7 @@
+       chain:
+         cache: false
+   datasource:
+-    password: simulatoR
++    password: bazepodataka
+     url: jdbc:postgresql://localhost:5433/demo
+     username: postgres
+   jpa:

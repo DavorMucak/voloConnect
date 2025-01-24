@@ -1,0 +1,90 @@
+Index: login/demo/build/resources/main/application.yml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>server:\n  error:\n    include-message: always\n    include-binding-errors: always\n\nspring:\n  web:\n    resources:\n      static-locations: classpath:/static/\n      chain:\n        cache: false\n  datasource:\n    password: simulatoR\n    url: jdbc:postgresql://localhost:5433/demo\n    username: postgres\n  jpa:\n    hibernate:\n      ddl-auto: update\n    properties:\n      hibernate:\n        dialect: org.hibernate.dialect.PostgreSQLDialect\n        format_sql: true\n    show-sql: true\n
+===================================================================
+diff --git a/login/demo/build/resources/main/application.yml b/login/demo/build/resources/main/application.yml
+--- a/login/demo/build/resources/main/application.yml	(revision 468fa70971b8b75720aa5475d422c20f45ead053)
++++ b/login/demo/build/resources/main/application.yml	(date 1731662880614)
+@@ -10,7 +10,7 @@
+       chain:
+         cache: false
+   datasource:
+-    password: simulatoR
++    password: bazepodataka
+     url: jdbc:postgresql://localhost:5433/demo
+     username: postgres
+   jpa:
+@@ -21,3 +21,12 @@
+         dialect: org.hibernate.dialect.PostgreSQLDialect
+         format_sql: true
+     show-sql: true
++  security:
++    oauth2:
++      client:
++        registration:
++          google:
++            client-id: 368455952414-n0qaeppdv3gu4qpofn5f6jkc0gu4l19u.apps.googleusercontent.com
++            client-secret: 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
++            scope: profile, email
++
+Index: login-register_frontend/node_modules/.vite/deps/_metadata.json
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>{\n  \"hash\": \"baa8621d\",\n  \"configHash\": \"7ce14f3d\",\n  \"lockfileHash\": \"43e3b012\",\n  \"browserHash\": \"ccdde9ed\",\n  \"optimized\": {\n    \"appwrite\": {\n      \"src\": \"../../appwrite/dist/esm/sdk.js\",\n      \"file\": \"appwrite.js\",\n      \"fileHash\": \"dddb5918\",\n      \"needsInterop\": false\n    },\n    \"axios\": {\n      \"src\": \"../../axios/index.js\",\n      \"file\": \"axios.js\",\n      \"fileHash\": \"9d2def3c\",\n      \"needsInterop\": false\n    },\n    \"vue\": {\n      \"src\": \"../../vue/dist/vue.runtime.esm-bundler.js\",\n      \"file\": \"vue.js\",\n      \"fileHash\": \"a6fc384c\",\n      \"needsInterop\": false\n    },\n    \"vue-router\": {\n      \"src\": \"../../vue-router/dist/vue-router.mjs\",\n      \"file\": \"vue-router.js\",\n      \"fileHash\": \"cffc7a51\",\n      \"needsInterop\": false\n    }\n  },\n  \"chunks\": {\n    \"chunk-TF6X5W6F\": {\n      \"file\": \"chunk-TF6X5W6F.js\"\n    },\n    \"chunk-PZ5AY32C\": {\n      \"file\": \"chunk-PZ5AY32C.js\"\n    }\n  }\n}
+===================================================================
+diff --git a/login-register_frontend/node_modules/.vite/deps/_metadata.json b/login-register_frontend/node_modules/.vite/deps/_metadata.json
+--- a/login-register_frontend/node_modules/.vite/deps/_metadata.json	(revision 468fa70971b8b75720aa5475d422c20f45ead053)
++++ b/login-register_frontend/node_modules/.vite/deps/_metadata.json	(date 1731662880582)
+@@ -1,31 +1,31 @@
+ {
+-  "hash": "baa8621d",
+-  "configHash": "7ce14f3d",
+-  "lockfileHash": "43e3b012",
+-  "browserHash": "ccdde9ed",
++  "hash": "35631345",
++  "configHash": "a10657bf",
++  "lockfileHash": "7cda02dc",
++  "browserHash": "714e4243",
+   "optimized": {
+     "appwrite": {
+       "src": "../../appwrite/dist/esm/sdk.js",
+       "file": "appwrite.js",
+-      "fileHash": "dddb5918",
++      "fileHash": "39b456e3",
+       "needsInterop": false
+     },
+     "axios": {
+       "src": "../../axios/index.js",
+       "file": "axios.js",
+-      "fileHash": "9d2def3c",
++      "fileHash": "c0d41d01",
+       "needsInterop": false
+     },
+     "vue": {
+       "src": "../../vue/dist/vue.runtime.esm-bundler.js",
+       "file": "vue.js",
+-      "fileHash": "a6fc384c",
++      "fileHash": "08956dda",
+       "needsInterop": false
+     },
+     "vue-router": {
+       "src": "../../vue-router/dist/vue-router.mjs",
+       "file": "vue-router.js",
+-      "fileHash": "cffc7a51",
++      "fileHash": "cdd36abe",
+       "needsInterop": false
+     }
+   },
+Index: login/demo/.gradle/buildOutputCleanup/cache.properties
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>#Mon Nov 11 15:35:32 CET 2024\ngradle.version=8.10.2\n
+===================================================================
+diff --git a/login/demo/.gradle/buildOutputCleanup/cache.properties b/login/demo/.gradle/buildOutputCleanup/cache.properties
+--- a/login/demo/.gradle/buildOutputCleanup/cache.properties	(revision 468fa70971b8b75720aa5475d422c20f45ead053)
++++ b/login/demo/.gradle/buildOutputCleanup/cache.properties	(date 1731662880596)
+@@ -1,2 +1,2 @@
+-#Mon Nov 11 15:35:32 CET 2024
++#Wed Nov 13 16:00:15 CET 2024
+ gradle.version=8.10.2

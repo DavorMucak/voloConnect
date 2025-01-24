@@ -38,7 +38,7 @@
         placeholder="-" @input="moveToNext(index, $event)" @keydown.backspace="moveToPrev(index, $event)"
         class="digit-box" />
     </div>
- 
+
     <button @click="resendCode" r> Trebam novi kod </button>
 
     <button @click="verifyCode">Potvrdi kod</button>

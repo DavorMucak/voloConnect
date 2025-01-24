@@ -1,0 +1,161 @@
+Index: IzvorniKod/backend/demo/src/main/resources/application.yml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>server:\n  error:\n    include-message: always\n    include-binding-errors: always\n\nspring:\n  web:\n    resources:\n      static-locations: classpath:/static/\n      chain:\n        cache: false\n  datasource:\n    password: simulatoR\n    url: jdbc:postgresql://localhost:5433/demo\n    username: postgres\n  jpa:\n    hibernate:\n      ddl-auto: update\n    properties:\n      hibernate:\n        dialect: org.hibernate.dialect.PostgreSQLDialect\n        format_sql: true\n    show-sql: true\n\n    spring:\n      servlet:\n        multipart:\n          max-file-size: 10MB\n          max-request-size: 10MB\n
+===================================================================
+diff --git a/IzvorniKod/backend/demo/src/main/resources/application.yml b/IzvorniKod/backend/demo/src/main/resources/application.yml
+--- a/IzvorniKod/backend/demo/src/main/resources/application.yml	(revision 19f765f817ed0f2c603ee2ba780c8ebfaad84d99)
++++ b/IzvorniKod/backend/demo/src/main/resources/application.yml	(date 1731692170848)
+@@ -10,7 +10,7 @@
+       chain:
+         cache: false
+   datasource:
+-    password: simulatoR
++    password: bazepodataka
+     url: jdbc:postgresql://localhost:5433/demo
+     username: postgres
+   jpa:
+@@ -21,9 +21,18 @@
+         dialect: org.hibernate.dialect.PostgreSQLDialect
+         format_sql: true
+     show-sql: true
+-
+-    spring:
+-      servlet:
+-        multipart:
+-          max-file-size: 10MB
+-          max-request-size: 10MB
++  security:
++    oauth2:
++      client:
++        registration:
++          google:
++            client-id: 368455952414-n0qaeppdv3gu4qpofn5f6jkc0gu4l19u.apps.googleusercontent.com
++            client-secret: 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
++            scope: profile, email
++  servlet:
++    multipart:
++      max-file-size: 10MB
++      max-request-size: 10MB
++  jwt:
++    rsa-private-key: classpath::certs/privateKey.pem
++    rsa-public-key: classpath::certs/publicKey.pem
+Index: IzvorniKod/backend/demo/src/main/java/com/example/demo/security/SecurityConfig.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.demo.security;\n\nimport com.example.demo.service.UserService;\nimport org.springframework.beans.factory.annotation.Autowired;\nimport org.springframework.context.annotation.Bean;\nimport org.springframework.context.annotation.Configuration;\nimport org.springframework.http.HttpMethod;\nimport org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;\nimport org.springframework.security.config.annotation.web.builders.HttpSecurity;\nimport org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;\nimport org.springframework.security.core.userdetails.UserDetailsService;\nimport org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;\nimport org.springframework.security.crypto.password.PasswordEncoder;\nimport org.springframework.security.web.SecurityFilterChain;\n\n@Configuration\n@EnableWebSecurity\npublic class SecurityConfig {\n\n\n    @Bean\n    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {\n        return httpSecurity\n                .authorizeRequests(authz -> authz\n                        .requestMatchers(\"/assets/**\", \"/index.html\").permitAll() // Dozvoli pristup statičkim datotekama\n                        .requestMatchers(\"/login\", \"/register\").permitAll()\n                        .requestMatchers(\"/api/auth/register\").permitAll()\n                        .requestMatchers(\"/api/auth/login\").permitAll()\n                        .requestMatchers(\"/api/projects\").permitAll()\n                        .anyRequest().authenticated()\n\n                )\n                .formLogin(login -> login\n                        .loginPage(\"/login\").permitAll()\n                )\n                .csrf().disable()\n                .build();\n    }\n\n\n    @Bean\n    public PasswordEncoder passwordEncoder() {\n        return new BCryptPasswordEncoder();\n    }\n}\n\n\n
+===================================================================
+diff --git a/IzvorniKod/backend/demo/src/main/java/com/example/demo/security/SecurityConfig.java b/IzvorniKod/backend/demo/src/main/java/com/example/demo/security/SecurityConfig.java
+--- a/IzvorniKod/backend/demo/src/main/java/com/example/demo/security/SecurityConfig.java	(revision 19f765f817ed0f2c603ee2ba780c8ebfaad84d99)
++++ b/IzvorniKod/backend/demo/src/main/java/com/example/demo/security/SecurityConfig.java	(date 1731692213159)
+@@ -1,5 +1,6 @@
+ package com.example.demo.security;
+ 
++import com.example.demo.service.CustomOAuth2UserService;
+ import com.example.demo.service.UserService;
+ import org.springframework.beans.factory.annotation.Autowired;
+ import org.springframework.context.annotation.Bean;
+@@ -17,6 +18,12 @@
+ @EnableWebSecurity
+ public class SecurityConfig {
+ 
++    private final CustomOAuth2UserService customOAuth2UserService;
++
++    @Autowired
++    public SecurityConfig(CustomOAuth2UserService customOAuth2UserService) {
++        this.customOAuth2UserService = customOAuth2UserService;
++    }
+ 
+     @Bean
+     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+Index: IzvorniKod/backend/demo/src/main/java/com/example/demo/dto/UserLoginDto.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.demo.dto;\n\npublic class UserLoginDto {\n    private String username;\n    private String password;\n\n    // Getters and setters\n    public String getUsername() { return username; }\n    public void setUsername(String username) { this.username = username; }\n    public String getPassword() { return password; }\n    public void setPassword(String password) { this.password = password; }\n}\n\n
+===================================================================
+diff --git a/IzvorniKod/backend/demo/src/main/java/com/example/demo/dto/UserLoginDto.java b/IzvorniKod/backend/demo/src/main/java/com/example/demo/dto/UserLoginDto.java
+--- a/IzvorniKod/backend/demo/src/main/java/com/example/demo/dto/UserLoginDto.java	(revision 19f765f817ed0f2c603ee2ba780c8ebfaad84d99)
++++ b/IzvorniKod/backend/demo/src/main/java/com/example/demo/dto/UserLoginDto.java	(date 1731692213230)
+@@ -1,13 +1,29 @@
+ package com.example.demo.dto;
+ 
+-public class UserLoginDto {
+-    private String username;
+-    private String password;
++public class UserLoginDto implements UserDetails{
++    private final MyUser user;
++
++    @Override
++    public Collection<? extends GrantedAuthority> getAuthorities() {
++        return Arrays
++                .stream(user
++                        .getRoles()
++                        .split(","))
++                .map(SimpleGrantedAuthority::new)
++                .toList();
++    }
++
++    private String username = user.username;
++    private String password = user.password;
+ 
+     // Getters and setters
++    @Override
+     public String getUsername() { return username; }
++    @Override
+     public void setUsername(String username) { this.username = username; }
++    @Override
+     public String getPassword() { return password; }
++    @Override
+     public void setPassword(String password) { this.password = password; }
+ }
+ 
+Index: IzvorniKod/backend/demo/src/main/java/com/example/demo/service/UserService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.demo.service;\n\n\nimport com.example.demo.dto.UserRegistrationDto;\nimport com.example.demo.model.MyUser;\nimport com.example.demo.repository.UserRepository;\nimport org.springframework.beans.factory.annotation.Autowired;\nimport org.springframework.security.core.userdetails.User;\nimport org.springframework.security.core.userdetails.UserDetails;\nimport org.springframework.security.core.userdetails.UserDetailsService;\nimport org.springframework.security.core.userdetails.UsernameNotFoundException;\nimport org.springframework.security.crypto.password.PasswordEncoder;\nimport org.springframework.stereotype.Service;\n\nimport java.util.Optional;\n\n@Service\npublic class UserService {\n\n    private final UserRepository userRepository;\n    private final PasswordEncoder passwordEncoder;\n\n    @Autowired\n    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {\n        this.userRepository = userRepository;\n        this.passwordEncoder = passwordEncoder;\n    }\n\n    public boolean authenticate(String username, String password) {\n        Optional<MyUser> userOpt = userRepository.findByUsername(username);\n        if (userOpt.isPresent()) {\n            MyUser user = userOpt.get();\n            return passwordEncoder.matches(password, user.getPassword());\n        }\n        return false;\n    }\n\n\n\n    public String register(UserRegistrationDto userDto) {\n        if (userRepository.existsByUsername(userDto.getUsername())) {\n            return \"Korisničko ime je već zauzeto.\";\n        }\n\n        if (userRepository.existsByEmail(userDto.getEmail())) {\n            return \"Email je već registriran.\";\n        }\n\n        MyUser user = new MyUser();\n        user.setUsername(userDto.getUsername());\n        user.setPassword(passwordEncoder.encode(userDto.getPassword())); // šifriranje lozinke\n        user.setEmail(userDto.getEmail());\n        user.setName(userDto.getName());\n        user.setSurname(userDto.getSurname());\n        user.setPhonenum(userDto.getPhonenum());\n        user.setRole(userDto.getRole());\n\n        System.out.println(\"Saving user to database...\");\n        userRepository.save(user);\n        return \"Uspješna registracija!\";\n    }\n}\n\n
+===================================================================
+diff --git a/IzvorniKod/backend/demo/src/main/java/com/example/demo/service/UserService.java b/IzvorniKod/backend/demo/src/main/java/com/example/demo/service/UserService.java
+--- a/IzvorniKod/backend/demo/src/main/java/com/example/demo/service/UserService.java	(revision 19f765f817ed0f2c603ee2ba780c8ebfaad84d99)
++++ b/IzvorniKod/backend/demo/src/main/java/com/example/demo/service/UserService.java	(date 1731692170900)
+@@ -35,8 +35,6 @@
+         return false;
+     }
+ 
+-
+-
+     public String register(UserRegistrationDto userDto) {
+         if (userRepository.existsByUsername(userDto.getUsername())) {
+             return "Korisničko ime je već zauzeto.";
+Index: IzvorniKod/backend/demo/build.gradle
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>plugins {\n\tid 'java'\n\tid 'org.springframework.boot' version '3.3.5'\n\tid 'io.spring.dependency-management' version '1.1.6'\n}\n\ngroup = 'com.example'\nversion = '0.0.1-SNAPSHOT'\n\njava {\n\ttoolchain {\n\t\tlanguageVersion = JavaLanguageVersion.of(17)\n\t}\n}\n\nconfigurations {\n\tcompileOnly {\n\t\textendsFrom annotationProcessor\n\t}\n}\n\nrepositories {\n\tmavenCentral()\n}\n\ndependencies {\n\timplementation 'org.springframework.boot:spring-boot-starter-data-jpa'\n\timplementation 'org.springframework.boot:spring-boot-starter-mail'\n\timplementation 'org.springframework.boot:spring-boot-starter-security'\n\timplementation 'org.springframework.boot:spring-boot-starter-web'\n\timplementation 'org.springframework.boot:spring-boot-starter-data-rest'\n\tcompileOnly 'org.projectlombok:lombok'\n\tdevelopmentOnly 'org.springframework.boot:spring-boot-devtools'\n\truntimeOnly 'org.postgresql:postgresql'\n\tannotationProcessor 'org.projectlombok:lombok'\n\ttestImplementation 'org.springframework.boot:spring-boot-starter-test'\n\ttestImplementation 'org.springframework.security:spring-security-test'\n\ttestRuntimeOnly 'org.junit.platform:junit-platform-launcher'\n}\n\ntasks.named('test') {\n\tuseJUnitPlatform()\n}\n
+===================================================================
+diff --git a/IzvorniKod/backend/demo/build.gradle b/IzvorniKod/backend/demo/build.gradle
+--- a/IzvorniKod/backend/demo/build.gradle	(revision 19f765f817ed0f2c603ee2ba780c8ebfaad84d99)
++++ b/IzvorniKod/backend/demo/build.gradle	(date 1731692213245)
+@@ -29,6 +29,8 @@
+ 	implementation 'org.springframework.boot:spring-boot-starter-security'
+ 	implementation 'org.springframework.boot:spring-boot-starter-web'
+ 	implementation 'org.springframework.boot:spring-boot-starter-data-rest'
++	implementation 'org.springframework.boot:spring-boot-configuration-processor'
++	implementation 'org.springframework.boot:spring-boot-starter-validation'
+ 	compileOnly 'org.projectlombok:lombok'
+ 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+ 	runtimeOnly 'org.postgresql:postgresql'
+Index: IzvorniKod/backend/demo/src/main/java/com/example/demo/DemoApplication.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.demo;\n\nimport org.springframework.boot.SpringApplication;\nimport org.springframework.boot.autoconfigure.SpringBootApplication;\n\n@SpringBootApplication\npublic class DemoApplication {\n\n\tpublic static void main(String[] args) {\n\t\tSpringApplication.run(DemoApplication.class, args);\n\t}\n\n}\n
+===================================================================
+diff --git a/IzvorniKod/backend/demo/src/main/java/com/example/demo/DemoApplication.java b/IzvorniKod/backend/demo/src/main/java/com/example/demo/DemoApplication.java
+--- a/IzvorniKod/backend/demo/src/main/java/com/example/demo/DemoApplication.java	(revision 19f765f817ed0f2c603ee2ba780c8ebfaad84d99)
++++ b/IzvorniKod/backend/demo/src/main/java/com/example/demo/DemoApplication.java	(date 1731692213203)
+@@ -3,6 +3,7 @@
+ import org.springframework.boot.SpringApplication;
+ import org.springframework.boot.autoconfigure.SpringBootApplication;
+ 
++@EnableConfigurationProperties(RSAKeyRecord.class)
+ @SpringBootApplication
+ public class DemoApplication {
+ 
