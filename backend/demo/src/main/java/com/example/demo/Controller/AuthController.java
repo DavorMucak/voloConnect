@@ -106,8 +106,10 @@ public class AuthController {
         if (idToken == null || idToken.isEmpty()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid ID token");
         }
+        String selectedRole = payload.get("role");
+        if(selectedRole == null) selectedRole = "";
         try {
-            OAuth2User oAuth2User = customOAuth2UserService.verifyOAuth2Token(idToken);
+            OAuth2User oAuth2User = customOAuth2UserService.verifyOAuth2Token(idToken, selectedRole);
             if (oAuth2User == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Google ID token");
             }

@@ -41,7 +41,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     @Value("${spring.security.oauth2.client.provider.google.issuer-uri}")
     private String issuer;
 
-    public OAuth2User verifyOAuth2Token(String token) throws IOException, GeneralSecurityException {
+    public OAuth2User verifyOAuth2Token(String token, String selectedRole) throws IOException, GeneralSecurityException {
         logger.info("Pokrenuta funkcija verifyOAuth2Token");
         logger.info(token);
         // Inicijaliziraj verifyer za Google ID token
@@ -81,18 +81,29 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 MyUser newUser = new MyUser();
                 newUser.setEmail(email);
                 Object givenName = "given_name";
-                newUser.setName((String) payload.get(givenName));
+                String firstName = (String) payload.get(givenName);
+                newUser.setName(firstName);
                 Object familyName = "family_name";
-                newUser.setSurname((String) payload.get(familyName));
-                newUser.setUsername(newUser.getName() + newUser.getUsername() + newUser.getId());
+                String surname = (String) payload.get(familyName);
+                newUser.setSurname(surname);
                 //SKUZI KAKO DA ODREDIS ROLE NOVOG USERA
-                newUser.setRole("neodređen");
+                newUser.setRole(selectedRole);
                 //kod prijave googleom nije potrebno slati verifikacijski mail?
                 newUser.setEnabled(true);
                 newUser.setValidated(true);
                 System.out.println("Saving user to database...");
                 userRepository.save(newUser);
                 logger.info("Novi korisnik registriran u bazu podataka.");
+                Optional<MyUser> userSetup = userRepository.findByEmail(email);
+                if (userSetup.isPresent()) {
+                    MyUser userTemp = userSetup.get();
+                    Long id = userTemp.getId();
+                    while(userRepository.existsByUsername(firstName + surname + id)) {
+                        id = id * 2;
+                    }
+                    userTemp.setUsername(firstName + surname + id);
+                    userRepository.save(userTemp);
+                }
                 user = userRepository.findByEmail(email);
             }
 
