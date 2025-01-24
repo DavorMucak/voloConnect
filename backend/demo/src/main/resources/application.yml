@@ -21,9 +21,9 @@ spring:
       chain:
         cache: false
   datasource:
-    password: simulatoR
-    url: jdbc:postgresql://localhost:5433/demo
-    username: postgres
+    password: volobaza_aevq_user
+    url: postgresql://volobaza_aevq_user:iLUJVoN76xI26PWsaHZaLABfsVBC0p4j@dpg-cua10b3qf0us73c5u67g-a.frankfurt-postgres.render.com/volobaza_aevq
+    username: iLUJVoN76xI26PWsaHZaLABfsVBC0p4j
   jpa:
     hibernate:
       ddl-auto: update
