@@ -26,5 +26,6 @@ public class UserProject {
 
     private LocalDateTime applicationDate = LocalDateTime.now(); // Kada se prijavio
 
+    private String status; // waiting, declined, accepted
 
 }

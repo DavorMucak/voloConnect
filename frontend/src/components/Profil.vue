@@ -1,6 +1,23 @@
 <template>
+  <!-- kad se pritisne na ovo ide prikaz projekata na koje je korisnik prijavljen(volonter) ili cije je vlasnik (organizacija) -->
+  <div v-if="uloga !== 'admin'">
+    <router-link :to="`/moji-projekti/${korisnik.username}`"> <button>Moji projekti</button> </router-link>
+
+    <button @click="obrisiProfil">Obriši profil</button>
+
+    <!-- prikaz biljezaka i recenzija -->
+    <Biljeske />
+
+    <Recenzije />
+
+    <!-- ako je korisnik organizacija, ima opciju izrade novog projekta -->
+    <router-link v-if="uloga === 'organizacija'" to="/novi-projekt"> <button>Novi projekt</button> </router-link>
+
+  </div>
+
+
   <!-- prikaz podataka o korisniku -->
-  <div v-if="!urediDetalje">
+  <div>
     <h2>Podaci o korisniku</h2>
     <p><strong>Korisničko ime:</strong> {{ korisnik.username }}</p>
     <p><strong>Email:</strong> {{ korisnik.email }}</p>
@@ -87,10 +104,8 @@ export default {
         phonenum: '',
         role: ["volonter", "organizacija", "admin"],
       },
-      privremeniPodaci: {},
       uloga: '',
       korisnickoIme: ' ',
-      urediDetalje: false,
     };
   },
   methods: {
@@ -103,7 +118,7 @@ export default {
     },
     async spremiPromjene() {
       try {
-        const response = await apiClient.put(`http://localhost:8080/api/user/${this.korisnik.username}`, {
+        const response = await axios.put(`http://localhost:8080/api/user/${this.korisnik.username}`, {
           email: this.privremeniPodaci.email,
           name: this.privremeniPodaci.name,
           surname: this.privremeniPodaci.surname,
@@ -120,14 +135,14 @@ export default {
         // dohvat podataka o prijavljenon korisniku
         const token = localStorage.getItem("token");
         if (token) {    //ako postoji token korisnik je prijavljen
-          
+
           //sprema username
           this.korisnickoIme = VueJwtDecode.decode(token).sub;
           this.uloga = VueJwtDecode.decode(token).role;
           this.korisnik.role = VueJwtDecode.decode(token).role;
           this.korisnik.username = VueJwtDecode.decode(token).sub;
 
-          const response = await apiClient.get(`http://localhost:8080/api/user/${this.korisnik.username}`);
+          const response = await axios.get(`http://localhost:8080/api/user/${this.korisnik.username}`);
           console.log(response.data);
           
           Object.assign(this.korisnik, response.data);
@@ -150,7 +165,7 @@ export default {
         return false;
       }
     },
-    async obrisiProfil() {   
+    async obrisiProfil() {
       const confirmation = window.confirm("Jeste li sigurni da želite obrisati svoj profil? Bit će trajno izbrisan.");
       if (confirmation) {
         try {
@@ -162,6 +177,7 @@ export default {
           localStorage.removeItem('token');
           localStorage.removeItem('role');
           localStorage.removeItem('userID');
+          localStorage.removeItem('username');
           this.isLoggedIn = false;  // vise nije ulogiran
           this.$router.push('/login'); // redirectaj na home
 

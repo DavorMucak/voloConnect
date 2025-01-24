@@ -59,7 +59,7 @@ public class JwtFilter extends OncePerRequestFilter {
                     handleJwtToken(token, request);
                 }
             }
-            catch (GeneralSecurityException e) {
+            catch (Exception e) {
 
                 if (token.startsWith("ey")) {
                     handleJwtToken(token, request);

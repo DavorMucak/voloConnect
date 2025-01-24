@@ -8,7 +8,11 @@ import com.example.demo.repository.UserProjectRepository;
 import com.example.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
+import java.util.List;
 
 @Service
 public class UserProjectService {
@@ -30,10 +34,43 @@ public class UserProjectService {
             UserProject userProject = new UserProject();
             userProject.setUser(user.get());
             userProject.setProject(project.get());
+            userProject.setStatus("waiting");
             userProjectRepository.save(userProject);
             return true;
         }
         return false;
+    }
+
+    public List<UserProject> getAllApplications(Long projectId){
+        List<UserProject> applications = userProjectRepository.findByProjectId(projectId);
+        return applications;
+    }
+
+    public boolean setApplicationStatus(Long applicationId, String newStatus){
+        Optional<UserProject> application = userProjectRepository.findById(applicationId);
+        if(application.isPresent()){
+            UserProject appl = application.get();
+            appl.setStatus(newStatus);
+            userProjectRepository.save(appl);
+            return true;
+        } else {
+            System.out.println("Application not found");
+            return false;
+        }
+    }
+
+    public Map<Project,String> getProjectsWithStatus (String username){
+        HashMap<Project, String> projects = new HashMap<Project, String>();
+        Optional<MyUser> userOptional = userRepository.findByUsername(username);
+        if(!userOptional.isPresent()){
+            throw new RuntimeException("User not found");
+        }
+        MyUser user = userOptional.get();
+        List<UserProject> applications = userProjectRepository.findByUserId(user.getId());
+        for(UserProject application : applications){
+            projects.put(application.getProject(), application.getStatus());
+        }
+        return projects;
     }
 }
 
