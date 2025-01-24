@@ -27,13 +27,10 @@ REGISTER
 
       <button type="submit">Registriraj se</button>
 
-      <p v-if="!selected" class="info">Molimo odaberite ulogu.</p>
       <p class="error" v-if="selected && error">{{ error }}</p>
       <p class="error" v-if="selected && validData && passError">{{ passError }}</p>
       <p class="success" v-if="success && !passError">{{ success }}</p>
 
-
-      
     </form>
   </div>
 
@@ -102,6 +99,7 @@ export default {
         return;
       }
 
+      if(this.password)
       this.validData = true;
 
       const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{6,}$/;
@@ -169,6 +167,8 @@ export default {
         this.verifSuccess = response.data;
         this.verifError = "";
         this.isLoggedIn = true;
+
+        this.validData = false;
 
         // Reset forme
         this.clearForm();
