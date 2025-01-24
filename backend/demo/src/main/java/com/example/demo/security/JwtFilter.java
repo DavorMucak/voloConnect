@@ -87,7 +87,7 @@ public class JwtFilter extends OncePerRequestFilter {
     private void handleOAuth2Token(String token, HttpServletRequest request) throws GeneralSecurityException, IOException {
         if(token.startsWith("<GoogleJWT>"))
             token = token.substring("<GoogleJWT>".length());
-        OAuth2User oAuth2User = customOAuth2UserService.verifyOAuth2Token(token);
+        OAuth2User oAuth2User = customOAuth2UserService.verifyOAuth2Token(token, "");
         if(oAuth2User != null){
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(oAuth2User, null, oAuth2User.getAuthorities());
             authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
