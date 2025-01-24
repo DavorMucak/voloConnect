@@ -59,6 +59,12 @@ public class UserService {
         return "fail";
     }
 
+    public MyUser findByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("Korisnik nije pronađen."));
+    }
+
+
 
 
     public String register(UserRegistrationDto userDto) {
