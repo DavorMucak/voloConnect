@@ -28,7 +28,7 @@ import com.example.demo.service.JwtService;
 import com.example.demo.service.MyUserDetailsService;
 import com.example.demo.service.CustomOAuth2UserService;
 
-
+//Security filter za komunikaciju tokena
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
@@ -78,6 +78,8 @@ public class JwtFilter extends OncePerRequestFilter {
             return true;
         return false;
     }
+    //koristim ugradene metode za dekodiranje tokena da provjerim issuera
+    // issuer == "accounts.google.com" ==> google oauth2 token
     private boolean isGoogleToken(String token) {
         DecodedJWT decodedJWT = JWT.decode(token);
         String issuer = decodedJWT.getIssuer();
@@ -87,6 +89,7 @@ public class JwtFilter extends OncePerRequestFilter {
     private void handleOAuth2Token(String token, HttpServletRequest request) throws GeneralSecurityException, IOException {
         if(token.startsWith("<GoogleJWT>"))
             token = token.substring("<GoogleJWT>".length());
+        //autenticiraj
         OAuth2User oAuth2User = customOAuth2UserService.verifyOAuth2Token(token, "");
         if(oAuth2User != null){
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(oAuth2User, null, oAuth2User.getAuthorities());
@@ -97,14 +100,16 @@ public class JwtFilter extends OncePerRequestFilter {
         }
     }
 
-
+    //ako nije Google token, onda je obican token
     private void handleJwtToken(String token, HttpServletRequest request) {
         if(token.startsWith("<CustomJWT>"))
             token = token.substring("<CustomJWT>".length());
         System.out.println("token " + token);
+        //izvuci informacije za prijavu iz tokena
         String username = jwtService.extractUserName(token);
         String role = jwtService.extractRole(token);
         String formattedRole = "ROLE_" + role.toUpperCase();
+        //autenticiraj
         if(username != null && SecurityContextHolder.getContext().getAuthentication() == null){
             UserDetails userDetails = context.getBean(MyUserDetailsService.class).loadUserByUsername(username);
             if (jwtService.validateToken(token, userDetails)){
