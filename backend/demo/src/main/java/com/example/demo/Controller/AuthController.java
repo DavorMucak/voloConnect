@@ -10,16 +10,16 @@ import com.example.demo.service.JwtService;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.http.*;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.Map;
 import java.util.Optional;
+
+//Controller prima requestove na zadanu adresu i prosljeduje dalje backendu na obradu
+//direktno komunicira s frontendom
+//Controller za autentikacijske url-ove
 
 @RestController
 @CrossOrigin
@@ -48,6 +48,7 @@ public class AuthController {
         this.jwtService = jwtService;
     }
 
+    //registracija
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody UserRegistrationDto userDto) {
         String result = userService.register(userDto);
@@ -59,12 +60,14 @@ public class AuthController {
         }
     }
 
+    //login
     @PostMapping("/login")
     public String login(@RequestBody UserLoginDto loginDto) {
         System.out.println("Login endpoint called with: " + loginDto);
         return userService.authenticate(loginDto);
     }
 
+    //potvrda verifikacijskog koda
     @PostMapping("/verify")
     public ResponseEntity<?> verifyUser(@RequestBody VerifyUserDto verifyUserDto) {
         try {
@@ -75,6 +78,7 @@ public class AuthController {
         }
     }
 
+    //ponovno slanje verifikacijskog koda
     @PostMapping("/resend")
     public ResponseEntity<?> resendVerificationCode(@RequestParam String email) {
         try {
@@ -85,6 +89,7 @@ public class AuthController {
         }
     }
 
+    //brisanje user računa
     @DeleteMapping("/delete-account/{username}")
     public ResponseEntity<?> deleteAccount(@PathVariable String username) {
         try {
@@ -100,6 +105,7 @@ public class AuthController {
         }
     }
 
+    //google-login (+ automatska registracija impolementirana)
     @PostMapping("/google-login")
     public ResponseEntity<?> googleLogin(@RequestBody Map<String, String> payload) {
         String idToken = payload.get("idToken");

@@ -1,5 +1,8 @@
 package com.example.demo.dto;
 
+//dto = data to object
+//pomocne klase za formatiranje i slanje podataka na front
+
 public class NoteDTO {
     private Long id;
     private String content;

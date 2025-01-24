@@ -1,15 +1,12 @@
 package com.example.demo.model;
 
-import com.example.demo.model.MyUser;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
+
+//model = objekt u bazi
+//pomocni objekt usera za google autentikaciju
 
 public record CustomOAuth2User(UserPrincipal user, Map<String, Object> attributes) implements OAuth2User {
 

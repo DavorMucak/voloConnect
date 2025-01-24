@@ -6,13 +6,13 @@ import com.example.demo.model.Note;
 import com.example.demo.repository.NoteRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.NoteService;
-import com.example.demo.service.UserService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+//Controller za zahtjeve vezane za bilješke usera
 
 @RestController
 @RequestMapping("/api/biljeske")
@@ -28,7 +28,7 @@ public class NoteController {
         this.noteRepository = noteRepository;
     }
 
-
+    //uredi postojeću bilješku korisnika s id-em {id}
     @PutMapping("/{id}")
     public ResponseEntity<Note> updateNote(
             @PathVariable Long id,
@@ -39,7 +39,7 @@ public class NoteController {
         return ResponseEntity.ok(note);
     }
 
-
+    //dohvati bilješke usera s usernameom username (iz urla)
     @GetMapping
     public ResponseEntity<List<NoteDTO>> getNotes(@RequestParam String username) {
         MyUser user = userRepository.findByUsername(username)
@@ -52,6 +52,7 @@ public class NoteController {
         return ResponseEntity.ok(notes);
     }
 
+    //stvori novu bilješku usera
     @PostMapping("/{username}")
     public ResponseEntity<NoteDTO> createNote(@PathVariable String username, @RequestBody String content) {
         MyUser user = userRepository.findByUsername(username)
@@ -66,6 +67,7 @@ public class NoteController {
         return ResponseEntity.ok(new NoteDTO(savedNote.getId(), savedNote.getContent()));
     }
 
+    //obriši bilješku
     @DeleteMapping("/{username}/{id}")
     public ResponseEntity<Void> deleteNote(@PathVariable String username, @PathVariable Long id) {
         MyUser user = userRepository.findByUsername(username)

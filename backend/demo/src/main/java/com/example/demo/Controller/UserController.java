@@ -20,6 +20,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.List;
 
+//Controller za podatke o userima
+
 @RestController
 @RequestMapping("/api/user")
 @CrossOrigin
@@ -35,13 +37,14 @@ public class UserController {
         this.userRepository = userRepository;
     }
 
-
+    //postojeci, aktivni admin dohvaca zahtjeve za registraciju novih admina
     @GetMapping("/approve-admins")
     public ResponseEntity<List<MyUser>> getUnvalidatedAdmins() {
         List<MyUser> users = userService.getUnvalidatedAdmins();
         return ResponseEntity.ok(users);
     }
 
+    //uredi podatke o useru
     @PutMapping("/{username}")
     public ResponseEntity<?> updateUser(
             @PathVariable String username,
@@ -79,6 +82,7 @@ public class UserController {
         }
     }
 
+    //admin odobrava novog admina s usernameom username
     @PostMapping("/approve-admins/{username}")
     public ResponseEntity<String> approveAdmin(@PathVariable String username) {
         Optional<MyUser> user = userRepository.findByUsername(username);
@@ -89,6 +93,7 @@ public class UserController {
         return ResponseEntity.status(200).body("Admin " + username + " odobren!");
     }
 
+    //admin briše zahtjev za registracijom novog admina s usernameom username
     @DeleteMapping("/approve-admins/{username}")
     public ResponseEntity<String> disapproveAdmin(@PathVariable String username){
         Optional<MyUser> user = userRepository.findByUsername(username);
