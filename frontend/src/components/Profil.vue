@@ -103,6 +103,13 @@ export default {
         role: ["volonter", "organizacija", "admin"],
       },
       uloga: '',
+      privremeniPodaci: {
+        email: '',
+        name: '',
+        surname: '',
+        phonenum: '',
+      },
+      urediDetalje: false,
       korisnickoIme: ' ',
     };
   },
